@@ -26,24 +26,15 @@
             scroll-behavior: smooth;
         }
 
-        /* --- HEADER BLUR --- */
-        #header-blur {
-            position: fixed; top: 0; left: 0; width: 100%; height: 120px;
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            z-index: 1000; pointer-events: none;
-            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-            opacity: 0; transition: opacity 0.5s;
-        }
-        #header-blur.visible { opacity: 1; }
-
+        /* --- LOGO NAV --- */
         #nav-logo-wrapper {
             position: fixed; top: 25px; left: 35px; width: 110px; z-index: 1001;
             opacity: 0; transform: translateY(-150%);
-            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
         }
-        #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; }
+        #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; pointer-events: all; }
 
-        /* --- HERO & LOGO --- */
+        /* --- LOGO HERO --- */
         #hero-logo-wrapper {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 480px; max-width: 85vw; z-index: 5; pointer-events: none;
@@ -53,78 +44,117 @@
 
         .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
         .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
+        .intero-occhio { transform-origin: 435px 245px; transition: transform 0.1s ease-out; }
+        .sopracciglio { transform-origin: 425px 145px; transition: transform 0.1s ease-out; }
         .p-mover { transition: transform 0.12s ease-out; }
         .blinking { transform: scaleY(0.01) !important; }
+        .brow-down { transform: translateY(18px) !important; }
 
-        .hero-container { height: 100vh; display: grid; grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; }
-        .liquid-divider { position: absolute; bottom: -2px; left: 0; width: 100%; z-index: 10; line-height: 0; }
+        /* --- HERO & HEADLINE --- */
+        .hero-container { 
+            height: 100vh; display: grid; grid-template-columns: 1fr 1fr; 
+            grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; 
+        }
+        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: inherit; }
+        
+        .liquid-divider { position: absolute; bottom: -2px; left: 0; width: 100%; line-height: 0; z-index: 10; }
+        .liquid-divider svg { display: block; width: 100%; height: 150px; }
         .liquid-divider path { fill: var(--dark-blue); }
 
         /* --- CONTENT SECTION --- */
-        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 120px 40px; position: relative; z-index: 5; }
-        
-        .headline { font-size: clamp(35px, 8vw, 100px); line-height: 1; text-transform: uppercase; margin: 0; opacity: 0; transform: translateY(40px); transition: 0.9s; }
+        .content-section { 
+            background-color: var(--dark-blue); color: var(--text-light); 
+            padding: 120px 40px; position: relative; z-index: 5; 
+        }
+
+        .headline { 
+            font-size: clamp(30px, 6.5vw, 95px); 
+            line-height: 1; text-transform: uppercase; margin: 0; 
+            opacity: 0; transform: translateY(40px); 
+            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+            min-height: 2.2em;
+        }
         .headline.reveal { opacity: 1; transform: translateY(0); }
         .prefix { font-weight: 900; color: var(--text-light); display: block; }
-        #dynamic-word { color: var(--accent-coral); font-weight: 900; display: block; }
+        #dynamic-word { color: var(--accent-coral); font-weight: 900; display: block; white-space: nowrap; }
 
-        /* --- LIQUID CARDS & PARALLAX --- */
-        .work-grid { margin-top: 100px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 60px; }
-        
+        /* --- INTRO & BUBBLY CARDS --- */
+        .intro-text { 
+            margin-top: 60px; max-width: 800px; 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 1.3rem; line-height: 1.6; font-weight: 400; opacity: 0.9;
+        }
+
+        .work-grid { 
+            margin-top: 120px; display: grid; 
+            grid-template-columns: repeat(2, 1fr); gap: 30px; 
+        }
+
         .project-card { 
-            background: rgba(255,255,255,0.03); height: 50vh; 
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 60% 40% 70% 30% / 40% 50% 60% 70%; /* Organic Blob */
+            background: rgba(255,255,255,0.03); 
+            height: 55vh; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 80px 30px 100px 40px; /* Bubbly shape */
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative; overflow: hidden; text-decoration: none; color: white;
-            will-change: transform, border-radius;
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative; overflow: hidden; padding: 40px;
+            text-decoration: none; color: white;
         }
-        .project-card:nth-child(even) { margin-top: 80px; border-radius: 30% 70% 40% 60% / 60% 40% 70% 30%; }
+        .project-card:nth-child(even) { border-radius: 40px 100px 30px 80px; margin-top: 40px; }
         .project-card:hover { 
-            border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; 
-            background: rgba(255,111,97,0.15); border-color: var(--accent-coral);
+            border-radius: 60px 60px 60px 60px; 
+            background: rgba(255,255,255,0.08); 
+            transform: translateY(-10px) scale(1.02);
+        }
+        .project-card h2 { font-size: 2.5rem; font-weight: 900; margin: 0; text-align: center; }
+
+        /* --- LIQUID WORKFLOW --- */
+        .workflow-section { margin-top: 150px; }
+        .flow-item {
+            display: flex; align-items: center; gap: 30px; margin-bottom: 40px;
+            padding: 30px; background: rgba(255,111,97,0.05);
+            border-radius: 50px; transition: 0.4s;
+        }
+        .flow-item:hover { background: rgba(255,111,97,0.1); transform: translateX(10px); }
+        .flow-num { 
+            width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent-coral);
+            display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono';
+            color: var(--accent-coral); font-weight: 700;
         }
 
-        /* --- HORIZONTAL WORKFLOW (LIGHT SECTION) --- */
-        .workflow-section { 
-            background-color: var(--bg-color); color: var(--dark-text); 
-            padding: 150px 40px; position: relative; z-index: 5;
+        #nav-text-menu {
+            position: fixed; top: 45px; right: 40px; z-index: 1002;
+            font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase;
+            opacity: 0; transition: 0.5s; cursor: pointer;
         }
-        .flow-container { 
-            display: flex; justify-content: space-between; position: relative; 
-            margin-top: 80px; gap: 20px;
-        }
-        .flow-container::before {
-            content: ''; position: absolute; top: 30px; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, var(--accent-gold), transparent); z-index: 1;
-        }
-        .flow-step { flex: 1; position: relative; z-index: 2; }
-        .flow-dot { 
-            width: 60px; height: 60px; background: var(--accent-gold); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-weight: 900; margin-bottom: 20px;
-            box-shadow: 0 10px 20px rgba(255, 200, 87, 0.3);
-        }
-        .flow-step h4 { font-family: 'JetBrains Mono'; margin: 0; font-size: 1.2rem; }
+        #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
     </style>
 </head>
 <body>
 
-    <div id="header-blur"></div>
     <div id="nav-logo-wrapper">
         <svg class="logo-svg" viewBox="0 0 500 328.12">
+            <defs><mask id="m-nav"><rect width="500" height="400" fill="white"/><g class="p-mover"><path d="M437.32,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86Z" fill="black"/></g></mask></defs>
             <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
-            <g class="p-mover"><circle cx="425" cy="245" r="15" fill="black"/></g>
+            <g class="intero-occhio"><path class="st0" style="mask: url(#m-nav);" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
+            <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
         </svg>
     </div>
 
+    <div id="nav-text-menu">Menu +</div>
+
     <section class="hero-container">
+        <div class="label">Strategic Art Direction</div>
+        <div class="label" style="text-align: right;">Available for '26</div>
         <div id="hero-logo-wrapper">
             <svg class="logo-svg" viewBox="0 0 500 328.12">
+                <defs><mask id="m-hero"><rect width="500" height="400" fill="white"/><g class="p-mover"><path d="M437.32,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86Z" fill="black"/></g></mask></defs>
                 <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
-                <g class="p-mover"><circle cx="425" cy="245" r="15" fill="black"/></g>
+                <g class="intero-occhio"><path class="st0" style="mask: url(#m-hero);" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
+                <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
         </div>
+        <div class="label" style="grid-row: 3; align-self: end;">Strategic Mind</div>
+        <div class="label" style="grid-row: 3; align-self: end; text-align: right;">Creative Direction</div>
         <div class="liquid-divider">
             <svg viewBox="0 0 1440 150" preserveAspectRatio="none"><path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,74.7C1120,64,1280,64,1360,64L1440,64L1440,150L1360,150C1280,150,1120,150,960,150C800,150,640,150,480,150C320,150,160,150,80,150L0,150Z"></path></svg>
         </div>
@@ -136,29 +166,46 @@
             <span id="dynamic-word">ART DIRECTION</span>
         </h1>
 
-        <div class="work-grid">
-            <a href="#" class="project-card parallax" data-speed="0.05"><h2>LIQUID BRAND</h2></a>
-            <a href="#" class="project-card parallax" data-speed="0.1"><h2>MOTION FLOW</h2></a>
-            <a href="#" class="project-card parallax" data-speed="0.07"><h2>WEB VISION</h2></a>
-            <a href="#" class="project-card parallax" data-speed="0.12"><h2>AI DESIGN</h2></a>
+        <div class="intro-text">
+            Art Director ibrido con un approccio fluido che unisce visione creativa e competenza tecnica. 
+            Trasformo la complessità in esperienze visive d'impatto, navigando tra design, motion e strategia.
         </div>
-    </section>
 
-    <section class="workflow-section">
-        <span class="label">The Method</span>
-        <div class="flow-container">
-            <div class="flow-step"><div class="flow-dot">01</div><h4>Discovery</h4></div>
-            <div class="flow-step"><div class="flow-dot">02</div><h4>Strategy</h4></div>
-            <div class="flow-step"><div class="flow-dot">03</div><h4>Crafting</h4></div>
-            <div class="flow-step"><div class="flow-dot">04</div><h4>Fluidity</h4></div>
+        <div class="work-grid">
+            <a href="#" class="project-card">
+                <span class="label" style="position:absolute; top:30px;">Identity</span>
+                <h2>MORPHING BRAND</h2>
+            </a>
+            <a href="#" class="project-card">
+                <span class="label" style="position:absolute; top:30px;">Digital</span>
+                <h2>LIQUID INTERFACE</h2>
+            </a>
+            <a href="#" class="project-card">
+                <span class="label" style="position:absolute; top:30px;">Motion</span>
+                <h2>DYNAMIC FLOW</h2>
+            </a>
+            <a href="#" class="project-card">
+                <span class="label" style="position:absolute; top:30px;">Strategy</span>
+                <h2>HYBRID VISION</h2>
+            </a>
+        </div>
+
+        <div class="workflow-section">
+            <span class="label" style="display:block; margin-bottom:40px;">Il mio processo</span>
+            <div class="flow-item"><div class="flow-num">01</div><div><h4 style="margin:0">Insight</h4><p style="margin:5px 0; opacity:0.6">Analisi e Brainstorming strategico.</p></div></div>
+            <div class="flow-item"><div class="flow-num">02</div><div><h4 style="margin:0">Shaping</h4><p style="margin:5px 0; opacity:0.6">Dare forma visiva al concetto.</p></div></div>
+            <div class="flow-item"><div class="flow-num">03</div><div><h4 style="margin:0">Delivery</h4><p style="margin:5px 0; opacity:0.6">Produzione e cura dei dettagli.</p></div></div>
         </div>
     </section>
 
     <script>
         const hLog = document.getElementById('hero-logo-wrapper');
         const nLog = document.getElementById('nav-logo-wrapper');
-        const hBlur = document.getElementById('header-blur');
-        const words = ["ART DIRECTION", "MOTION DESIGN", "INTERACTIVE DESIGN", "BRAND STRATEGY", "AI WORKFLOWS", "INTEGRATED CAMPAIGNS"];
+        const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover') };
+        const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover') };
+        
+        const words = ["ART DIRECTION", "MOTION DESIGN", "INTERACTIVE DESIGN", "BRAND STRATEGY", "AI WORKFLOWS", "INTEGRATED CAMPAIGNS", "CREATIVE LEADERSHIP", "DIGITAL PRODUCTION"];
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789%&#@*+";
         let wordIndex = 0;
 
         function decodeEffect(newText) {
@@ -166,41 +213,64 @@
             let iteration = 0;
             clearInterval(dw.interval);
             dw.interval = setInterval(() => {
-                dw.innerText = newText.split("").map((l, i) => i < iteration ? newText[i] : "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789%&#@*+"[Math.floor(Math.random()*40)]).join("");
+                dw.innerText = newText.split("").map((letter, index) => {
+                    if (index < iteration) return newText[index];
+                    if (letter === " ") return " ";
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join("");
                 if (iteration >= newText.length) clearInterval(dw.interval);
-                iteration += 1/3;
+                iteration += newText.length > 15 ? 1/2 : 1/3;
             }, 30);
         }
 
-        setInterval(() => { wordIndex = (wordIndex + 1) % words.length; decodeEffect(words[wordIndex]); }, 4000);
+        setInterval(() => {
+            wordIndex = (wordIndex + 1) % words.length;
+            decodeEffect(words[wordIndex]);
+        }, 4000);
+
+        document.addEventListener('mousemove', (e) => {
+            const hRes = solvePupil(e, hp.eye, 70);
+            hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
+            const nRes = solvePupil(e, np.eye, 42);
+            np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
+        });
+
+        function solvePupil(e, eyeElement, maxRadius) {
+            const rect = eyeElement.getBoundingClientRect();
+            const dx = e.clientX - (rect.left + rect.width / 2);
+            const dy = e.clientY - (rect.top + rect.height / 2);
+            const angle = Math.atan2(dy, dx);
+            const dist = Math.min(Math.hypot(dx, dy) / 600, 1);
+            return { x: Math.cos(angle) * maxRadius * dist, y: Math.sin(angle) * maxRadius * dist };
+        }
 
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y > 100) {
-                hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); hBlur.classList.add('visible');
+                hLog.classList.add('fade-out'); nLog.classList.add('slide-in');
                 document.getElementById('headline').classList.add('reveal');
+                document.getElementById('nav-text-menu').classList.add('visible');
             } else {
-                hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); hBlur.classList.remove('visible');
+                hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in');
+                document.getElementById('headline').classList.remove('reveal');
+                document.getElementById('nav-text-menu').classList.remove('visible');
             }
-
-            // Simple Parallax
-            document.querySelectorAll('.parallax').forEach(card => {
-                const speed = card.getAttribute('data-speed');
-                card.style.transform = `translateY(${y * speed}px)`;
-            });
         });
 
-        document.addEventListener('mousemove', (e) => {
-            const move = (el, r) => {
-                const rect = el.getBoundingClientRect();
-                const dx = e.clientX - (rect.left + rect.width / 2);
-                const dy = e.clientY - (rect.top + rect.height / 2);
-                const dist = Math.min(Math.hypot(dx, dy) / 600, 1);
-                const angle = Math.atan2(dy, dx);
-                el.querySelector('.p-mover').style.transform = `translate(${Math.cos(angle)*r*dist}px, ${Math.sin(angle)*r*dist}px)`;
-            };
-            move(hLog, 70); move(nLog, 42);
-        });
+        setInterval(() => {
+            if(Math.random() > 0.7) {
+                [hLog, nLog].forEach(l => {
+                    l.querySelector('.intero-occhio').classList.add('blinking');
+                    l.querySelector('.sopracciglio').classList.add('brow-down');
+                });
+                setTimeout(() => {
+                    [hLog, nLog].forEach(l => {
+                        l.querySelector('.intero-occhio').classList.remove('blinking');
+                        l.querySelector('.sopracciglio').classList.remove('brow-down');
+                    });
+                }, 150);
+            }
+        }, 3500);
     </script>
 </body>
 </html>
