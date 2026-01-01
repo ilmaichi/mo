@@ -59,6 +59,27 @@
         .blinking { transform: scaleY(0.05) !important; }
         .brow-down { transform: translateY(15px) !important; }
 
+        /* --- GYRO HINT --- */
+        #gyro-hint {
+            position: absolute;
+            top: calc(50% + 180px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono';
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        @media (max-width: 1024px) {
+            #gyro-hint.visible { opacity: 1; animation: pulse-hint 2s infinite ease-in-out; }
+        }
+        @keyframes pulse-hint { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+
         /* --- HERO --- */
         .hero-container { 
             height: 100vh; 
@@ -71,7 +92,6 @@
         }
         .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; }
 
-        /* --- LIQUID DIVIDER --- */
         .liquid-divider {
             position: absolute;
             bottom: -2px;
@@ -111,7 +131,6 @@
             gap: 60px;
             margin-bottom: 180px;
         }
-
         .expertise-card {
             position: relative;
             padding: 80px 40px;
@@ -120,7 +139,6 @@
             align-items: center;
             text-align: center;
         }
-
         .expertise-card::before {
             content: "";
             position: absolute;
@@ -132,18 +150,15 @@
             transition: all 0.8s ease;
             animation: blob-breath 12s infinite ease-in-out;
         }
-
         .expertise-card:hover::before {
             background: rgba(255, 111, 97, 0.12);
             border-color: var(--accent-coral);
             transform: scale(1.1) rotate(3deg);
         }
-
         @keyframes blob-breath {
             0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
             50% { border-radius: 45% 55% 50% 50% / 50% 45% 55% 50%; }
         }
-
         .expertise-card h3 { font-size: 26px; text-transform: uppercase; margin: 25px 0 15px; letter-spacing: -1px; }
         .expertise-card p { font-family: 'JetBrains Mono'; font-size: 13px; line-height: 1.7; opacity: 0.7; max-width: 280px; color: #cedde0; }
         .num-blob { 
@@ -156,20 +171,11 @@
             font-family: 'JetBrains Mono'; font-size: 12px; text-transform: uppercase;
             color: var(--accent-gold); letter-spacing: 5px; margin-bottom: 80px; display: block;
         }
-
-        .process-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 40px;
-            position: relative;
-            flex-wrap: wrap;
-        }
-
+        .process-container { display: flex; justify-content: space-between; gap: 40px; position: relative; flex-wrap: wrap; }
         .process-container::after {
             content: ""; position: absolute; top: 25px; left: 0; width: 100%; height: 1px;
             background: var(--accent-gold); opacity: 0.15; z-index: 0;
         }
-
         .process-step { flex: 1; min-width: 220px; position: relative; z-index: 1; }
         .step-circle {
             width: 14px; height: 14px; background: var(--accent-gold); border-radius: 50%;
@@ -179,20 +185,12 @@
         .process-step h4 { font-family: 'JetBrains Mono'; font-size: 14px; text-transform: uppercase; margin-bottom: 12px; color: #fff; }
         .process-step p { font-size: 13px; opacity: 0.6; line-height: 1.6; color: #cedde0; }
 
-        /* --- NAV MENU --- */
         #nav-text-menu {
             position: fixed; top: 45px; right: 40px; z-index: 1002;
             font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase;
             opacity: 0; transition: all 0.5s; cursor: pointer;
         }
         #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
-
-        @media (max-width: 768px) {
-            .process-container::after { display: none; }
-            .process-step { margin-bottom: 50px; text-align: center; }
-            .step-circle { margin: 0 auto 20px; }
-            .expertise-grid { gap: 20px; }
-        }
     </style>
 </head>
 <body onclick="requestGyro()">
@@ -221,13 +219,13 @@
             </svg>
         </div>
 
+        <div id="gyro-hint" class="visible">Tap to engage</div>
+
         <div class="label" style="grid-row: 3; align-self: end;">Strategic Mind</div>
-        <div class="label" style="grid-row: 3; align-self: end; text-align: right;">Liquid Soul</div>
+        <div class="label" style="grid-row: 3; align-self: end; text-align: right;">Creative Direction</div>
 
         <div class="liquid-divider">
-            <svg viewBox="0 0 1440 150" preserveAspectRatio="none">
-                <path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,74.7C1120,64,1280,64,1360,64L1440,64L1440,150L1360,150C1280,150,1120,150,960,150C800,150,640,150,480,150C320,150,160,150,80,150L0,150Z"></path>
-            </svg>
+            <svg viewBox="0 0 1440 150" preserveAspectRatio="none"><path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,74.7C1120,64,1280,64,1360,64L1440,64L1440,150L1360,150C1280,150,1120,150,960,150C800,150,640,150,480,150C320,150,160,150,80,150L0,150Z"></path></svg>
         </div>
     </section>
 
@@ -237,43 +235,27 @@
         <div class="expertise-grid">
             <div class="expertise-card">
                 <span class="num-blob">01</span>
-                <h3>Strategic<br>Branding</h3>
+                <h3>Strategic Branding</h3>
                 <p>Analisi e posizionamento. Traduco obiettivi di business in ecosistemi visivi organici capaci di evolvere senza perdere identità.</p>
             </div>
             <div class="expertise-card">
                 <span class="num-blob">02</span>
-                <h3>Creative<br>Leadership</h3>
+                <h3>Creative Leadership</h3>
                 <p>Management del talento. Coordino team e workflow creativi assicurando che la visione arrivi intatta fino all'ultimo pixel.</p>
             </div>
             <div class="expertise-card">
                 <span class="num-blob">03</span>
-                <h3>Integrated<br>Storytelling</h3>
+                <h3>Integrated Storytelling</h3>
                 <p>Narrative dinamiche. Utilizzo motion design e regia creativa per costruire connessioni profonde tra brand e persone.</p>
             </div>
         </div>
 
-        <span class="process-title">The Liquid Flow</span>
+        <span class="process-title">Methodology & Flow</span>
         <div class="process-container">
-            <div class="process-step">
-                <div class="step-circle"></div>
-                <h4>Discovery</h4>
-                <p>Immersione totale negli obiettivi di business e scenario competitivo.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-circle"></div>
-                <h4>Strategy</h4>
-                <p>Architettura del concetto e definizione della rotta creativa.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-circle"></div>
-                <h4>Creation</h4>
-                <p>Sviluppo di asset visivi e narrativi ad alto impatto identitario.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-circle"></div>
-                <h4>Management</h4>
-                <p>Controllo qualità, ottimizzazione e guida strategica del processo.</p>
-            </div>
+            <div class="process-step"><div class="step-circle"></div><h4>Discovery</h4><p>Immersione totale negli obiettivi e nello scenario competitivo.</p></div>
+            <div class="process-step"><div class="step-circle"></div><h4>Strategy</h4><p>Architettura del concetto e definizione della rotta creativa.</p></div>
+            <div class="process-step"><div class="step-circle"></div><h4>Creation</h4><p>Sviluppo di asset visivi e narrativi ad alto impatto.</p></div>
+            <div class="process-step"><div class="step-circle"></div><h4>Management</h4><p>Controllo qualità e guida strategica del processo.</p></div>
         </div>
     </section>
 
@@ -282,49 +264,42 @@
         const nLog = document.getElementById('nav-logo-wrapper');
         const head = document.getElementById('headline');
         const nTxt = document.getElementById('nav-text-menu');
+        const hint = document.getElementById('gyro-hint');
 
         const hp = { eye: hLog.querySelector('.intero-occhio'), brow: hLog.querySelector('.sopracciglio'), pup: hLog.querySelector('.p-mover') };
         const np = { eye: nLog.querySelector('.intero-occhio'), brow: nLog.querySelector('.sopracciglio'), pup: nLog.querySelector('.p-mover') };
 
         let hasGyro = false;
 
-        // --- GESTIONE SENSORI MOBILE (ANDROID + iOS) ---
         function requestGyro() {
+            if (hint) hint.classList.remove('visible');
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission()
                     .then(response => { if (response == 'granted') window.addEventListener('deviceorientation', handleOrientation); })
                     .catch(console.error);
             } else {
-                if ('ondeviceorientationabsolute' in window) {
-                    window.addEventListener('deviceorientationabsolute', handleOrientation);
-                } else {
-                    window.addEventListener('deviceorientation', handleOrientation);
-                }
+                if ('ondeviceorientationabsolute' in window) { window.addEventListener('deviceorientationabsolute', handleOrientation); }
+                else { window.addEventListener('deviceorientation', handleOrientation); }
             }
         }
 
         function handleOrientation(event) {
             hasGyro = true;
             if (event.gamma === null || event.beta === null) return;
-
-            let x = event.gamma; 
-            let y = event.beta;
-
-            // Normalizzazione movimento
-            const moveX = Math.max(-25, Math.min(25, x / 1.5));
-            const moveY = Math.max(-25, Math.min(25, (y - 45) / 1.5));
-
+            // Moltiplicatori aumentati per coprire più spazio nell'occhio
+            const moveX = Math.max(-45, Math.min(45, event.gamma / 0.8));
+            const moveY = Math.max(-45, Math.min(45, (event.beta - 45) / 0.8));
             requestAnimationFrame(() => updatePupils(moveX, moveY));
         }
 
-        // --- MOUSE MOVEMENT (DESKTOP) ---
         document.addEventListener('mousemove', (e) => {
             if (hasGyro) return;
             [hp, np].forEach((p, i) => {
                 const r = p.eye.getBoundingClientRect();
                 if (r.top < window.innerHeight && r.bottom > 0) {
                     const a = Math.atan2(e.clientY - (r.top + r.height/2), e.clientX - (r.left + r.width/2));
-                    const d = i === 0 ? 25 : 12;
+                    // Raggio aumentato: 45px per il logo grande, 18px per quello piccolo
+                    const d = i === 0 ? 45 : 18;
                     p.pup.style.transform = `translate(${Math.cos(a)*d}px, ${Math.sin(a)*d}px)`;
                 }
             });
@@ -332,10 +307,9 @@
 
         function updatePupils(x, y) {
             hp.pup.style.transform = `translate(${x}px, ${y}px)`;
-            np.pup.style.transform = `translate(${x/2}px, ${y/2}px)`;
+            np.pup.style.transform = `translate(${x/2.5}px, ${y/2.5}px)`;
         }
 
-        // --- SCROLL & REVEAL ---
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y > 100) {
@@ -347,13 +321,11 @@
             }
         });
 
-        // --- BLINK SYSTEM ---
         function blink(p) {
             p.eye.classList.add('blinking'); p.brow.classList.add('brow-down');
             setTimeout(() => { p.eye.classList.remove('blinking'); p.brow.classList.remove('brow-down'); }, 120);
         }
         setInterval(() => { if(Math.random() > 0.8) [hp, np].forEach(blink); }, 3000);
-
     </script>
 </body>
 </html>
