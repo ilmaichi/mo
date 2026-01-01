@@ -17,69 +17,112 @@
         }
 
         * { box-sizing: border-box; outline: none; }
-        body, html { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+
+        body, html { 
+            margin: 0; padding: 0; 
+            background-color: var(--bg-color); 
+            font-family: 'Inter', sans-serif; 
+            color: var(--dark-text); 
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
 
         /* --- LOGO SYSTEM --- */
         #hero-logo-wrapper {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 450px; max-width: 80vw; z-index: 5; pointer-events: none;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            max-width: 80vw;
             transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+            z-index: 5;
+            pointer-events: none;
         }
         #hero-logo-wrapper.fade-out { transform: translate(-50%, -150%); opacity: 0; }
 
         #nav-logo-wrapper {
-            position: fixed; top: 30px; left: 40px; width: 80px; z-index: 1001;
-            transform: translateY(-150%); opacity: 0;
+            position: fixed;
+            top: 30px; left: 40px;
+            width: 80px; 
+            z-index: 1001;
+            transform: translateY(-150%);
+            opacity: 0;
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
         }
         #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; pointer-events: all; }
 
         .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
-        
-        /* Colori basati sul tuo SVG */
         .st0 { fill: var(--accent-coral); } 
-        .st1 { fill: #1a1918; } /* Pupilla scura per contrasto sullo sfondo chiaro */
         .st2 { fill: var(--accent-gold); } 
-
-        /* Animazioni */
-        .occhio-group { transform-origin: 425px 250px; transition: transform 0.1s ease-out; }
-        .sopracciglio-path { transform-origin: 425px 130px; transition: transform 0.1s ease-out; }
+        
+        /* Animazioni Occhio */
+        .intero-occhio { 
+            transform-origin: 425px 255px; 
+            transition: transform 0.1s ease-out, scale 0.1s cubic-bezier(0.45, 0, 0.55, 1); 
+        }
+        .sopracciglio { 
+            transform-origin: 425px 130px; 
+            transition: transform 0.1s ease-out; 
+        }
+        
+        .p-mover {
+            /* Transizione inizialmente morbida per le saccadi autonome */
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(12px) !important; }
 
-        /* --- HERO --- */
-        .hero-container { height: 100vh; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; }
-        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--dark-text); }
-
-        #gyro-hint {
-            position: absolute; top: calc(50% + 180px); left: 50%; transform: translateX(-50%);
-            font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
-            color: #888; opacity: 0; pointer-events: none;
+        /* --- UI ELEMENTS --- */
+        .hero-container { 
+            height: 100vh; display: grid; grid-template-columns: 1fr 1fr; 
+            grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; 
         }
-        @media (max-width: 1024px) { #gyro-hint.visible { opacity: 1; animation: pulse-hint 2s infinite ease-in-out; } }
-        @keyframes pulse-hint { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-
+        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; }
+        
         .liquid-divider { position: absolute; bottom: -2px; left: 0; width: 100%; line-height: 0; z-index: 10; }
-        .liquid-divider svg { display: block; width: 100%; height: 150px; fill: var(--dark-blue); }
+        .liquid-divider svg { display: block; width: 100%; height: 150px; }
+        .liquid-divider path { fill: var(--dark-blue); }
 
-        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 120px 40px; min-height: 100vh; position: relative; z-index: 5; }
-        .headline { font-size: clamp(40px, 9vw, 130px); line-height: 0.85; text-transform: uppercase; opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
+        .content-section { 
+            background-color: var(--dark-blue); color: var(--text-light); 
+            padding: 120px 40px; min-height: 100vh; position: relative; z-index: 5; 
+        }
+        .headline { 
+            font-size: clamp(40px, 9vw, 130px); line-height: 0.85; text-transform: uppercase; 
+            margin: 0 0 100px 0; opacity: 0; transform: translateY(40px); 
+            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); 
+        }
         .headline.reveal { opacity: 1; transform: translateY(0); }
+
+        #gyro-hint { 
+            position: absolute; top: calc(50% + 180px); left: 50%; transform: translateX(-50%); 
+            font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase; 
+            color: #888; opacity: 0; transition: opacity 0.5s; 
+        }
+        @media (max-width: 1024px) { #gyro-hint.visible { opacity: 1; animation: pulse 2s infinite; } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+        
+        #nav-text-menu {
+            position: fixed; top: 45px; right: 40px; z-index: 1002;
+            font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase;
+            opacity: 0; transition: all 0.5s; cursor: pointer;
+        }
+        #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
     </style>
 </head>
 <body onclick="requestGyro()">
 
     <div id="nav-logo-wrapper">
         <svg class="logo-svg" viewBox="0 0 500 328.12">
-            <defs>
-                <mask id="nav-mask"><rect width="500" height="400" fill="white" /><g class="occhio-group"><path d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z" fill="black"/></g></mask>
-            </defs>
-            <path class="st0" d="M327.44,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C.91,149.02,5,82.37,38.14,28.06,47.85,12.75,62.86-1.31,81.61.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27h0Z"/>
-            <g class="occhio-group"><path class="st0" d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z"/></g>
-            <g class="pupilla-move" style="mask: url(#nav-mask);"><path class="st1" d="M434.54,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86h.01Z"/></g>
-            <g class="sopracciglio-path"><path class="st2" d="M473.68,150.49c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1v.02Z"/></g>
+            <defs><mask id="m-nav"><rect width="500" height="400" fill="white"/><g class="p-mover"><path d="M434.54,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1c-2.75-2.73-4.13-6.71-4.13-11.94s1.38-9.39,4.13-12.12c2.75-2.73,6.75-4.1,12.01-4.1s9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86Z" fill="black"/></g></mask></defs>
+            <path class="st0" d="M327.44,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C.91,149.02,5,82.37,38.14,28.06,47.85,12.75,62.86-1.31,81.61.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
+            <g class="intero-occhio"><path class="st0" style="mask: url(#m-nav);" d="M447.36,177.7c-24.77-6.1-54.22-5.08-74.58,11.87-39.17,32.44-35.63,105.45,9.65,128.75,50.84,26.32,114.58-2.34,116.86-62.72v-.15c.83-36.47-14.82-67.87-51.92-77.76Z"/></g>
+            <g class="sopracciglio"><path class="st2" d="M473.68,150.49c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
         </svg>
     </div>
+
+    <div id="nav-text-menu">Menu +</div>
 
     <section class="hero-container">
         <div class="label">Strategic Art Direction</div>
@@ -87,17 +130,15 @@
         
         <div id="hero-logo-wrapper">
             <svg class="logo-svg" viewBox="0 0 500 328.12">
-                <defs>
-                    <mask id="hero-mask"><rect width="500" height="400" fill="white" /><g class="occhio-group"><path d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z" fill="black"/></g></mask>
-                </defs>
-                <path class="st0" d="M327.44,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C.91,149.02,5,82.37,38.14,28.06,47.85,12.75,62.86-1.31,81.61.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27h0Z"/>
-                <g class="occhio-group"><path class="st0" d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z"/></g>
-                <g class="pupilla-move" style="mask: url(#hero-mask);"><path class="st1" d="M434.54,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86h.01Z"/></g>
-                <g class="sopracciglio-path"><path class="st2" d="M473.68,150.49c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1v.02Z"/></g>
+                <defs><mask id="m-hero"><rect width="500" height="400" fill="white"/><g class="p-mover"><path d="M434.54,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1c-2.75-2.73-4.13-6.71-4.13-11.94s1.38-9.39,4.13-12.12c2.75-2.73,6.75-4.1,12.01-4.1s9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86Z" fill="black"/></g></mask></defs>
+                <path class="st0" d="M327.44,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C.91,149.02,5,82.37,38.14,28.06,47.85,12.75,62.86-1.31,81.61.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
+                <g class="intero-occhio"><path class="st0" style="mask: url(#m-hero);" d="M447.36,177.7c-24.77-6.1-54.22-5.08-74.58,11.87-39.17,32.44-35.63,105.45,9.65,128.75,50.84,26.32,114.58-2.34,116.86-62.72v-.15c.83-36.47-14.82-67.87-51.92-77.76Z"/></g>
+                <g class="sopracciglio"><path class="st2" d="M473.68,150.49c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
         </div>
 
         <div id="gyro-hint" class="visible">Tap to engage</div>
+
         <div class="label" style="grid-row: 3; align-self: end;">Strategic Mind</div>
         <div class="label" style="grid-row: 3; align-self: end; text-align: right;">Creative Direction</div>
 
@@ -111,79 +152,120 @@
     </section>
 
     <script>
-        const hLog = document.getElementById('hero-logo-wrapper');
-        const nLog = document.getElementById('nav-logo-wrapper');
+    const hLog = document.getElementById('hero-logo-wrapper');
+    const nLog = document.getElementById('nav-logo-wrapper');
+    const hp = { eye: hLog.querySelector('.intero-occhio'), brow: hLog.querySelector('.sopracciglio'), pup: hLog.querySelector('.p-mover') };
+    const np = { eye: nLog.querySelector('.intero-occhio'), brow: nLog.querySelector('.sopracciglio'), pup: nLog.querySelector('.p-mover') };
+    const head = document.getElementById('headline');
+    const nTxt = document.getElementById('nav-text-menu');
+
+    let hasGyro = false;
+    let lastInteraction = Date.now();
+
+    // --- SISTEMA PUPILLE ---
+    function updatePupils(x, y) {
+        // x e y sono i valori di traslazione
+        hp.pup.style.transform = `translate(${x}px, ${y}px)`;
+        // Il logo piccolo segue proporzionalmente
+        np.pup.style.transform = `translate(${x * 0.4}px, ${y * 0.4}px)`;
+    }
+
+    function setInteractiveMode(isInteractive) {
+        const transition = isInteractive ? 'transform 0.05s ease-out' : 'transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)';
+        hp.pup.style.transition = transition;
+        np.pup.style.transition = transition;
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        if (hasGyro) return;
+        lastInteraction = Date.now();
+        setInteractiveMode(true);
+
+        const r = hp.eye.getBoundingClientRect();
+        const eyeCenterX = r.left + r.width / 2;
+        const eyeCenterY = r.top + r.height / 2;
+
+        // Calcolo angolo tra mouse e centro occhio
+        const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
+        
+        // Calcolo distanza (più il mouse è lontano, più la pupilla spinge al bordo)
+        const dist = Math.hypot(e.clientX - eyeCenterX, e.clientY - eyeCenterY);
+        const maxDist = window.innerWidth / 2;
+        const strength = Math.min(dist / maxDist, 1);
+        
+        // Raggio massimo aumentato a 65px
+        const radius = 65 * strength;
+
+        const translateX = Math.cos(angle) * radius;
+        const translateY = Math.sin(angle) * radius;
+
+        updatePupils(translateX, translateY);
+    });
+
+    // --- MICRO-SACCADI (AUTO MOVEMENT) ---
+    function autoLook() {
+        if (Date.now() - lastInteraction > 1500) {
+            setInteractiveMode(false);
+            // Range ampio anche per l'auto-look
+            const rx = (Math.random() - 0.5) * 80;
+            const ry = (Math.random() - 0.5) * 60;
+            updatePupils(rx, ry);
+        }
+    }
+    setInterval(autoLook, 2000);
+
+    // --- BLINK REALISTICO ---
+    function executeBlink() {
+        [hp, np].forEach(p => {
+            p.eye.classList.add('blinking'); p.brow.classList.add('brow-down');
+            setTimeout(() => { 
+                p.eye.classList.remove('blinking'); p.brow.classList.remove('brow-down'); 
+            }, 80);
+        });
+    }
+
+    function scheduleBlink() {
+        setTimeout(() => {
+            executeBlink();
+            if (Math.random() > 0.8) setTimeout(executeBlink, 200);
+            scheduleBlink();
+        }, 1500 + Math.random() * 4000);
+    }
+    scheduleBlink();
+
+    // --- SCROLL & GYRO ---
+    window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        if (y > 100) {
+            hLog.classList.add('fade-out'); nLog.classList.add('slide-in');
+            head.classList.add('reveal'); nTxt.classList.add('visible');
+        } else {
+            hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in');
+            head.classList.remove('reveal'); nTxt.classList.remove('visible');
+        }
+    });
+
+    function handleOrientation(event) {
+        hasGyro = true;
+        lastInteraction = Date.now();
+        setInteractiveMode(true);
+        // Range giroscopio aumentato per mobilità estrema
+        const x = Math.max(-65, Math.min(65, event.gamma * 1.5));
+        const y = Math.max(-55, Math.min(55, (event.beta - 45) * 1.5));
+        requestAnimationFrame(() => updatePupils(x, y));
+    }
+
+    function requestGyro() {
         const hint = document.getElementById('gyro-hint');
-
-        const getParts = (w) => ({
-            eyeGroup: w.querySelectorAll('.occhio-group'),
-            brow: w.querySelector('.sopracciglio-path'),
-            pup: w.querySelector('.pupilla-move')
-        });
-
-        const hp = getParts(hLog);
-        const np = getParts(nLog);
-
-        let hasGyro = false;
-
-        function requestGyro() {
-            if (hint) hint.classList.remove('visible');
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => { if (res == 'granted') window.addEventListener('deviceorientation', handleOrientation); });
-            } else {
-                window.addEventListener('deviceorientation', handleOrientation);
-                window.addEventListener('deviceorientationabsolute', handleOrientation);
-            }
-        }
-
-        function handleOrientation(e) {
-            hasGyro = true;
-            if (e.gamma === null) return;
-            const x = Math.max(-55, Math.min(55, e.gamma / 0.7));
-            const y = Math.max(-55, Math.min(55, (e.beta - 45) / 0.7));
-            requestAnimationFrame(() => updatePupils(x, y));
-        }
-
-        document.addEventListener('mousemove', (e) => {
-            if (hasGyro) return;
-            [hp, np].forEach((p, i) => {
-                const r = p.pup.getBoundingClientRect();
-                const a = Math.atan2(e.clientY - (r.top + r.height/2), e.clientX - (r.left + r.width/2));
-                const d = i === 0 ? 55 : 20;
-                p.pup.style.transform = `translate(${Math.cos(a)*d}px, ${Math.sin(a)*d}px)`;
+        if (hint) hint.classList.remove('visible');
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission().then(res => {
+                if (res == 'granted') window.addEventListener('deviceorientation', handleOrientation);
             });
-        });
-
-        function updatePupils(x, y) {
-            hp.pup.style.transform = `translate(${x}px, ${y}px)`;
-            np.pup.style.transform = `translate(${x/2.5}px, ${y/2.5}px)`;
+        } else {
+            window.addEventListener('deviceorientation', handleOrientation);
         }
-
-        async function blink() {
-            [hp, np].forEach(p => {
-                p.eyeGroup.forEach(g => g.classList.add('blinking'));
-                p.brow.classList.add('brow-down');
-            });
-            await new Promise(r => setTimeout(r, 100));
-            [hp, np].forEach(p => {
-                p.eyeGroup.forEach(g => g.classList.remove('blinking'));
-                p.brow.classList.remove('brow-down');
-            });
-        }
-
-        async function blinkLoop() {
-            await new Promise(r => setTimeout(r, Math.random() * 2500 + 1500));
-            await blink();
-            if (Math.random() > 0.7) { await new Promise(r => setTimeout(r, 120)); await blink(); }
-            blinkLoop();
-        }
-        blinkLoop();
-
-        window.addEventListener('scroll', () => {
-            const y = window.scrollY;
-            if (y > 100) { hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); document.getElementById('headline').classList.add('reveal'); }
-            else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); }
-        });
-    </script>
+    }
+</script>
 </body>
 </html>
