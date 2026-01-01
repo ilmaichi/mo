@@ -35,14 +35,16 @@
             max-width: 85vw;
             z-index: 5;
             pointer-events: none;
-            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+            /* Rimosso opacity dalla transition, lasciata solo la posizione */
+            transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
         }
-        #hero-logo-wrapper.fade-out { transform: translate(-50%, -150%); opacity: 0; }
+        /* Solo movimento, niente opacity: 0 */
+        #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); }
 
         #nav-logo-wrapper {
             position: fixed;
             top: 25px; left: 35px;
-            width: 110px; /* Logo Header ingrandito */
+            width: 110px; 
             z-index: 1001;
             opacity: 0;
             transform: translateY(-150%);
@@ -55,7 +57,6 @@
         .st1 { fill: #ffffff; }
         .st2 { fill: var(--accent-gold); } 
         
-        /* Animazioni Occhio */
         .intero-occhio { 
             transform-origin: 435px 245px; 
             transition: transform 0.1s ease-out, scale 0.1s cubic-bezier(0.45, 0, 0.55, 1); 
@@ -66,7 +67,6 @@
         }
         .p-mover { transition: transform 0.12s ease-out; }
         
-        /* Classi dinamiche via JS */
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(18px) !important; }
 
@@ -100,7 +100,7 @@
         #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
     </style>
 </head>
-<body onclick="if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function') DeviceOrientationEvent.requestPermission();">
+<body>
 
     <div id="nav-logo-wrapper">
         <svg class="logo-svg" viewBox="0 0 500 328.12">
@@ -165,7 +165,6 @@
 
         let lastInteraction = Date.now();
 
-        // Funzione di calcolo posizione pupilla indipendente per ogni occhio
         function solvePupil(e, eyeElement, maxRadius) {
             const rect = eyeElement.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -177,8 +176,8 @@
             const angle = Math.atan2(dy, dx);
             const dist = Math.hypot(dx, dy);
             
-            // Forza proporzionale alla distanza dal centro (più fluido)
-            const strength = Math.min(dist / 500, 1); 
+            // Ridotto il range di sensibilità per evitare uscite dal tracciato
+            const strength = Math.min(dist / 600, 1); 
             
             return {
                 x: Math.cos(angle) * maxRadius * strength,
@@ -189,25 +188,23 @@
         document.addEventListener('mousemove', (e) => {
             lastInteraction = Date.now();
             
-            // Update Hero Logo
-            const hRes = solvePupil(e, hp.eye, 85);
+            // Hero: Range ridotto a 70px per sicurezza
+            const hRes = solvePupil(e, hp.eye, 70);
             hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
 
-            // Update Nav Logo (con raggio generoso per visibilità)
-            const nRes = solvePupil(e, np.eye, 45);
+            // Nav: Range a 42px
+            const nRes = solvePupil(e, np.eye, 42);
             np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
         });
 
-        // Movimento "Idle" quando il mouse è fermo
         function autoMove() {
             if (Date.now() - lastInteraction > 2500) {
-                const rx = (Math.random() - 0.5) * 110;
-                const ry = (Math.random() - 0.5) * 80;
+                const rx = (Math.random() - 0.5) * 80;
+                const ry = (Math.random() - 0.5) * 60;
                 hp.pup.style.transition = np.pup.style.transition = 'transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
                 hp.pup.style.transform = `translate(${rx}px, ${ry}px)`;
                 np.pup.style.transform = `translate(${rx * 0.4}px, ${ry * 0.4}px)`;
                 
-                // Reset transizione dopo l'idle per il mousemove
                 setTimeout(() => {
                     hp.pup.style.transition = np.pup.style.transition = 'transform 0.12s ease-out';
                 }, 1200);
@@ -215,7 +212,6 @@
         }
         setInterval(autoMove, 3000);
 
-        // Battito ciglia
         function triggerBlink() {
             [hp, np].forEach(p => {
                 p.eye.classList.add('blinking');
@@ -228,7 +224,6 @@
         }
         setInterval(() => { if(Math.random() > 0.6) triggerBlink(); }, 4000);
 
-        // Scroll Logic
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y > 100) {
