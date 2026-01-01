@@ -17,143 +17,66 @@
         }
 
         * { box-sizing: border-box; outline: none; }
-        body, html { 
-            margin: 0; padding: 0; 
-            background-color: var(--bg-color); 
-            font-family: 'Inter', sans-serif; 
-            color: var(--dark-text); 
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
+        body, html { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
 
         /* --- LOGO SYSTEM --- */
         #hero-logo-wrapper {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 450px;
-            max-width: 80vw;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 450px; max-width: 80vw; z-index: 5; pointer-events: none;
             transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
-            z-index: 5;
-            pointer-events: none;
         }
         #hero-logo-wrapper.fade-out { transform: translate(-50%, -150%); opacity: 0; }
 
         #nav-logo-wrapper {
-            position: fixed;
-            top: 30px; left: 40px;
-            width: 80px; 
-            z-index: 1001;
-            transform: translateY(-150%);
-            opacity: 0;
+            position: fixed; top: 30px; left: 40px; width: 80px; z-index: 1001;
+            transform: translateY(-150%); opacity: 0;
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
         }
         #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; pointer-events: all; }
 
         .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
         
-        /* Classi dinamiche per l'animazione */
-        .occhio-path { transform-origin: 425px 255px; transition: transform 0.1s ease-out; }
-        .sopracciglio-path { transform-origin: 425px 130px; transition: transform 0.1s ease-out; }
-        .pupilla-path { transition: transform 0.08s ease-out; }
+        /* Colori basati sul tuo SVG */
+        .st0 { fill: var(--accent-coral); } 
+        .st1 { fill: #1a1918; } /* Pupilla scura per contrasto sullo sfondo chiaro */
+        .st2 { fill: var(--accent-gold); } 
 
+        /* Animazioni */
+        .occhio-group { transform-origin: 425px 250px; transition: transform 0.1s ease-out; }
+        .sopracciglio-path { transform-origin: 425px 130px; transition: transform 0.1s ease-out; }
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(12px) !important; }
 
-        /* --- GYRO HINT --- */
+        /* --- HERO --- */
+        .hero-container { height: 100vh; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; }
+        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--dark-text); }
+
         #gyro-hint {
-            position: absolute;
-            top: calc(50% + 180px);
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'JetBrains Mono';
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #888;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
+            position: absolute; top: calc(50% + 180px); left: 50%; transform: translateX(-50%);
+            font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+            color: #888; opacity: 0; pointer-events: none;
         }
-        @media (max-width: 1024px) {
-            #gyro-hint.visible { opacity: 1; animation: pulse-hint 2s infinite ease-in-out; }
-        }
+        @media (max-width: 1024px) { #gyro-hint.visible { opacity: 1; animation: pulse-hint 2s infinite ease-in-out; } }
         @keyframes pulse-hint { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
 
-        /* --- HERO --- */
-        .hero-container { 
-            height: 100vh; 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            grid-template-rows: 1fr auto 1fr; 
-            padding: 40px; 
-            position: relative;
-        }
-        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; }
+        .liquid-divider { position: absolute; bottom: -2px; left: 0; width: 100%; line-height: 0; z-index: 10; }
+        .liquid-divider svg { display: block; width: 100%; height: 150px; fill: var(--dark-blue); }
 
-        .liquid-divider {
-            position: absolute;
-            bottom: -2px; left: 0; width: 100%; line-height: 0; z-index: 10;
-        }
-        .liquid-divider svg { display: block; width: 100%; height: 150px; }
-        .liquid-divider path { fill: var(--dark-blue); }
-
-        /* --- CONTENT SECTION --- */
-        .content-section {
-            background-color: var(--dark-blue);
-            color: var(--text-light);
-            padding: 120px 40px 180px 40px;
-            min-height: 100vh;
-            position: relative;
-            z-index: 5;
-        }
-        .headline {
-            font-size: clamp(40px, 9vw, 130px);
-            line-height: 0.85;
-            text-transform: uppercase;
-            margin-bottom: 100px;
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-        }
+        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 120px 40px; min-height: 100vh; position: relative; z-index: 5; }
+        .headline { font-size: clamp(40px, 9vw, 130px); line-height: 0.85; text-transform: uppercase; opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
         .headline.reveal { opacity: 1; transform: translateY(0); }
-
-        /* Grid */
-        .expertise-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 60px;
-            margin-bottom: 180px;
-        }
-        .expertise-card {
-            position: relative; padding: 80px 40px;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-        }
-        .expertise-card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; z-index: -1;
-            animation: blob-breath 12s infinite ease-in-out;
-        }
-        @keyframes blob-breath {
-            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-            50% { border-radius: 45% 55% 50% 50% / 50% 45% 55% 50%; }
-        }
-
-        .process-title {
-            font-family: 'JetBrains Mono'; font-size: 12px; text-transform: uppercase;
-            color: var(--accent-gold); letter-spacing: 5px; margin-bottom: 80px; display: block;
-        }
-        .process-container { display: flex; justify-content: space-between; gap: 40px; position: relative; flex-wrap: wrap; }
     </style>
 </head>
 <body onclick="requestGyro()">
 
     <div id="nav-logo-wrapper">
         <svg class="logo-svg" viewBox="0 0 500 328.12">
-            <g class="emme-path"><path class="st0" d="M327.44,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C.91,149.02,5,82.37,38.14,28.06,47.85,12.75,62.86-1.31,81.61.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27h0Z"/></g>
-            <g class="occhio-path"><path class="st0" d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z"/></g>
-            <g class="pupilla-path"><path class="st1" d="M434.54,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86h.01Z"/></g>
+            <defs>
+                <mask id="nav-mask"><rect width="500" height="400" fill="white" /><g class="occhio-group"><path d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z" fill="black"/></g></mask>
+            </defs>
+            <path class="st0" d="M327.44,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C.91,149.02,5,82.37,38.14,28.06,47.85,12.75,62.86-1.31,81.61.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27h0Z"/>
+            <g class="occhio-group"><path class="st0" d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z"/></g>
+            <g class="pupilla-move" style="mask: url(#nav-mask);"><path class="st1" d="M434.54,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86h.01Z"/></g>
             <g class="sopracciglio-path"><path class="st2" d="M473.68,150.49c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1v.02Z"/></g>
         </svg>
     </div>
@@ -164,9 +87,12 @@
         
         <div id="hero-logo-wrapper">
             <svg class="logo-svg" viewBox="0 0 500 328.12">
-                <g class="emme-path"><path class="st0" d="M327.44,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C.91,149.02,5,82.37,38.14,28.06,47.85,12.75,62.86-1.31,81.61.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27h0Z"/></g>
-                <g class="occhio-path"><path class="st0" d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z"/></g>
-                <g class="pupilla-path"><path class="st1" d="M434.54,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86h.01Z"/></g>
+                <defs>
+                    <mask id="hero-mask"><rect width="500" height="400" fill="white" /><g class="occhio-group"><path d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z" fill="black"/></g></mask>
+                </defs>
+                <path class="st0" d="M327.44,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C.91,149.02,5,82.37,38.14,28.06,47.85,12.75,62.86-1.31,81.61.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27h0Z"/>
+                <g class="occhio-group"><path class="st0" d="M480.95,311.65c-18.2,18.05-44.53,17.72-68.18,14.92-11.17-1.32-22.43-3.02-32.97-7.55-10.55-4.54-20.45-12.19-26.56-23.3-5.7-10.37-7.75-23.09-7.47-35.46.88-38.95,26.09-75.32,58.26-84.06,13.54-3.67,29.31-1.52,44.16,4.79,18.66,7.92,34.38,23.54,43.44,44.37,2.49,5.72,4.46,11.73,5.81,18.01,5.19,24.19-.29,52.24-16.48,68.28Z"/></g>
+                <g class="pupilla-move" style="mask: url(#hero-mask);"><path class="st1" d="M434.54,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86h.01Z"/></g>
                 <g class="sopracciglio-path"><path class="st2" d="M473.68,150.49c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1v.02Z"/></g>
             </svg>
         </div>
@@ -182,18 +108,17 @@
 
     <section class="content-section">
         <h1 class="headline" id="headline">THE POWER OF<br><span style="color:var(--accent-coral)">ADAPTABILITY.</span></h1>
-        </section>
+    </section>
 
     <script>
         const hLog = document.getElementById('hero-logo-wrapper');
         const nLog = document.getElementById('nav-logo-wrapper');
         const hint = document.getElementById('gyro-hint');
 
-        // Selezione parti SVG per entrambi i loghi
-        const getParts = (wrapper) => ({
-            eye: wrapper.querySelector('.occhio-path'),
-            brow: wrapper.querySelector('.sopracciglio-path'),
-            pup: wrapper.querySelector('.pupilla-path')
+        const getParts = (w) => ({
+            eyeGroup: w.querySelectorAll('.occhio-group'),
+            brow: w.querySelector('.sopracciglio-path'),
+            pup: w.querySelector('.pupilla-move')
         });
 
         const hp = getParts(hLog);
@@ -204,32 +129,28 @@
         function requestGyro() {
             if (hint) hint.classList.remove('visible');
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission()
-                    .then(response => { if (response == 'granted') window.addEventListener('deviceorientation', handleOrientation); })
+                DeviceOrientationEvent.requestPermission().then(res => { if (res == 'granted') window.addEventListener('deviceorientation', handleOrientation); });
             } else {
                 window.addEventListener('deviceorientation', handleOrientation);
                 window.addEventListener('deviceorientationabsolute', handleOrientation);
             }
         }
 
-        function handleOrientation(event) {
+        function handleOrientation(e) {
             hasGyro = true;
-            if (event.gamma === null || event.beta === null) return;
-            // Range aumentato come richiesto (0.7 per maggiore sensibilità)
-            const moveX = Math.max(-55, Math.min(55, event.gamma / 0.7));
-            const moveY = Math.max(-55, Math.min(55, (event.beta - 45) / 0.7));
-            requestAnimationFrame(() => updatePupils(moveX, moveY));
+            if (e.gamma === null) return;
+            const x = Math.max(-55, Math.min(55, e.gamma / 0.7));
+            const y = Math.max(-55, Math.min(55, (e.beta - 45) / 0.7));
+            requestAnimationFrame(() => updatePupils(x, y));
         }
 
         document.addEventListener('mousemove', (e) => {
             if (hasGyro) return;
             [hp, np].forEach((p, i) => {
-                const r = p.eye.getBoundingClientRect();
-                if (r.top < window.innerHeight && r.bottom > 0) {
-                    const a = Math.atan2(e.clientY - (r.top + r.height/2), e.clientX - (r.left + r.width/2));
-                    const d = i === 0 ? 55 : 20; // Range aumentato su Desktop
-                    p.pup.style.transform = `translate(${Math.cos(a)*d}px, ${Math.sin(a)*d}px)`;
-                }
+                const r = p.pup.getBoundingClientRect();
+                const a = Math.atan2(e.clientY - (r.top + r.height/2), e.clientX - (r.left + r.width/2));
+                const d = i === 0 ? 55 : 20;
+                p.pup.style.transform = `translate(${Math.cos(a)*d}px, ${Math.sin(a)*d}px)`;
             });
         });
 
@@ -238,47 +159,30 @@
             np.pup.style.transform = `translate(${x/2.5}px, ${y/2.5}px)`;
         }
 
-        // --- SISTEMA BATTITO REALISTICO ---
         async function blink() {
             [hp, np].forEach(p => {
-                p.eye.classList.add('blinking');
+                p.eyeGroup.forEach(g => g.classList.add('blinking'));
                 p.brow.classList.add('brow-down');
             });
-
             await new Promise(r => setTimeout(r, 100));
-
             [hp, np].forEach(p => {
-                p.eye.classList.remove('blinking');
+                p.eyeGroup.forEach(g => g.classList.remove('blinking'));
                 p.brow.classList.remove('brow-down');
             });
         }
 
         async function blinkLoop() {
-            // Tempo d'attesa casuale tra 1.5 e 4 secondi
-            const wait = Math.random() * 2500 + 1500;
-            await new Promise(r => setTimeout(r, wait));
-            
+            await new Promise(r => setTimeout(r, Math.random() * 2500 + 1500));
             await blink();
-
-            // Probabilità del 30% di fare un secondo battito rapido (double blink)
-            if (Math.random() > 0.7) {
-                await new Promise(r => setTimeout(r, 120));
-                await blink();
-            }
-
-            blinkLoop(); // Ricorsione per loop infinito
+            if (Math.random() > 0.7) { await new Promise(r => setTimeout(r, 120)); await blink(); }
+            blinkLoop();
         }
         blinkLoop();
 
-        // Scroll
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
-            if (y > 100) {
-                hLog.classList.add('fade-out'); nLog.classList.add('slide-in');
-                document.getElementById('headline').classList.add('reveal');
-            } else {
-                hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in');
-            }
+            if (y > 100) { hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); document.getElementById('headline').classList.add('reveal'); }
+            else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); }
         });
     </script>
 </body>
