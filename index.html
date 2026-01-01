@@ -112,6 +112,23 @@
             opacity: 0; transition: all 0.5s; cursor: pointer;
         }
         #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
+
+        .workflow-container {
+            margin-top: 150px;
+            border-top: 1px solid rgba(247, 247, 242, 0.2);
+            padding-top: 40px;
+        }
+        .workflow-step {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(247, 247, 242, 0.1);
+            transition: all 0.3s ease;
+        }
+        .workflow-step:hover {
+            padding-left: 20px;
+            color: var(--accent-coral);
+        }
     </style>
 </head>
 <body>
@@ -164,42 +181,49 @@
             <span id="dynamic-word">ART DIRECTION</span>
         </h1>
         <div class="intro-text reveal" style="margin-top: 60px; max-width: 650px;">
-    <p style="font-size: 1.4rem; line-height: 1.6; opacity: 0.9; font-weight: 400;">
-        Art Director ibrido con un approccio fluido che unisce visione creativa e competenza tecnica. 
-        Dalla strategia di brand al motion design, fino allo sviluppo di interfacce interattive, 
-        trasformo la complessità in esperienze visive d'impatto per agenzie e aziende.
-    </p>
-</div>
-
-<div class="expertise-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 100px;">
-    <div class="exp-item">
-        <span class="label" style="color: var(--accent-gold);">01. Creative Direction</span>
-        <h3 style="font-size: 1.8rem; margin: 15px 0;">Visione & Leadership</h3>
-        <p style="opacity: 0.7; font-size: 0.95rem;">Gestione team, mentoring e regia creativa dall'idea al deliverable finale.</p>
-    </div>
-    <div class="exp-item">
-        <span class="label" style="color: var(--accent-gold);">02. Digital Ecosystems</span>
-        <h3 style="font-size: 1.8rem; margin: 15px 0;">Design & Code</h3>
-        <p style="opacity: 0.7; font-size: 0.95rem;">Landing pages, banner HTML5, web design e integrazione AI per performance scalabili.</p>
-    </div>
-    <div class="exp-item">
-        <span class="label" style="color: var(--accent-gold);">03. Visual Narrative</span>
-        <h3 style="font-size: 1.8rem; margin: 15px 0;">Motion & Strategy</h3>
-        <p style="opacity: 0.7; font-size: 0.95rem;">Brand identity dinamiche e montaggio video per una comunicazione multicanale.</p>
-    </div>
-</div>
+            <p style="font-size: 1.4rem; line-height: 1.6; opacity: 0.9; font-weight: 400;">
+                Art Director ibrido con un approccio fluido che unisce visione creativa e competenza tecnica. 
+                Dalla strategia di brand al motion design, fino allo sviluppo di interfacce interattive, 
+                trasformo la complessità in esperienze visive d'impatto per agenzie e aziende.
+            </p>
+        </div>
+        
+        <div class="expertise-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 100px;">
+            <div class="exp-item">
+                <span class="label" style="color: var(--accent-gold);">01. Creative Direction</span>
+                <h3 style="font-size: 1.8rem; margin: 15px 0;">Visione & Leadership</h3>
+                <p style="opacity: 0.7; font-size: 0.95rem;">Gestione team, mentoring e regia creativa dall'idea al deliverable finale.</p>
+            </div>
+            <div class="exp-item">
+                <span class="label" style="color: var(--accent-gold);">02. Digital Ecosystems</span>
+                <h3 style="font-size: 1.8rem; margin: 15px 0;">Design & Code</h3>
+                <p style="opacity: 0.7; font-size: 0.95rem;">Landing pages, banner HTML5, web design e integrazione AI per performance scalabili.</p>
+            </div>
+            <div class="exp-item">
+                <span class="label" style="color: var(--accent-gold);">03. Visual Narrative</span>
+                <h3 style="font-size: 1.8rem; margin: 15px 0;">Motion & Strategy</h3>
+                <p style="opacity: 0.7; font-size: 0.95rem;">Brand identity dinamiche e montaggio video per una comunicazione multicanale.</p>
+            </div>
+        </div>
         <div class="work-grid" style="margin-top: 150px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div class="project-card" style="grid-column: span 2; background: #013e4a; height: 70vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-        <span class="label" style="position: absolute; top: 30px; left: 30px;">Featured Project</span>
-        <h2 style="font-size: 3rem; font-weight: 900;">BRAND EVOLUTION</h2>
-    </div>
-    <div class="project-card" style="background: #013e4a; height: 50vh; display: flex; align-items: center; justify-content: center;">
-        <h2 style="font-size: 2rem; font-weight: 900;">MOTION DESIGN</h2>
-    </div>
-    <div class="project-card" style="background: #013e4a; height: 50vh; display: flex; align-items: center; justify-content: center;">
-        <h2 style="font-size: 2rem; font-weight: 900;">DIGITAL ADS</h2>
-    </div>
-</div>
+            <div class="project-card" style="grid-column: span 2; background: #013e4a; height: 70vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                <span class="label" style="position: absolute; top: 30px; left: 30px;">Featured Project</span>
+                <h2 style="font-size: 3rem; font-weight: 900;">BRAND EVOLUTION</h2>
+            </div>
+            <div class="project-card" style="background: #013e4a; height: 50vh; display: flex; align-items: center; justify-content: center;">
+                <h2 style="font-size: 2rem; font-weight: 900;">MOTION DESIGN</h2>
+            </div>
+            <div class="project-card" style="background: #013e4a; height: 50vh; display: flex; align-items: center; justify-content: center;">
+                <h2 style="font-size: 2rem; font-weight: 900;">DIGITAL ADS</h2>
+            </div>
+        </div>
+        <div class="workflow-container">
+            <span class="label">The Fluid Method</span>
+            <div class="workflow-step"><span>01. Insight & Brainstorming</span><span>→</span></div>
+            <div class="workflow-step"><span>02. Strategic Design</span><span>→</span></div>
+            <div class="workflow-step"><span>03. Tech Production</span><span>→</span></div>
+            <div class="workflow-step"><span>04. Quality & Delivery</span><span>→</span></div>
+        </div>
     </section>
 
     <script>
