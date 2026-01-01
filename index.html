@@ -90,12 +90,12 @@
         .headline.reveal { opacity: 1; transform: translateY(0); }
 
         .prefix { 
-            font-size: 0.35em; 
-            font-weight: 900; /* Portato a Bold (900) come il resto della headline */
-            letter-spacing: 0.05em; /* Ridotto leggermente lo spazio per il bold */
+            font-size: 1em; /* Uguale alla parola dinamica */
+            font-weight: 900; 
+            letter-spacing: 0; 
             display: block; 
-            opacity: 0.85; 
-            margin-bottom: 5px; 
+            color: var(--text-light); /* Colore chiaro fisso */
+            margin-bottom: 0; /* Elimina spazio extra tra le righe */
         }
 
         #dynamic-word {
@@ -103,7 +103,7 @@
             display: inline-block;
             font-family: 'Inter', sans-serif;
             font-weight: 900;
-            min-width: 300px; /* Evita scatti durante il decoding */
+            min-width: 100%; /* Occupa l'intera larghezza per stabilità */
         }
 
         #nav-text-menu {
