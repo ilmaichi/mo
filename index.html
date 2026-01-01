@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Strategic Art Direction</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Portfolio | Fluid Art Direction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -26,39 +26,27 @@
             scroll-behavior: smooth;
         }
 
-        /* --- LOGO SYSTEM --- */
-        #hero-logo-wrapper {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 480px;
-            max-width: 85vw;
-            z-index: 5;
-            pointer-events: none;
-            transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
-        }
-        /* Solo movimento verso l'alto senza fade-out opacità */
-        #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); }
-
+        /* --- LOGO NAV --- */
         #nav-logo-wrapper {
-            position: fixed;
-            top: 25px; left: 35px;
-            width: 110px; /* Logo Header ingrandito */
-            z-index: 1001;
-            opacity: 0;
-            transform: translateY(-150%);
+            position: fixed; top: 25px; left: 35px; width: 110px; z-index: 1001;
+            opacity: 0; transform: translateY(-150%);
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
         }
         #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; pointer-events: all; }
 
+        /* --- LOGO HERO --- */
+        #hero-logo-wrapper {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 480px; max-width: 85vw; z-index: 5; pointer-events: none;
+            transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+        #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); }
+
         .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
-        .st0 { fill: var(--accent-coral); } 
-        .st2 { fill: var(--accent-gold); } 
-        
+        .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
         .intero-occhio { transform-origin: 435px 245px; transition: transform 0.1s ease-out; }
         .sopracciglio { transform-origin: 425px 145px; transition: transform 0.1s ease-out; }
         .p-mover { transition: transform 0.12s ease-out; }
-        
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(18px) !important; }
 
@@ -67,80 +55,85 @@
             height: 100vh; display: grid; grid-template-columns: 1fr 1fr; 
             grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; 
         }
-        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; }
+        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: inherit; }
         
         .liquid-divider { position: absolute; bottom: -2px; left: 0; width: 100%; line-height: 0; z-index: 10; }
         .liquid-divider svg { display: block; width: 100%; height: 150px; }
         .liquid-divider path { fill: var(--dark-blue); }
 
+        /* --- CONTENT SECTION --- */
         .content-section { 
             background-color: var(--dark-blue); color: var(--text-light); 
-            padding: 180px 40px; min-height: 100vh; position: relative; z-index: 5; 
+            padding: 120px 40px; position: relative; z-index: 5; 
         }
 
         .headline { 
-            font-size: clamp(32px, 7.5vw, 100px); 
-            line-height: 1.1; 
-            text-transform: uppercase; 
-            margin: 0; 
-            opacity: 0; 
-            transform: translateY(40px); 
-            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); 
+            font-size: clamp(30px, 6.5vw, 95px); 
+            line-height: 1; text-transform: uppercase; margin: 0; 
+            opacity: 0; transform: translateY(40px); 
+            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+            min-height: 2.2em;
         }
         .headline.reveal { opacity: 1; transform: translateY(0); }
+        .prefix { font-weight: 900; color: var(--text-light); display: block; }
+        #dynamic-word { color: var(--accent-coral); font-weight: 900; display: block; white-space: nowrap; }
 
-        .prefix { 
-            font-size: 1em; /* Uguale alla parola dinamica */
-            font-weight: 900; 
-            letter-spacing: 0; 
-            display: block; 
-            color: var(--text-light); /* Colore chiaro fisso */
-            margin-bottom: 0; /* Elimina spazio extra tra le righe */
+        /* --- INTRO & BUBBLY CARDS --- */
+        .intro-text { 
+            margin-top: 60px; max-width: 800px; 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 1.3rem; line-height: 1.6; font-weight: 400; opacity: 0.9;
         }
 
-        #dynamic-word {
-            color: var(--accent-coral);
-            display: inline-block;
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            min-width: 100%; /* Occupa l'intera larghezza per stabilità */
+        .work-grid { 
+            margin-top: 120px; display: grid; 
+            grid-template-columns: repeat(2, 1fr); gap: 30px; 
+        }
+
+        .project-card { 
+            background: rgba(255,255,255,0.03); 
+            height: 55vh; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 80px 30px 100px 40px; /* Bubbly shape */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative; overflow: hidden; padding: 40px;
+            text-decoration: none; color: white;
+        }
+        .project-card:nth-child(even) { border-radius: 40px 100px 30px 80px; margin-top: 40px; }
+        .project-card:hover { 
+            border-radius: 60px 60px 60px 60px; 
+            background: rgba(255,255,255,0.08); 
+            transform: translateY(-10px) scale(1.02);
+        }
+        .project-card h2 { font-size: 2.5rem; font-weight: 900; margin: 0; text-align: center; }
+
+        /* --- LIQUID WORKFLOW --- */
+        .workflow-section { margin-top: 150px; }
+        .flow-item {
+            display: flex; align-items: center; gap: 30px; margin-bottom: 40px;
+            padding: 30px; background: rgba(255,111,97,0.05);
+            border-radius: 50px; transition: 0.4s;
+        }
+        .flow-item:hover { background: rgba(255,111,97,0.1); transform: translateX(10px); }
+        .flow-num { 
+            width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent-coral);
+            display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono';
+            color: var(--accent-coral); font-weight: 700;
         }
 
         #nav-text-menu {
             position: fixed; top: 45px; right: 40px; z-index: 1002;
             font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase;
-            opacity: 0; transition: all 0.5s; cursor: pointer;
+            opacity: 0; transition: 0.5s; cursor: pointer;
         }
         #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
-
-        .workflow-container {
-            margin-top: 150px;
-            border-top: 1px solid rgba(247, 247, 242, 0.2);
-            padding-top: 40px;
-        }
-        .workflow-step {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(247, 247, 242, 0.1);
-            transition: all 0.3s ease;
-        }
-        .workflow-step:hover {
-            padding-left: 20px;
-            color: var(--accent-coral);
-        }
     </style>
 </head>
 <body>
 
     <div id="nav-logo-wrapper">
         <svg class="logo-svg" viewBox="0 0 500 328.12">
-            <defs>
-                <mask id="m-nav">
-                    <rect width="500" height="400" fill="white"/>
-                    <g class="p-mover"><path d="M437.32,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86Z" fill="black"/></g>
-                </mask>
-            </defs>
+            <defs><mask id="m-nav"><rect width="500" height="400" fill="white"/><g class="p-mover"><path d="M437.32,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86Z" fill="black"/></g></mask></defs>
             <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
             <g class="intero-occhio"><path class="st0" style="mask: url(#m-nav);" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
             <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
@@ -152,24 +145,16 @@
     <section class="hero-container">
         <div class="label">Strategic Art Direction</div>
         <div class="label" style="text-align: right;">Available for '26</div>
-        
         <div id="hero-logo-wrapper">
             <svg class="logo-svg" viewBox="0 0 500 328.12">
-                <defs>
-                    <mask id="m-hero">
-                        <rect width="500" height="400" fill="white"/>
-                        <g class="p-mover"><path d="M437.32,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86Z" fill="black"/></g>
-                    </mask>
-                </defs>
+                <defs><mask id="m-hero"><rect width="500" height="400" fill="white"/><g class="p-mover"><path d="M437.32,263.33c-2.75,2.67-6.75,4.01-12.01,4.01s-9.26-1.37-12.01-4.1-4.13-6.71-4.13-11.94,1.38-9.39,4.13-12.12,6.75-4.1,12.01-4.1,9.1,1.4,11.91,4.19c2.81,2.79,4.22,6.86,4.22,12.21s-1.38,9.18-4.13,11.86Z" fill="black"/></g></mask></defs>
                 <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
                 <g class="intero-occhio"><path class="st0" style="mask: url(#m-hero);" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
                 <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
         </div>
-
         <div class="label" style="grid-row: 3; align-self: end;">Strategic Mind</div>
         <div class="label" style="grid-row: 3; align-self: end; text-align: right;">Creative Direction</div>
-
         <div class="liquid-divider">
             <svg viewBox="0 0 1440 150" preserveAspectRatio="none"><path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,74.7C1120,64,1280,64,1360,64L1440,64L1440,150L1360,150C1280,150,1120,150,960,150C800,150,640,150,480,150C320,150,160,150,80,150L0,150Z"></path></svg>
         </div>
@@ -180,49 +165,36 @@
             <span class="prefix">FLUIDITY BEYOND</span>
             <span id="dynamic-word">ART DIRECTION</span>
         </h1>
-        <div class="intro-text reveal" style="margin-top: 60px; max-width: 650px;">
-            <p style="font-size: 1.4rem; line-height: 1.6; opacity: 0.9; font-weight: 400;">
-                Art Director ibrido con un approccio fluido che unisce visione creativa e competenza tecnica. 
-                Dalla strategia di brand al motion design, fino allo sviluppo di interfacce interattive, 
-                trasformo la complessità in esperienze visive d'impatto per agenzie e aziende.
-            </p>
+
+        <div class="intro-text">
+            Art Director ibrido con un approccio fluido che unisce visione creativa e competenza tecnica. 
+            Trasformo la complessità in esperienze visive d'impatto, navigando tra design, motion e strategia.
         </div>
-        
-        <div class="expertise-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 100px;">
-            <div class="exp-item">
-                <span class="label" style="color: var(--accent-gold);">01. Creative Direction</span>
-                <h3 style="font-size: 1.8rem; margin: 15px 0;">Visione & Leadership</h3>
-                <p style="opacity: 0.7; font-size: 0.95rem;">Gestione team, mentoring e regia creativa dall'idea al deliverable finale.</p>
-            </div>
-            <div class="exp-item">
-                <span class="label" style="color: var(--accent-gold);">02. Digital Ecosystems</span>
-                <h3 style="font-size: 1.8rem; margin: 15px 0;">Design & Code</h3>
-                <p style="opacity: 0.7; font-size: 0.95rem;">Landing pages, banner HTML5, web design e integrazione AI per performance scalabili.</p>
-            </div>
-            <div class="exp-item">
-                <span class="label" style="color: var(--accent-gold);">03. Visual Narrative</span>
-                <h3 style="font-size: 1.8rem; margin: 15px 0;">Motion & Strategy</h3>
-                <p style="opacity: 0.7; font-size: 0.95rem;">Brand identity dinamiche e montaggio video per una comunicazione multicanale.</p>
-            </div>
+
+        <div class="work-grid">
+            <a href="#" class="project-card">
+                <span class="label" style="position:absolute; top:30px;">Identity</span>
+                <h2>MORPHING BRAND</h2>
+            </a>
+            <a href="#" class="project-card">
+                <span class="label" style="position:absolute; top:30px;">Digital</span>
+                <h2>LIQUID INTERFACE</h2>
+            </a>
+            <a href="#" class="project-card">
+                <span class="label" style="position:absolute; top:30px;">Motion</span>
+                <h2>DYNAMIC FLOW</h2>
+            </a>
+            <a href="#" class="project-card">
+                <span class="label" style="position:absolute; top:30px;">Strategy</span>
+                <h2>HYBRID VISION</h2>
+            </a>
         </div>
-        <div class="work-grid" style="margin-top: 150px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="project-card" style="grid-column: span 2; background: #013e4a; height: 70vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                <span class="label" style="position: absolute; top: 30px; left: 30px;">Featured Project</span>
-                <h2 style="font-size: 3rem; font-weight: 900;">BRAND EVOLUTION</h2>
-            </div>
-            <div class="project-card" style="background: #013e4a; height: 50vh; display: flex; align-items: center; justify-content: center;">
-                <h2 style="font-size: 2rem; font-weight: 900;">MOTION DESIGN</h2>
-            </div>
-            <div class="project-card" style="background: #013e4a; height: 50vh; display: flex; align-items: center; justify-content: center;">
-                <h2 style="font-size: 2rem; font-weight: 900;">DIGITAL ADS</h2>
-            </div>
-        </div>
-        <div class="workflow-container">
-            <span class="label">The Fluid Method</span>
-            <div class="workflow-step"><span>01. Insight & Brainstorming</span><span>→</span></div>
-            <div class="workflow-step"><span>02. Strategic Design</span><span>→</span></div>
-            <div class="workflow-step"><span>03. Tech Production</span><span>→</span></div>
-            <div class="workflow-step"><span>04. Quality & Delivery</span><span>→</span></div>
+
+        <div class="workflow-section">
+            <span class="label" style="display:block; margin-bottom:40px;">Il mio processo</span>
+            <div class="flow-item"><div class="flow-num">01</div><div><h4 style="margin:0">Insight</h4><p style="margin:5px 0; opacity:0.6">Analisi e Brainstorming strategico.</p></div></div>
+            <div class="flow-item"><div class="flow-num">02</div><div><h4 style="margin:0">Shaping</h4><p style="margin:5px 0; opacity:0.6">Dare forma visiva al concetto.</p></div></div>
+            <div class="flow-item"><div class="flow-num">03</div><div><h4 style="margin:0">Delivery</h4><p style="margin:5px 0; opacity:0.6">Produzione e cura dei dettagli.</p></div></div>
         </div>
     </section>
 
@@ -232,59 +204,46 @@
         const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover') };
         const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover') };
         
-        const words = [
-            "ART DIRECTION", "MOTION DESIGN", "INTERACTIVE DESIGN", 
-            "BRAND STRATEGY", "AI WORKFLOWS", "INTEGRATED CAMPAIGNS", 
-            "CREATIVE LEADERSHIP", "DIGITAL PRODUCTION"
-        ];
+        const words = ["ART DIRECTION", "MOTION DESIGN", "INTERACTIVE DESIGN", "BRAND STRATEGY", "AI WORKFLOWS", "INTEGRATED CAMPAIGNS", "CREATIVE LEADERSHIP", "DIGITAL PRODUCTION"];
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789%&#@*+";
         let wordIndex = 0;
-        let lastInteraction = Date.now();
 
-        // --- DECODER EFFECT ---
         function decodeEffect(newText) {
             const dw = document.getElementById('dynamic-word');
             let iteration = 0;
-            const interval = setInterval(() => {
+            clearInterval(dw.interval);
+            dw.interval = setInterval(() => {
                 dw.innerText = newText.split("").map((letter, index) => {
                     if (index < iteration) return newText[index];
                     if (letter === " ") return " ";
                     return chars[Math.floor(Math.random() * chars.length)];
                 }).join("");
-                if (iteration >= newText.length) clearInterval(interval);
-                iteration += 1 / 3;
+                if (iteration >= newText.length) clearInterval(dw.interval);
+                iteration += newText.length > 15 ? 1/2 : 1/3;
             }, 30);
         }
 
-        function nextWord() {
+        setInterval(() => {
             wordIndex = (wordIndex + 1) % words.length;
             decodeEffect(words[wordIndex]);
-        }
-        setInterval(nextWord, 4000);
-
-        // --- EYE MOVEMENT ---
-        function solvePupil(e, eyeElement, maxRadius) {
-            const rect = eyeElement.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const dx = e.clientX - centerX;
-            const dy = e.clientY - centerY;
-            const angle = Math.atan2(dy, dx);
-            const dist = Math.hypot(dx, dy);
-            const strength = Math.min(dist / 600, 1); 
-            return { x: Math.cos(angle) * maxRadius * strength, y: Math.sin(angle) * maxRadius * strength };
-        }
+        }, 4000);
 
         document.addEventListener('mousemove', (e) => {
-            lastInteraction = Date.now();
-            hp.pup.style.transition = np.pup.style.transition = 'transform 0.12s ease-out';
             const hRes = solvePupil(e, hp.eye, 70);
             hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
             const nRes = solvePupil(e, np.eye, 42);
             np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
         });
 
-        // --- SCROLL LOGIC ---
+        function solvePupil(e, eyeElement, maxRadius) {
+            const rect = eyeElement.getBoundingClientRect();
+            const dx = e.clientX - (rect.left + rect.width / 2);
+            const dy = e.clientY - (rect.top + rect.height / 2);
+            const angle = Math.atan2(dy, dx);
+            const dist = Math.min(Math.hypot(dx, dy) / 600, 1);
+            return { x: Math.cos(angle) * maxRadius * dist, y: Math.sin(angle) * maxRadius * dist };
+        }
+
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y > 100) {
@@ -298,7 +257,6 @@
             }
         });
 
-        // --- AUTO-BLINK ---
         setInterval(() => {
             if(Math.random() > 0.7) {
                 [hLog, nLog].forEach(l => {
