@@ -111,72 +111,108 @@
     </section>
 
     <script>
-        const hLog = document.getElementById('hero-logo-wrapper');
-        const nLog = document.getElementById('nav-logo-wrapper');
-        const hp = { eye: hLog.querySelector('.intero-occhio'), brow: hLog.querySelector('.sopracciglio'), pup: hLog.querySelector('.p-mover') };
-        const np = { eye: nLog.querySelector('.intero-occhio'), brow: nLog.querySelector('.sopracciglio'), pup: nLog.querySelector('.p-mover') };
-        const head = document.getElementById('headline');
-        const nTxt = document.getElementById('nav-text-menu');
+    const hLog = document.getElementById('hero-logo-wrapper');
+    const nLog = document.getElementById('nav-logo-wrapper');
+    
+    // Riferimenti agli elementi di entrambi i loghi
+    const hp = { 
+        eye: hLog.querySelector('.intero-occhio'), 
+        brow: hLog.querySelector('.sopracciglio'), 
+        pup: hLog.querySelector('.p-mover') 
+    };
+    const np = { 
+        eye: nLog.querySelector('.intero-occhio'), 
+        brow: nLog.querySelector('.sopracciglio'), 
+        pup: nLog.querySelector('.p-mover') 
+    };
 
-        let lastInteraction = Date.now();
+    let lastInteraction = Date.now();
 
-        function getMovement(e, element, maxRadius) {
-            const r = element.getBoundingClientRect();
-            const centerX = r.left + r.width / 2;
-            const centerY = r.top + r.height / 2;
-            const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-            const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-            const strength = Math.min(dist / (window.innerWidth / 1.2), 1);
-            return {
-                x: Math.cos(angle) * maxRadius * strength,
-                y: Math.sin(angle) * maxRadius * strength
-            };
+    // FUNZIONE DI CALCOLO INDIPENDENTE
+    // Questa funzione permette a ogni pupilla di "sapere" dove guardare
+    function getPupilOffset(e, eyeElement, maxRadius) {
+        const rect = eyeElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const dx = e.clientX - centerX;
+        const dy = e.clientY - centerY;
+        
+        const angle = Math.atan2(dy, dx);
+        const distance = Math.hypot(dx, dy);
+        
+        // Sensibilità: più basso è il numero (es. 400), più la pupilla è "scattante"
+        const strength = Math.min(distance / 450, 1); 
+        
+        return {
+            x: Math.cos(angle) * maxRadius * strength,
+            y: Math.sin(angle) * maxRadius * strength
+        };
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        lastInteraction = Date.now();
+        
+        // Applichiamo una transizione brevissima per ammorbidire il movimento del mouse
+        hp.pup.style.transition = np.pup.style.transition = 'transform 0.12s ease-out';
+
+        // Logo Hero: movimento ampio (85px)
+        const hCoords = getPupilOffset(e, hp.eye, 85);
+        hp.pup.style.transform = `translate(${hCoords.x}px, ${hCoords.y}px)`;
+
+        // Logo Nav: calcolo separato con raggio proporzionato (45px)
+        // Ora punterà esattamente al mouse anche se è nell'angolo in alto
+        const nCoords = getPupilOffset(e, np.eye, 45);
+        np.pup.style.transform = `translate(${nCoords.x}px, ${nCoords.y}px)`;
+    });
+
+    // MOVIMENTO AUTOMATICO (IDLE)
+    function idle() {
+        if (Date.now() - lastInteraction > 2500) {
+            hp.pup.style.transition = np.pup.style.transition = 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)';
+            const rx = (Math.random() - 0.5) * 120;
+            const ry = (Math.random() - 0.5) * 90;
+            hp.pup.style.transform = `translate(${rx}px, ${ry}px)`;
+            np.pup.style.transform = `translate(${rx * 0.4}px, ${ry * 0.4}px)`;
         }
+    }
+    setInterval(idle, 3000);
 
-        document.addEventListener('mousemove', (e) => {
-            lastInteraction = Date.now();
-            hp.pup.style.transition = np.pup.style.transition = 'transform 0.1s ease-out';
-
-            // Calcolo indipendente per Hero
-            const hM = getMovement(e, hp.eye, 85);
-            hp.pup.style.transform = `translate(${hM.x}px, ${hM.y}px)`;
-
-            // Calcolo indipendente per Nav (con raggio generoso per vederlo muovere bene)
-            const nM = getMovement(e, np.eye, 40); 
-            np.pup.style.transform = `translate(${nM.x}px, ${nM.y}px)`;
+    // BATTITO CIGLIA
+    function blink() {
+        [hp, np].forEach(p => {
+            p.eye.classList.add('blinking');
+            p.brow.classList.add('brow-down');
+            setTimeout(() => {
+                p.eye.classList.remove('blinking');
+                p.brow.classList.remove('brow-down');
+            }, 100);
         });
+    }
+    setInterval(() => { if(Math.random() > 0.6) blink(); }, 3800);
 
-        function autoLook() {
-            if (Date.now() - lastInteraction > 2500) {
-                hp.pup.style.transition = np.pup.style.transition = 'transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)';
-                const rx = (Math.random() - 0.5) * 100;
-                const ry = (Math.random() - 0.5) * 80;
-                hp.pup.style.transform = `translate(${rx}px, ${ry}px)`;
-                np.pup.style.transform = `translate(${rx * 0.4}px, ${ry * 0.4}px)`;
-            }
+    // GESTIONE SCROLL
+    window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        if (y > 100) {
+            hLog.classList.add('fade-out');
+            nLog.classList.add('slide-in');
+            document.getElementById('headline').classList.add('reveal');
+            document.getElementById('nav-text-menu').classList.add('visible');
+        } else {
+            hLog.classList.remove('fade-out');
+            nLog.classList.remove('slide-in');
+            document.getElementById('headline').classList.remove('reveal');
+            document.getElementById('nav-text-menu').classList.remove('visible');
         }
-        setInterval(autoLook, 3000);
+    });
 
-        function executeBlink() {
-            [hp, np].forEach(p => {
-                p.eye.classList.add('blinking'); p.brow.classList.add('brow-down');
-                setTimeout(() => { p.eye.classList.remove('blinking'); p.brow.classList.remove('brow-down'); }, 100);
-            });
+    // Opzionale: attiva giroscopio su mobile
+    function requestGyro() {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission();
         }
-        setInterval(() => { if(Math.random() > 0.6) executeBlink(); }, 4000);
-
-        window.addEventListener('scroll', () => {
-            const y = window.scrollY;
-            if (y > 100) {
-                hLog.classList.add('fade-out'); nLog.classList.add('slide-in');
-                head.classList.add('reveal'); nTxt.classList.add('visible');
-            } else {
-                hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in');
-                head.classList.remove('reveal'); nTxt.classList.remove('visible');
-            }
-        });
-
-        function requestGyro() { /* Rimosso per brevità, ma implementabile come prima */ }
-    </script>
+    }
+</script>
 </body>
 </html>
