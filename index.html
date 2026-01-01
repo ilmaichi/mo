@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio | Strategic Art Direction</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -35,16 +35,15 @@
             max-width: 85vw;
             z-index: 5;
             pointer-events: none;
-            /* Rimosso opacity dalla transition, lasciata solo la posizione */
             transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
         }
-        /* Solo movimento, niente opacity: 0 */
+        /* Solo movimento verso l'alto senza fade-out opacità */
         #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); }
 
         #nav-logo-wrapper {
             position: fixed;
             top: 25px; left: 35px;
-            width: 110px; 
+            width: 110px; /* Logo Header ingrandito */
             z-index: 1001;
             opacity: 0;
             transform: translateY(-150%);
@@ -54,23 +53,16 @@
 
         .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
         .st0 { fill: var(--accent-coral); } 
-        .st1 { fill: #ffffff; }
         .st2 { fill: var(--accent-gold); } 
         
-        .intero-occhio { 
-            transform-origin: 435px 245px; 
-            transition: transform 0.1s ease-out, scale 0.1s cubic-bezier(0.45, 0, 0.55, 1); 
-        }
-        .sopracciglio { 
-            transform-origin: 425px 145px; 
-            transition: transform 0.1s ease-out; 
-        }
+        .intero-occhio { transform-origin: 435px 245px; transition: transform 0.1s ease-out; }
+        .sopracciglio { transform-origin: 425px 145px; transition: transform 0.1s ease-out; }
         .p-mover { transition: transform 0.12s ease-out; }
         
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(18px) !important; }
 
-        /* --- UI ELEMENTS --- */
+        /* --- HERO & HEADLINE --- */
         .hero-container { 
             height: 100vh; display: grid; grid-template-columns: 1fr 1fr; 
             grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; 
@@ -83,14 +75,36 @@
 
         .content-section { 
             background-color: var(--dark-blue); color: var(--text-light); 
-            padding: 120px 40px; min-height: 100vh; position: relative; z-index: 5; 
+            padding: 180px 40px; min-height: 100vh; position: relative; z-index: 5; 
         }
+
         .headline { 
-            font-size: clamp(40px, 9vw, 130px); line-height: 0.85; text-transform: uppercase; 
-            margin: 0 0 100px 0; opacity: 0; transform: translateY(40px); 
+            font-size: clamp(32px, 7.5vw, 100px); 
+            line-height: 1.1; 
+            text-transform: uppercase; 
+            margin: 0; 
+            opacity: 0; 
+            transform: translateY(40px); 
             transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); 
         }
         .headline.reveal { opacity: 1; transform: translateY(0); }
+
+        .prefix { 
+            font-size: 0.35em; 
+            font-weight: 400; 
+            letter-spacing: 0.15em; 
+            display: block; 
+            opacity: 0.7; 
+            margin-bottom: 10px; 
+        }
+
+        #dynamic-word {
+            color: var(--accent-coral);
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            min-width: 300px; /* Evita scatti durante il decoding */
+        }
 
         #nav-text-menu {
             position: fixed; top: 45px; right: 40px; z-index: 1002;
@@ -145,99 +159,99 @@
     </section>
 
     <section class="content-section">
-        <h1 class="headline" id="headline">THE POWER OF<br><span style="color:var(--accent-coral)">ADAPTABILITY.</span></h1>
+        <h1 class="headline" id="headline">
+            <span class="prefix">FLUIDITY BEYOND</span>
+            <span id="dynamic-word">ART DIRECTION</span>
+        </h1>
     </section>
 
     <script>
         const hLog = document.getElementById('hero-logo-wrapper');
         const nLog = document.getElementById('nav-logo-wrapper');
+        const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover') };
+        const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover') };
         
-        const hp = { 
-            eye: hLog.querySelector('.intero-occhio'), 
-            brow: hLog.querySelector('.sopracciglio'), 
-            pup: hLog.querySelector('.p-mover') 
-        };
-        const np = { 
-            eye: nLog.querySelector('.intero-occhio'), 
-            brow: nLog.querySelector('.sopracciglio'), 
-            pup: nLog.querySelector('.p-mover') 
-        };
-
+        const words = [
+            "ART DIRECTION", "MOTION DESIGN", "INTERACTIVE DESIGN", 
+            "BRAND STRATEGY", "AI WORKFLOWS", "INTEGRATED CAMPAIGNS", 
+            "CREATIVE LEADERSHIP", "DIGITAL PRODUCTION"
+        ];
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789%&#@*+";
+        let wordIndex = 0;
         let lastInteraction = Date.now();
 
+        // --- DECODER EFFECT ---
+        function decodeEffect(newText) {
+            const dw = document.getElementById('dynamic-word');
+            let iteration = 0;
+            const interval = setInterval(() => {
+                dw.innerText = newText.split("").map((letter, index) => {
+                    if (index < iteration) return newText[index];
+                    if (letter === " ") return " ";
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join("");
+                if (iteration >= newText.length) clearInterval(interval);
+                iteration += 1 / 3;
+            }, 30);
+        }
+
+        function nextWord() {
+            wordIndex = (wordIndex + 1) % words.length;
+            decodeEffect(words[wordIndex]);
+        }
+        setInterval(nextWord, 4000);
+
+        // --- EYE MOVEMENT ---
         function solvePupil(e, eyeElement, maxRadius) {
             const rect = eyeElement.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-
             const dx = e.clientX - centerX;
             const dy = e.clientY - centerY;
-            
             const angle = Math.atan2(dy, dx);
             const dist = Math.hypot(dx, dy);
-            
-            // Ridotto il range di sensibilità per evitare uscite dal tracciato
             const strength = Math.min(dist / 600, 1); 
-            
-            return {
-                x: Math.cos(angle) * maxRadius * strength,
-                y: Math.sin(angle) * maxRadius * strength
-            };
+            return { x: Math.cos(angle) * maxRadius * strength, y: Math.sin(angle) * maxRadius * strength };
         }
 
         document.addEventListener('mousemove', (e) => {
             lastInteraction = Date.now();
-            
-            // Hero: Range ridotto a 70px per sicurezza
+            hp.pup.style.transition = np.pup.style.transition = 'transform 0.12s ease-out';
             const hRes = solvePupil(e, hp.eye, 70);
             hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
-
-            // Nav: Range a 42px
             const nRes = solvePupil(e, np.eye, 42);
             np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
         });
 
-        function autoMove() {
-            if (Date.now() - lastInteraction > 2500) {
-                const rx = (Math.random() - 0.5) * 80;
-                const ry = (Math.random() - 0.5) * 60;
-                hp.pup.style.transition = np.pup.style.transition = 'transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
-                hp.pup.style.transform = `translate(${rx}px, ${ry}px)`;
-                np.pup.style.transform = `translate(${rx * 0.4}px, ${ry * 0.4}px)`;
-                
-                setTimeout(() => {
-                    hp.pup.style.transition = np.pup.style.transition = 'transform 0.12s ease-out';
-                }, 1200);
-            }
-        }
-        setInterval(autoMove, 3000);
-
-        function triggerBlink() {
-            [hp, np].forEach(p => {
-                p.eye.classList.add('blinking');
-                p.brow.classList.add('brow-down');
-                setTimeout(() => {
-                    p.eye.classList.remove('blinking');
-                    p.brow.classList.remove('brow-down');
-                }, 120);
-            });
-        }
-        setInterval(() => { if(Math.random() > 0.6) triggerBlink(); }, 4000);
-
+        // --- SCROLL LOGIC ---
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y > 100) {
-                hLog.classList.add('fade-out');
-                nLog.classList.add('slide-in');
+                hLog.classList.add('fade-out'); nLog.classList.add('slide-in');
                 document.getElementById('headline').classList.add('reveal');
                 document.getElementById('nav-text-menu').classList.add('visible');
             } else {
-                hLog.classList.remove('fade-out');
-                nLog.classList.remove('slide-in');
+                hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in');
                 document.getElementById('headline').classList.remove('reveal');
                 document.getElementById('nav-text-menu').classList.remove('visible');
             }
         });
+
+        // --- AUTO-BLINK ---
+        setInterval(() => {
+            if(Math.random() > 0.7) {
+                [hLog, nLog].forEach(l => {
+                    l.querySelector('.intero-occhio').classList.add('blinking');
+                    l.querySelector('.sopracciglio').classList.add('brow-down');
+                });
+                setTimeout(() => {
+                    [hLog, nLog].forEach(l => {
+                        l.querySelector('.intero-occhio').classList.remove('blinking');
+                        l.querySelector('.sopracciglio').classList.remove('brow-down');
+                    });
+                }, 150);
+            }
+        }, 3500);
     </script>
 </body>
 </html>
