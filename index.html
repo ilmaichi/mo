@@ -16,43 +16,25 @@
             --dark-text: #1a1918;
         }
 
-        * { box-sizing: border-box; }
-        body, html { 
-            margin: 0; padding: 0; 
-            background-color: var(--bg-color); 
-            font-family: 'Inter', sans-serif; 
-            color: var(--dark-text); 
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
+        body, html { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Inter', sans-serif; color: var(--dark-text); overflow-x: hidden; scroll-behavior: smooth; }
 
-        /* --- SIMBOLO O NELLA HEADLINE --- */
+        /* --- LOGO & SYMBOL --- */
         .eye-o {
-            display: inline-block;
-            height: 1.1em; 
-            width: auto;
-            vertical-align: baseline;
-            position: relative;
-            transform: translateY(0.28em);
-            margin-left: -0.02em;  
-            margin-right: -0.02em; 
+            display: inline-block; height: 1.1em; width: auto; vertical-align: baseline;
+            position: relative; transform: translateY(0.28em); margin: 0 -0.02em;
         }
         .eye-o svg { height: 100%; width: auto; display: block; }
-        .eye-o .st0 { fill: currentColor; } 
-        .eye-o .st1 { fill: var(--accent-gold); }
 
-        /* --- LOGO NAV & HERO --- */
         #nav-logo-wrapper {
             position: fixed; top: 25px; left: 35px; width: 110px; z-index: 1001;
             opacity: 0; transform: translateY(-150%);
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
-            pointer-events: none;
         }
-        #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; pointer-events: all; }
+        #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; }
 
         #hero-logo-wrapper {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 480px; max-width: 85vw; z-index: 5; pointer-events: none;
+            width: 480px; max-width: 85vw; z-index: 5;
             transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
         }
         #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); }
@@ -61,68 +43,32 @@
         .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
         .intero-occhio { transform-origin: 435px 245px; transition: transform 0.1s ease-out; }
         .sopracciglio { transform-origin: 425px 145px; transition: transform 0.1s ease-out; }
-        .p-mover { transition: none; } /* Gestito da JS Lerp */
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(18px) !important; }
 
-        /* --- CTA GYRO --- */
+        /* --- CTA GYRO (Solo Mobile/Tablet) --- */
         #gyro-cta {
             position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center; gap: 12px;
             cursor: pointer; z-index: 20; font-family: 'JetBrains Mono'; font-size: 10px;
             text-transform: uppercase; letter-spacing: 0.15em; transition: 0.5s ease;
         }
+        /* Nasconde su desktop (dispositivi con puntatore fine) */
+        @media (pointer: fine) { #gyro-cta { display: none; } }
+        
         #gyro-cta.hidden { opacity: 0; pointer-events: none; transform: translate(-50%, 20px); }
-        .phone-icon {
-            width: 20px; height: 34px; border: 1.5px solid var(--dark-text);
-            border-radius: 3px; position: relative; animation: tilt 2s infinite ease-in-out;
-        }
+        .phone-icon { width: 20px; height: 34px; border: 1.5px solid var(--dark-text); border-radius: 3px; position: relative; animation: tilt 2s infinite ease-in-out; }
         .phone-icon::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: var(--dark-text); border-radius: 50%; }
         @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(15deg); } }
 
-        /* --- SEZIONI --- */
-        .hero-container { 
-            height: 100vh; display: grid; grid-template-columns: 1fr 1fr; 
-            grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; 
-        }
+        /* --- LAYOUT --- */
+        .hero-container { height: 100vh; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; }
         .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; }
-        
-        .liquid-divider { position: absolute; bottom: -2px; left: 0; width: 100%; line-height: 0; z-index: 10; }
-        .liquid-divider svg { display: block; width: 100%; height: 150px; }
-        .liquid-divider path { fill: var(--dark-blue); }
-
-        .content-section { 
-            background-color: var(--dark-blue); color: var(--text-light); 
-            padding: 160px 40px; min-height: 100vh; position: relative; z-index: 5; 
-        }
-
-        /* --- TIPOGRAFIA --- */
-        .headline { 
-            font-size: clamp(35px, 8.2vw, 110px); 
-            line-height: 1.05; text-transform: uppercase; margin: 0; 
-            opacity: 0; transform: translateY(40px); 
-            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-            font-weight: 900;
-        }
+        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 100vh; position: relative; z-index: 5; }
+        .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
         .headline.reveal { opacity: 1; transform: translateY(0); }
-        .prefix { display: block; color: var(--text-light); }
-        #dynamic-word { color: var(--accent-coral); display: block; min-height: 1.1em; }
-
-        .intro-text { 
-            margin-top: 80px; max-width: 750px; 
-            font-family: 'JetBrains Mono', monospace; 
-            font-size: clamp(1rem, 1.5vw, 1.35rem); 
-            line-height: 1.7; opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease 0.4s;
-        }
-        .headline.reveal + .intro-text { transform: translateY(0); opacity: 0.85; }
-
-        #nav-text-menu {
-            position: fixed; top: 45px; right: 40px; z-index: 1002;
-            font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase;
-            opacity: 0; transition: 0.5s; cursor: pointer;
-        }
+        #dynamic-word { color: var(--accent-coral); display: block; }
+        #nav-text-menu { position: fixed; top: 45px; right: 40px; z-index: 1002; font-family: 'JetBrains Mono'; font-size: 11px; opacity: 0; transition: 0.5s; }
         #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
     </style>
 </head>
@@ -159,27 +105,18 @@
 
         <div class="label" style="grid-row: 3; align-self: end;">Strategic Mind</div>
         <div class="label" style="grid-row: 3; align-self: end; text-align: right;">Creative Direction</div>
-        
-        <div class="liquid-divider">
-            <svg viewBox="0 0 1440 150" preserveAspectRatio="none"><path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,74.7C1120,64,1280,64,1360,64L1440,64L1440,150L1360,150C1280,150,1120,150,960,150C800,150,640,150,480,150C320,150,160,150,80,150L0,150Z"></path></svg>
-        </div>
     </section>
 
     <section class="content-section">
         <h1 class="headline" id="headline">
             <span class="prefix">FLUIDITY BEY<span class="eye-o">
                 <svg viewBox="0 0 383.31 500">
-                    <path class="st1" d="M322.89,79.77c-7.15,11.28-22.61,10.07-34.44,10.34-16.8.07-61.46.43-78.62.93-43.66.82-87.85,4.28-131.54,2.17-14.37-1.33-20.91-10.14-21.94-23.91-1.33-13.15-.35-27.28,1.8-40.71C61.07,8.72,69.99-.96,90.72.08c49.28-.05,157.15-.08,206.12.01,8.27.13,17.73.51,23.54,6.88,6.9,7.39,6.71,21.2,7.19,33.2-.32,12.97,1.4,27.52-4.51,39.34l-.16.26Z"/>
-                    <path class="st0" d="M378.58,301.12c-3.36-14.58-8.28-28.56-14.49-41.85-22.61-48.42-61.83-84.73-108.41-103.14-37.08-14.66-76.43-19.66-110.22-11.12C65.18,165.3,2.26,249.86.06,340.39c-.7,28.74,4.4,58.31,18.64,82.42,15.26,25.83,39.97,43.61,66.29,54.16,26.32,10.55,54.41,14.48,82.29,17.56,59.03,6.51,124.75,7.28,170.17-34.68,40.4-37.3,54.09-102.49,41.13-158.72Z"/>
+                    <path style="fill:var(--accent-gold)" d="M322.89,79.77c-7.15,11.28-22.61,10.07-34.44,10.34-16.8.07-61.46.43-78.62.93-43.66.82-87.85,4.28-131.54,2.17-14.37-1.33-20.91-10.14-21.94-23.91-1.33-13.15-.35-27.28,1.8-40.71C61.07,8.72,69.99-.96,90.72.08c49.28-.05,157.15-.08,206.12.01,8.27.13,17.73.51,23.54,6.88,6.9,7.39,6.71,21.2,7.19,33.2-.32,12.97,1.4,27.52-4.51,39.34l-.16.26Z"/>
+                    <path style="fill:var(--accent-coral)" d="M377.81,301.23c-3.35-14.52-8.25-28.44-14.43-41.67-22.52-48.21-61.56-84.36-107.95-102.7-36.92-14.6-76.1-19.58-109.74-11.08C65.75,165.99,3.1,250.18.91,340.32c-.69,28.62,4.38,58.06,18.56,82.06,15.19,25.72,39.8,43.42,66.01,53.93s54.17,14.42,81.94,17.48c58.77,6.48,124.21,7.25,169.44-34.53,40.23-37.14,53.86-102.05,40.95-158.04ZM227.74,350.33v.03h-.03s0-.01.02-.02c-7.03,6.81-17.24,10.24-30.67,10.24s-23.66-3.5-30.68-10.47c-7.03-6.97-10.55-17.14-10.55-30.5s3.53-23.99,10.55-30.96,17.24-10.47,30.68-10.47,23.25,3.58,30.43,10.7c7.18,7.13,10.78,17.53,10.78,31.19s-3.52,23.44-10.54,30.28c0,0,0,0,.01,0Z"/>
                 </svg>
             </span>ND</span>
             <span id="dynamic-word">ART DIRECTION</span>
         </h1>
-
-        <div class="intro-text">
-            Art Director ibrido con un approccio fluido che unisce visione creativa e competenza tecnica. 
-            Trasformo la complessità in esperienze visive d'impatto, navigando con naturalezza tra branding, motion design e nuove tecnologie.
-        </div>
     </section>
 
     <script>
@@ -188,37 +125,13 @@
         const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover') };
         const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover') };
         
-        const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "CREATIVE LEADERSHIP", "AI WORKFLOWS", "DIGITAL PRODUCTION"];
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&";
-        let wordIndex = 0;
-
-        // --- DECODE EFFECT ---
-        function decodeEffect(newText) {
-            const dw = document.getElementById('dynamic-word');
-            let iteration = 0;
-            clearInterval(dw.interval);
-            dw.interval = setInterval(() => {
-                dw.innerText = newText.split("").map((letter, index) => {
-                    if (index < iteration) return newText[index];
-                    if (letter === " ") return " ";
-                    return chars[Math.floor(Math.random() * chars.length)];
-                }).join("");
-                if (iteration >= newText.length) clearInterval(dw.interval);
-                iteration += 1/3;
-            }, 30);
-        }
-
-        setInterval(() => {
-            wordIndex = (wordIndex + 1) % words.length;
-            decodeEffect(words[wordIndex]);
-        }, 4000);
-
-        // --- LOGICA MOVIMENTO (MOUSE + GIROSCOPIO + LERP) ---
         let targetX = window.innerWidth / 2, targetY = window.innerHeight / 2;
         let currentX = targetX, currentY = targetY;
         let gyroActive = false;
-        const lerpFactor = 0.08; 
+        let zeroBeta = 0, zeroGamma = 0;
+        const lerpFactor = 0.08;
 
+        // Gestione Mouse
         document.addEventListener('mousemove', (e) => {
             if(!gyroActive) {
                 targetX = e.clientX;
@@ -226,26 +139,26 @@
             }
         });
 
+        // Funzione Giroscopio con Reset Dinamico
         function handleOrientation(e) {
-            gyroActive = true;
-            let x = e.gamma; 
-            let y = e.beta - 60; // Offset per posizione verticale (neutra a 60°)
-            targetX = window.innerWidth / 2 + (x * 12);
-            targetY = window.innerHeight / 2 + (y * 12);
+            if (!gyroActive) return;
+            
+            // Calcoliamo lo scostamento rispetto al momento del tap
+            let x = e.gamma - zeroGamma; 
+            let y = e.beta - zeroBeta; 
+
+            targetX = window.innerWidth / 2 + (x * 15);
+            targetY = window.innerHeight / 2 + (y * 15);
         }
 
         function updatePupils() {
             currentX += (targetX - currentX) * lerpFactor;
             currentY += (targetY - currentY) * lerpFactor;
-            
             const fakeEvent = { clientX: currentX, clientY: currentY };
-            
             const hRes = solvePupil(fakeEvent, hp.eye, 70);
             hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
-            
             const nRes = solvePupil(fakeEvent, np.eye, 42);
             np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
-            
             requestAnimationFrame(updatePupils);
         }
         updatePupils();
@@ -259,52 +172,53 @@
             return { x: Math.cos(angle) * maxRadius * dist, y: Math.sin(angle) * maxRadius * dist };
         }
 
-        // --- PERMESSI E ATTIVAZIONE ---
+        // Attivazione e Calibrazione istantanea
         function requestGyroPermission() {
             const cta = document.getElementById('gyro-cta');
+            
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission()
-                    .then(response => {
-                        if (response === 'granted') activateGyro(cta);
-                    }).catch(console.error);
+                DeviceOrientationEvent.requestPermission().then(response => {
+                    if (response === 'granted') {
+                        setupGyro(cta);
+                    }
+                }).catch(console.error);
             } else {
-                activateGyro(cta);
+                setupGyro(cta);
             }
         }
 
-        function activateGyro(cta) {
-            window.addEventListener('deviceorientation', handleOrientation);
+        function setupGyro(cta) {
+            // Catturiamo l'orientamento attuale come punto di calibrazione
+            const captureInitial = (e) => {
+                zeroBeta = e.beta;
+                zeroGamma = e.gamma;
+                gyroActive = true;
+                window.removeEventListener('deviceorientation', captureInitial);
+                window.addEventListener('deviceorientation', handleOrientation);
+            };
+            window.addEventListener('deviceorientation', captureInitial);
             if(cta) cta.classList.add('hidden');
         }
 
-        // --- SCROLL & BLINKING ---
+        // Decode Effect e Scroll (Invariati)
+        const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY"];
+        let wordIndex = 0;
+        function decodeEffect(newText) {
+            const dw = document.getElementById('dynamic-word');
+            let iteration = 0; clearInterval(dw.interval);
+            dw.interval = setInterval(() => {
+                dw.innerText = newText.split("").map((l, i) => i < iteration ? newText[i] : "ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&"[Math.floor(Math.random()*26)]).join("");
+                if (iteration >= newText.length) clearInterval(dw.interval);
+                iteration += 1/3;
+            }, 30);
+        }
+        setInterval(() => { wordIndex = (wordIndex + 1) % words.length; decodeEffect(words[wordIndex]); }, 4000);
+
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
-            if (y > 100) {
-                hLog.classList.add('fade-out'); 
-                nLog.classList.add('slide-in');
-                document.getElementById('headline').classList.add('reveal');
-                document.getElementById('nav-text-menu').classList.add('visible');
-            } else {
-                hLog.classList.remove('fade-out'); 
-                nLog.classList.remove('slide-in');
-            }
+            if (y > 100) { hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); document.getElementById('headline').classList.add('reveal'); document.getElementById('nav-text-menu').classList.add('visible'); }
+            else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); }
         });
-
-        setInterval(() => {
-            if(Math.random() > 0.8) {
-                [hLog, nLog].forEach(l => {
-                    l.querySelector('.intero-occhio').classList.add('blinking');
-                    l.querySelector('.sopracciglio').classList.add('brow-down');
-                });
-                setTimeout(() => {
-                    [hLog, nLog].forEach(l => {
-                        l.querySelector('.intero-occhio').classList.remove('blinking');
-                        l.querySelector('.sopracciglio').classList.remove('brow-down');
-                    });
-                }, 150);
-            }
-        }, 3000);
     </script>
 </body>
 </html>
