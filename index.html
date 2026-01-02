@@ -237,6 +237,48 @@
                 }, 150);
             }
         }, 3000);
+        // --- INTEGRAZIONE GIROSCOPIO ---
+        function handleOrientation(e) {
+            // beta: inclinazione avanti/indietro (-180 a 180)
+            // gamma: inclinazione sinistra/destra (-90 a 90)
+            let x = e.gamma; 
+            let y = e.beta;
+        
+            // Limitiamo il raggio d'azione per una risposta più naturale
+            // Simuliamo la posizione del mouse basandoci sull'inclinazione
+            const fakeMouseEvent = {
+                clientX: window.innerWidth / 2 + (x * 10),
+                clientY: window.innerHeight / 2 + (y * 10)
+            };
+        
+            // Applichiamo il movimento a entrambi i loghi
+            const hRes = solvePupil(fakeMouseEvent, hp.eye, 70);
+            hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
+            
+            const nRes = solvePupil(fakeMouseEvent, np.eye, 42);
+            np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
+        }
+        
+        // Funzione per attivare i sensori (necessaria per iOS 13+)
+        function requestGyroPermission() {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation);
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                // Dispositivi Android o browser che non richiedono permesso esplicito
+                window.addEventListener('deviceorientation', handleOrientation);
+            }
+        }
+        
+        // Attiviamo la richiesta al primo click dell'utente sulla pagina
+        document.body.addEventListener('click', function() {
+            requestGyroPermission();
+        }, { once: true });
     </script>
 </body>
 </html>
