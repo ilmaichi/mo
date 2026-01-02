@@ -33,9 +33,9 @@
             width: auto;
             vertical-align: baseline;
             position: relative;
-            transform: translateY(0.28em); /* Allineamento millimetrico */
-            margin-left: -0.02em;  /* Regola qui per stringere a sinistra */
-            margin-right: -0.02em; /* Regola qui per stringere a destra */
+            transform: translateY(0.28em);
+            margin-left: -0.02em;  
+            margin-right: -0.02em; 
         }
         .eye-o svg { height: 100%; width: auto; display: block; }
         .eye-o .st0 { fill: currentColor; } 
@@ -61,9 +61,24 @@
         .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
         .intero-occhio { transform-origin: 435px 245px; transition: transform 0.1s ease-out; }
         .sopracciglio { transform-origin: 425px 145px; transition: transform 0.1s ease-out; }
-        .p-mover { transition: transform 0.12s ease-out; }
+        .p-mover { transition: none; } /* Gestito da JS Lerp */
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(18px) !important; }
+
+        /* --- CTA GYRO --- */
+        #gyro-cta {
+            position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            cursor: pointer; z-index: 20; font-family: 'JetBrains Mono'; font-size: 10px;
+            text-transform: uppercase; letter-spacing: 0.15em; transition: 0.5s ease;
+        }
+        #gyro-cta.hidden { opacity: 0; pointer-events: none; transform: translate(-50%, 20px); }
+        .phone-icon {
+            width: 20px; height: 34px; border: 1.5px solid var(--dark-text);
+            border-radius: 3px; position: relative; animation: tilt 2s infinite ease-in-out;
+        }
+        .phone-icon::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: var(--dark-text); border-radius: 50%; }
+        @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(15deg); } }
 
         /* --- SEZIONI --- */
         .hero-container { 
@@ -97,8 +112,8 @@
             margin-top: 80px; max-width: 750px; 
             font-family: 'JetBrains Mono', monospace; 
             font-size: clamp(1rem, 1.5vw, 1.35rem); 
-            line-height: 1.7; opacity: 0.85;
-            transform: translateY(20px); opacity: 0;
+            line-height: 1.7; opacity: 0;
+            transform: translateY(20px);
             transition: all 1s ease 0.4s;
         }
         .headline.reveal + .intro-text { transform: translateY(0); opacity: 0.85; }
@@ -109,52 +124,6 @@
             opacity: 0; transition: 0.5s; cursor: pointer;
         }
         #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
-        /* CTA Giroscopio */
-        #gyro-cta {
-            position: absolute;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            z-index: 20;
-            font-family: 'JetBrains Mono';
-            font-size: 11px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-        
-        #gyro-cta.hidden { opacity: 0; pointer-events: none; transform: translate(-50%, 20px); }
-        
-        .phone-icon {
-            width: 24px;
-            height: 40px;
-            border: 2px solid var(--dark-text);
-            border-radius: 4px;
-            position: relative;
-            animation: tilt-anim 2s infinite ease-in-out;
-        }
-        .phone-icon::after {
-            content: '';
-            position: absolute;
-            bottom: 3px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            background: var(--dark-text);
-            border-radius: 50%;
-        }
-        
-        @keyframes tilt-anim {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-20deg); }
-            75% { transform: rotate(20deg); }
-        }
     </style>
 </head>
 <body>
@@ -163,7 +132,7 @@
         <svg class="logo-svg" viewBox="0 0 500 328.12">
             <defs><mask id="m-nav"><rect width="500" height="400" fill="white"/><g class="p-mover"><circle cx="425" cy="245" r="14" fill="black"/></g></mask></defs>
             <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
-            <g class="intero-occhio"><path class="st0" style="mask: url(#m-nav);" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
+            <g class="intero-occhio" style="mask: url(#m-nav);"><path class="st0" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
             <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
         </svg>
     </div>
@@ -178,7 +147,7 @@
             <svg class="logo-svg" viewBox="0 0 500 328.12">
                 <defs><mask id="m-hero"><rect width="500" height="400" fill="white"/><g class="p-mover"><circle cx="425" cy="245" r="14" fill="black"/></g></mask></defs>
                 <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
-                <g class="intero-occhio"><path class="st0" style="mask: url(#m-hero);" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
+                <g class="intero-occhio" style="mask: url(#m-hero);"><path class="st0" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
                 <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
         </div>
@@ -222,8 +191,8 @@
         const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "CREATIVE LEADERSHIP", "AI WORKFLOWS", "DIGITAL PRODUCTION"];
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&";
         let wordIndex = 0;
-        
-        // --- EFFETTO DECODE ---
+
+        // --- DECODE EFFECT ---
         function decodeEffect(newText) {
             const dw = document.getElementById('dynamic-word');
             let iteration = 0;
@@ -238,38 +207,33 @@
                 iteration += 1/3;
             }, 30);
         }
-        
+
         setInterval(() => {
             wordIndex = (wordIndex + 1) % words.length;
             decodeEffect(words[wordIndex]);
         }, 4000);
-        
-        // --- LOGICA MOVIMENTO (MOUSE + GIROSCOPIO) ---
-        let targetX = window.innerWidth / 2;
-        let targetY = window.innerHeight / 2;
-        let currentX = window.innerWidth / 2;
-        let currentY = window.innerHeight / 2;
-        const lerpFactor = 0.1; 
+
+        // --- LOGICA MOVIMENTO (MOUSE + GIROSCOPIO + LERP) ---
+        let targetX = window.innerWidth / 2, targetY = window.innerHeight / 2;
+        let currentX = targetX, currentY = targetY;
         let gyroActive = false;
-        
-        // Mouse
+        const lerpFactor = 0.08; 
+
         document.addEventListener('mousemove', (e) => {
             if(!gyroActive) {
                 targetX = e.clientX;
                 targetY = e.clientY;
             }
         });
-        
-        // Giroscopio
+
         function handleOrientation(e) {
             gyroActive = true;
             let x = e.gamma; 
-            let y = e.beta - 60; // Offset per posizione verticale
+            let y = e.beta - 60; // Offset per posizione verticale (neutra a 60°)
             targetX = window.innerWidth / 2 + (x * 12);
             targetY = window.innerHeight / 2 + (y * 12);
         }
-        
-        // Loop di animazione per fluidità (Lerp)
+
         function updatePupils() {
             currentX += (targetX - currentX) * lerpFactor;
             currentY += (targetY - currentY) * lerpFactor;
@@ -285,7 +249,7 @@
             requestAnimationFrame(updatePupils);
         }
         updatePupils();
-        
+
         function solvePupil(e, eyeElement, maxRadius) {
             const rect = eyeElement.getBoundingClientRect();
             const dx = e.clientX - (rect.left + rect.width / 2);
@@ -294,7 +258,7 @@
             const dist = Math.min(Math.hypot(dx, dy) / 600, 1);
             return { x: Math.cos(angle) * maxRadius * dist, y: Math.sin(angle) * maxRadius * dist };
         }
-        
+
         // --- PERMESSI E ATTIVAZIONE ---
         function requestGyroPermission() {
             const cta = document.getElementById('gyro-cta');
@@ -307,13 +271,13 @@
                 activateGyro(cta);
             }
         }
-        
+
         function activateGyro(cta) {
             window.addEventListener('deviceorientation', handleOrientation);
             if(cta) cta.classList.add('hidden');
         }
-        
-        // --- SCROLL & BLINKING (Invariati) ---
+
+        // --- SCROLL & BLINKING ---
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y > 100) {
@@ -326,7 +290,7 @@
                 nLog.classList.remove('slide-in');
             }
         });
-        
+
         setInterval(() => {
             if(Math.random() > 0.8) {
                 [hLog, nLog].forEach(l => {
