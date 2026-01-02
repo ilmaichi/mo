@@ -109,6 +109,52 @@
             opacity: 0; transition: 0.5s; cursor: pointer;
         }
         #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
+        /* CTA Giroscopio */
+        #gyro-cta {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            z-index: 20;
+            font-family: 'JetBrains Mono';
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        #gyro-cta.hidden { opacity: 0; pointer-events: none; transform: translate(-50%, 20px); }
+        
+        .phone-icon {
+            width: 24px;
+            height: 40px;
+            border: 2px solid var(--dark-text);
+            border-radius: 4px;
+            position: relative;
+            animation: tilt-anim 2s infinite ease-in-out;
+        }
+        .phone-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--dark-text);
+            border-radius: 50%;
+        }
+        
+        @keyframes tilt-anim {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-20deg); }
+            75% { transform: rotate(20deg); }
+        }
     </style>
 </head>
 <body>
@@ -135,6 +181,11 @@
                 <g class="intero-occhio"><path class="st0" style="mask: url(#m-hero);" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
                 <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
+        </div>
+
+        <div id="gyro-cta" onclick="requestGyroPermission()">
+            <div class="phone-icon"></div>
+            <span>Tap & Tilt</span>
         </div>
 
         <div class="label" style="grid-row: 3; align-self: end;">Strategic Mind</div>
@@ -171,7 +222,8 @@
         const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "CREATIVE LEADERSHIP", "AI WORKFLOWS", "DIGITAL PRODUCTION"];
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&";
         let wordIndex = 0;
-
+        
+        // --- EFFETTO DECODE ---
         function decodeEffect(newText) {
             const dw = document.getElementById('dynamic-word');
             let iteration = 0;
@@ -186,20 +238,54 @@
                 iteration += 1/3;
             }, 30);
         }
-
+        
         setInterval(() => {
             wordIndex = (wordIndex + 1) % words.length;
             decodeEffect(words[wordIndex]);
         }, 4000);
-
-        // Interaction
+        
+        // --- LOGICA MOVIMENTO (MOUSE + GIROSCOPIO) ---
+        let targetX = window.innerWidth / 2;
+        let targetY = window.innerHeight / 2;
+        let currentX = window.innerWidth / 2;
+        let currentY = window.innerHeight / 2;
+        const lerpFactor = 0.1; 
+        let gyroActive = false;
+        
+        // Mouse
         document.addEventListener('mousemove', (e) => {
-            const hRes = solvePupil(e, hp.eye, 70);
-            hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
-            const nRes = solvePupil(e, np.eye, 42);
-            np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
+            if(!gyroActive) {
+                targetX = e.clientX;
+                targetY = e.clientY;
+            }
         });
-
+        
+        // Giroscopio
+        function handleOrientation(e) {
+            gyroActive = true;
+            let x = e.gamma; 
+            let y = e.beta - 60; // Offset per posizione verticale
+            targetX = window.innerWidth / 2 + (x * 12);
+            targetY = window.innerHeight / 2 + (y * 12);
+        }
+        
+        // Loop di animazione per fluidità (Lerp)
+        function updatePupils() {
+            currentX += (targetX - currentX) * lerpFactor;
+            currentY += (targetY - currentY) * lerpFactor;
+            
+            const fakeEvent = { clientX: currentX, clientY: currentY };
+            
+            const hRes = solvePupil(fakeEvent, hp.eye, 70);
+            hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
+            
+            const nRes = solvePupil(fakeEvent, np.eye, 42);
+            np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
+            
+            requestAnimationFrame(updatePupils);
+        }
+        updatePupils();
+        
         function solvePupil(e, eyeElement, maxRadius) {
             const rect = eyeElement.getBoundingClientRect();
             const dx = e.clientX - (rect.left + rect.width / 2);
@@ -208,7 +294,26 @@
             const dist = Math.min(Math.hypot(dx, dy) / 600, 1);
             return { x: Math.cos(angle) * maxRadius * dist, y: Math.sin(angle) * maxRadius * dist };
         }
-
+        
+        // --- PERMESSI E ATTIVAZIONE ---
+        function requestGyroPermission() {
+            const cta = document.getElementById('gyro-cta');
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') activateGyro(cta);
+                    }).catch(console.error);
+            } else {
+                activateGyro(cta);
+            }
+        }
+        
+        function activateGyro(cta) {
+            window.addEventListener('deviceorientation', handleOrientation);
+            if(cta) cta.classList.add('hidden');
+        }
+        
+        // --- SCROLL & BLINKING (Invariati) ---
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y > 100) {
@@ -221,8 +326,7 @@
                 nLog.classList.remove('slide-in');
             }
         });
-
-        // Blinking
+        
         setInterval(() => {
             if(Math.random() > 0.8) {
                 [hLog, nLog].forEach(l => {
@@ -237,48 +341,6 @@
                 }, 150);
             }
         }, 3000);
-        // --- INTEGRAZIONE GIROSCOPIO ---
-        function handleOrientation(e) {
-            // beta: inclinazione avanti/indietro (-180 a 180)
-            // gamma: inclinazione sinistra/destra (-90 a 90)
-            let x = e.gamma; 
-            let y = e.beta;
-        
-            // Limitiamo il raggio d'azione per una risposta più naturale
-            // Simuliamo la posizione del mouse basandoci sull'inclinazione
-            const fakeMouseEvent = {
-                clientX: window.innerWidth / 2 + (x * 10),
-                clientY: window.innerHeight / 2 + (y * 10)
-            };
-        
-            // Applichiamo il movimento a entrambi i loghi
-            const hRes = solvePupil(fakeMouseEvent, hp.eye, 70);
-            hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
-            
-            const nRes = solvePupil(fakeMouseEvent, np.eye, 42);
-            np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
-        }
-        
-        // Funzione per attivare i sensori (necessaria per iOS 13+)
-        function requestGyroPermission() {
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission()
-                    .then(response => {
-                        if (response === 'granted') {
-                            window.addEventListener('deviceorientation', handleOrientation);
-                        }
-                    })
-                    .catch(console.error);
-            } else {
-                // Dispositivi Android o browser che non richiedono permesso esplicito
-                window.addEventListener('deviceorientation', handleOrientation);
-            }
-        }
-        
-        // Attiviamo la richiesta al primo click dell'utente sulla pagina
-        document.body.addEventListener('click', function() {
-            requestGyroPermission();
-        }, { once: true });
     </script>
 </body>
 </html>
