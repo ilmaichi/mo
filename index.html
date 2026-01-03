@@ -37,14 +37,37 @@
         .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
         .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
         
-        /* --- ANIMAZIONI OCCHIO (Blink & Brow) --- */
+        /* --- ANIMAZIONI OCCHIO --- */
         .intero-occhio { transform-origin: 435px 245px !important; transition: transform 0.12s ease-out; }
         .sopracciglio { transform-origin: 425px 145px !important; transition: transform 0.12s ease-out; }
-        
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(20px) !important; }
 
-        /* --- CTA GYRO (Mobile Only) --- */
+        /* --- MENU BLOB OVERLAY --- */
+        #menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 2000; pointer-events: none;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        #menu-overlay.open { pointer-events: all; }
+        #ink-svg {
+            position: absolute; width: 180vmax; height: 180vmax; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%) scale(0) rotate(-45deg);
+            transition: transform 2.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #menu-overlay.open #ink-svg { transform: translate(-50%, -50%) scale(1.2) rotate(60deg); }
+        .ink-path { fill: var(--dark-text); }
+        
+        #menu-content {
+            position: relative; z-index: 2001; text-align: center; color: var(--text-light);
+            opacity: 0; visibility: hidden; transform: translateY(30px);
+            transition: 0.8s ease; transition-delay: 0s;
+        }
+        #menu-overlay.open #menu-content { opacity: 1; visibility: visible; transform: translateY(0); transition-delay: 1s; }
+        .menu-link { display: block; font-size: clamp(40px, 8vw, 80px); font-weight: 900; color: var(--text-light); text-decoration: none; text-transform: uppercase; margin: 10px 0; transition: 0.3s; }
+        .menu-link:hover { color: var(--accent-coral); }
+
+        /* --- CTA GYRO (Mobile) --- */
         #gyro-cta {
             position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center; gap: 12px;
@@ -52,12 +75,12 @@
             text-transform: uppercase; letter-spacing: 0.15em; transition: 0.5s ease;
         }
         @media (pointer: fine) { #gyro-cta { display: none; } }
-        #gyro-cta.hidden { opacity: 0; pointer-events: none; transform: translate(-50%, 20px); }
+        #gyro-cta.hidden { opacity: 0; pointer-events: none; }
         .phone-icon { width: 20px; height: 34px; border: 1.5px solid var(--dark-text); border-radius: 3px; position: relative; animation: tilt 2s infinite ease-in-out; }
         .phone-icon::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: var(--dark-text); border-radius: 50%; }
-        @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(15deg); } }
+        @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
 
-        /* --- LAYOUT --- */
+        /* --- LAYOUT & CONTENT --- */
         .hero-container { height: 100vh; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; }
         .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; z-index: 10; }
         
@@ -70,10 +93,11 @@
         .headline.reveal { opacity: 1; transform: translateY(0); }
         
         .eye-o { display: inline-block; height: 1.1em; width: auto; vertical-align: baseline; position: relative; transform: translateY(0.28em); margin: 0 -0.02em; }
-        #dynamic-word { color: var(--accent-coral); display: block; }
+        #dynamic-word { color: var(--accent-coral); display: block; min-height: 1.1em; }
         
-        #nav-text-menu { position: fixed; top: 45px; right: 40px; z-index: 1002; font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; opacity: 0; transition: 0.5s; cursor: pointer; }
-        #nav-text-menu.visible { opacity: 1; color: var(--text-light); }
+        #nav-text-menu { position: fixed; top: 45px; right: 40px; z-index: 3000; font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; opacity: 0; transition: 0.5s; cursor: pointer; color: var(--dark-text); }
+        #nav-text-menu.visible { opacity: 1; }
+        #nav-text-menu.menu-open { color: var(--text-light); }
     </style>
 </head>
 <body>
@@ -87,7 +111,18 @@
         </svg>
     </div>
 
-    <div id="nav-text-menu">Menu +</div>
+    <div id="nav-text-menu" onclick="toggleMenu()">Menu +</div>
+
+    <div id="menu-overlay">
+        <svg id="ink-svg" viewBox="-100 -100 200 200">
+            <path class="ink-path" d="M51,-74C64,-69,73,-53,80,-37C87,-21,91,-4,89,10C87,26,77,41,66,51C54,62,40,69,26,73C12,77,-2,78,-17,75C-32,72,-48,64,-59,53C-71,41,-78,26,-81,9C-84,-7,-82,-24,-73,-38C-65,-52,-50,-63,-35,-67C-20,-71,-5,-69,11,-70C27,-71,45,-75,51,-74Z" />
+        </svg>
+        <div id="menu-content">
+            <a href="#" class="menu-link">Works</a>
+            <a href="#" class="menu-link">About</a>
+            <a href="#" class="menu-link">Contact</a>
+        </div>
+    </div>
 
     <section class="hero-container">
         <div class="label">Strategic Art Direction</div>
@@ -135,16 +170,31 @@
         
         let targetX = window.innerWidth / 2, targetY = window.innerHeight / 2;
         let currentX = targetX, currentY = targetY;
-        let gyroActive = false;
+        let gyroActive = false, isMenuOpen = false;
         let zeroBeta = 0, zeroGamma = 0;
         let idleTimer;
         const lerpFactor = 0.08;
 
-        // --- 1. NUOVO SISTEMA DI BLINKING (DINAMICO + DOPPIO) ---
+        // --- MENU TOGGLE ---
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            const overlay = document.getElementById('menu-overlay');
+            const toggleBtn = document.getElementById('nav-text-menu');
+            if (isMenuOpen) {
+                overlay.classList.add('open');
+                toggleBtn.innerText = "Close -";
+                toggleBtn.classList.add('menu-open');
+            } else {
+                overlay.classList.remove('open');
+                toggleBtn.innerText = "Menu +";
+                toggleBtn.classList.remove('menu-open');
+            }
+        }
+
+        // --- BLINKING ---
         function triggerBlink() {
             const eyes = document.querySelectorAll('.intero-occhio');
             const brows = document.querySelectorAll('.sopracciglio');
-            
             const performBlink = () => {
                 eyes.forEach(e => e.classList.add('blinking'));
                 brows.forEach(b => b.classList.add('brow-down'));
@@ -153,21 +203,13 @@
                     brows.forEach(b => b.classList.remove('brow-down'));
                 }, 120);
             };
-
             performBlink();
-
-            // Doppio battito casuale (15% probabilità)
-            if (Math.random() > 0.85) {
-                setTimeout(performBlink, 250);
-            }
-
-            // Prossimo battito tra 3 e 7 secondi
-            const nextTick = Math.random() * (7000 - 3000) + 3000;
-            setTimeout(triggerBlink, nextTick);
+            if (Math.random() > 0.85) setTimeout(performBlink, 250);
+            setTimeout(triggerBlink, Math.random() * 4000 + 3000);
         }
-        setTimeout(triggerBlink, 2000); // Avvio ciclo battiti
+        setTimeout(triggerBlink, 2000);
 
-        // --- 2. IDLE MOVEMENT (L'occhio si muove da solo dopo 2s di inattività) ---
+        // --- IDLE & MOVEMENT ---
         function startIdleMovement() {
             clearInterval(idleTimer);
             idleTimer = setInterval(() => {
@@ -175,16 +217,11 @@
                 targetY = Math.random() * window.innerHeight;
             }, 2500);
         }
-
-        function resetIdleTimer() {
-            clearInterval(idleTimer);
-            if (!gyroActive) startIdleMovement();
-        }
+        function resetIdleTimer() { clearInterval(idleTimer); if (!gyroActive) startIdleMovement(); }
         startIdleMovement();
 
-        // --- 3. CONTROLLO MOVIMENTO (MOUSE & GYRO) ---
         document.addEventListener('mousemove', (e) => {
-            if(!gyroActive) { 
+            if(!gyroActive && !isMenuOpen) { 
                 targetX = e.clientX; 
                 targetY = e.clientY; 
                 resetIdleTimer();
@@ -203,42 +240,30 @@
             currentX += (targetX - currentX) * lerpFactor;
             currentY += (targetY - currentY) * lerpFactor;
             const fakeE = { clientX: currentX, clientY: currentY };
-            
-            const hRes = solvePupil(fakeE, hp.eye, 70);
-            hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
-            
-            const nRes = solvePupil(fakeE, np.eye, 42);
-            np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
-            
+            const solve = (e, eye, r) => {
+                const rect = eye.getBoundingClientRect();
+                const dx = e.clientX - (rect.left + rect.width / 2);
+                const dy = e.clientY - (rect.top + rect.height / 2);
+                const angle = Math.atan2(dy, dx), dist = Math.min(Math.hypot(dx, dy) / 600, 1);
+                return { x: Math.cos(angle) * r * dist, y: Math.sin(angle) * r * dist };
+            };
+            const hRes = solve(fakeE, hp.eye, 70); hp.pup.style.transform = `translate(${hRes.x}px, ${hRes.y}px)`;
+            const nRes = solve(fakeE, np.eye, 42); np.pup.style.transform = `translate(${nRes.x}px, ${nRes.y}px)`;
             requestAnimationFrame(updatePupils);
         }
         updatePupils();
 
-        function solvePupil(e, eyeElement, maxRadius) {
-            const rect = eyeElement.getBoundingClientRect();
-            const dx = e.clientX - (rect.left + rect.width / 2);
-            const dy = e.clientY - (rect.top + rect.height / 2);
-            const angle = Math.atan2(dy, dx);
-            const dist = Math.min(Math.hypot(dx, dy) / 600, 1);
-            return { x: Math.cos(angle) * maxRadius * dist, y: Math.sin(angle) * maxRadius * dist };
-        }
-
-        // --- 4. GYRO PERMISSION & ZERO-POINT CALIBRATION ---
+        // --- GYRO ---
         function requestGyroPermission() {
             const cta = document.getElementById('gyro-cta');
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => {
-                    if (res === 'granted') setupGyro(cta);
-                });
+            if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then(res => { if (res === 'granted') setupGyro(cta); });
             } else { setupGyro(cta); }
         }
-
         function setupGyro(cta) {
-            clearInterval(idleTimer); 
-            // La prima lettura imposta lo zero
+            clearInterval(idleTimer);
             const captureInitial = (e) => {
-                zeroBeta = e.beta;
-                zeroGamma = e.gamma;
+                zeroBeta = e.beta; zeroGamma = e.gamma;
                 gyroActive = true;
                 window.removeEventListener('deviceorientation', captureInitial);
                 window.addEventListener('deviceorientation', handleOrientation);
@@ -247,7 +272,7 @@
             if(cta) cta.classList.add('hidden');
         }
 
-        // --- 5. UI EFFECTS & SCROLL ---
+        // --- DECODING ---
         const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY"];
         let wordIndex = 0;
         function decodeEffect(newText) {
@@ -261,17 +286,14 @@
         }
         setInterval(() => { wordIndex = (wordIndex + 1) % words.length; decodeEffect(words[wordIndex]); }, 4000);
 
+        // --- SCROLL EFFECTS ---
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y > 100) { 
-                hLog.classList.add('fade-out'); 
-                nLog.classList.add('slide-in'); 
+                hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); 
                 document.getElementById('headline').classList.add('reveal'); 
                 document.getElementById('nav-text-menu').classList.add('visible');
-            } else { 
-                hLog.classList.remove('fade-out'); 
-                nLog.classList.remove('slide-in'); 
-            }
+            } else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); }
         });
     </script>
 </body>
