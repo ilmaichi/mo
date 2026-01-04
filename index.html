@@ -127,10 +127,27 @@
         .liquid-divider path { fill: var(--dark-blue); }
 
         .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 100vh; position: relative; z-index: 5; }
-        .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .headline { 
+            font-size: clamp(35px, 8.2vw, 110px); 
+            line-height: 1.05; 
+            text-transform: uppercase; 
+            font-weight: 900; 
+            opacity: 0; 
+            transform: translateY(40px); 
+            transition: 0.9s cubic-bezier(0.22, 1, 0.36, 1); 
+            /* Aiuta a contenere i movimenti del testo durante il decoding */
+            overflow-wrap: normal;
+            word-break: keep-all;
+        }
         .headline.reveal { opacity: 1; transform: translateY(0); }
         
-        #dynamic-word { color: var(--accent-coral); display: block; min-height: 1.2em; }
+        #dynamic-word { 
+            color: var(--accent-coral); 
+            display: inline-block; /* Cambiato da block a inline-block */
+            min-height: 1.1em;
+            min-width: 5ch; /* Riserva uno spazio minimo per evitare scatti eccessivi */
+            vertical-align: top;
+        }
         
         .beyond-description {
                 max-width: 600px;
@@ -142,6 +159,12 @@
                 opacity: 0;
                 transform: translateY(20px);
                 transition: 1s all ease 0.6s; /* Parte leggermente dopo la headline */
+            }
+
+            /* Impedisce alla parola BEYOND di spezzarsi */
+            .no-wrap {
+                white-space: nowrap;
+                display: inline-block;
             }
             
             .headline.reveal + .beyond-description {
@@ -209,9 +232,10 @@
 
     <section class="content-section">
         <h1 class="headline" id="headline">
-            FLUIDITY BEY<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ND
-            <span id="dynamic-word">ART DIRECTION</span>
+            FLUIDITY <span class="no-wrap">BEY<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ND</span>
+            <br> <span id="dynamic-word">ART DIRECTION</span>
         </h1>
+        
         <div class="beyond-description">
             Essere <span class="highlight-text">beyond</span> significa orchestrare la complessità. 
             Unisco visione strategica e padronanza tecnica per connettere stakeholder, 
