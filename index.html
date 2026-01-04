@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Art Direction & AI</title>
+    <title>Portfolio | Fluid Art Direction</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -19,7 +19,24 @@
         * { box-sizing: border-box; }
         body, html { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Inter', sans-serif; color: var(--dark-text); overflow-x: hidden; scroll-behavior: smooth; }
 
-        /* --- LOGOS & NAV --- */
+        /* --- SYMBOL STYLING (The "O") --- */
+        .eye-o {
+            display: inline-block;
+            height: 0.78em; 
+            width: auto;
+            vertical-align: baseline;
+            position: relative;
+            top: 0.03em;
+            margin: 0 0.04em;
+            color: inherit; /* Prende il colore del testo circostante */
+        }
+        .eye-o svg {
+            height: 100%;
+            width: 0.75em; /* Proporzione larghezza/altezza dell'SVG */
+            display: block;
+        }
+
+        /* --- NAVIGATION & LOGOS --- */
         #nav-logo-wrapper {
             position: fixed; top: 25px; left: 35px; width: 110px; z-index: 1001;
             opacity: 0; transform: translateY(-150%);
@@ -36,94 +53,45 @@
         .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
         .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
 
-        /* --- EYE DYNAMICS --- */
-        .intero-occhio { transform-origin: 435px 245px !important; transition: transform 0.12s ease-out; }
-        .sopracciglio { transform-origin: 425px 145px !important; transition: transform 0.12s ease-out; }
-        .blinking { transform: scaleY(0.01) !important; }
-        .brow-down { transform: translateY(20px) !important; }
-
-        /* --- INK MENU OVERLAY --- */
-        #menu-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none; z-index: 2000;
-        }
+        /* --- LIQUID MENU (SHARP GOOEY) --- */
+        #menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2000; }
         #menu-overlay.active { pointer-events: all; }
-
-        .ink-container {
-            position: absolute; width: 100%; height: 100%;
-            filter: url('#gooey-filter');
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .spot {
-            position: absolute; background: var(--dark-text); border-radius: 50%;
-            transform: scale(0); transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1);
-            will-change: transform;
-        }
+        .ink-container { position: absolute; width: 100%; height: 100%; filter: url('#sharp-gooey'); display: flex; align-items: center; justify-content: center; }
+        .spot { position: absolute; background: var(--dark-text); border-radius: 50%; transform: scale(0); transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1); will-change: transform; }
         #menu-overlay.active .spot { transform: scale(1.6); }
-
         .s1 { width: 85vmax; height: 85vmax; transition-delay: 0s; }
         .s2 { width: 65vmax; height: 65vmax; left: -5%; top: -5%; transition-delay: 0.1s; }
         .s3 { width: 75vmax; height: 75vmax; right: -5%; bottom: -5%; transition-delay: 0.05s; }
-        .s4 { width: 55vmax; height: 55vmax; left: 20%; bottom: 10%; transition-delay: 0.2s; }
-        .s5 { width: 60vmax; height: 60vmax; right: 15%; top: 10%; transition-delay: 0.08s; }
-
-        #menu-content {
-            position: relative; z-index: 2001; text-align: center;
-            opacity: 0; transform: translateY(30px);
-            transition: all 0.5s ease; font-family: 'Inter', sans-serif;
-        }
+        #menu-content { position: relative; z-index: 2001; text-align: center; opacity: 0; transform: translateY(30px); transition: all 0.5s ease; }
         #menu-overlay.active #menu-content { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
-
-        .menu-link {
-            display: block; font-size: clamp(40px, 8vw, 90px); font-weight: 900;
-            color: var(--text-light); text-decoration: none; text-transform: uppercase;
-            margin: 15px 0; transition: color 0.3s;
-        }
+        .menu-link { display: block; font-size: clamp(40px, 8vw, 90px); font-weight: 900; color: var(--text-light); text-decoration: none; text-transform: uppercase; margin: 15px 0; transition: color 0.3s; }
         .menu-link:hover { color: var(--accent-coral); }
 
-        #nav-text-menu { 
-            position: fixed; top: 45px; right: 40px; z-index: 3000; 
-            font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; 
-            opacity: 0; transition: 0.5s; cursor: pointer; color: var(--dark-text); 
-        }
+        #nav-text-menu { position: fixed; top: 45px; right: 40px; z-index: 3000; font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; opacity: 0; transition: 0.5s; cursor: pointer; color: var(--dark-text); }
         #nav-text-menu.visible { opacity: 1; }
         #nav-text-menu.menu-open { color: var(--text-light); }
 
-        /* --- SECTIONS & UI --- */
+        /* --- SECTIONS --- */
         .hero-container { height: 100vh; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; }
-        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; z-index: 10; }
-        
-        #gyro-cta {
-            position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center; gap: 12px;
-            cursor: pointer; z-index: 20; font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase;
-        }
-        @media (pointer: fine) { #gyro-cta { display: none; } }
-        #gyro-cta.hidden { opacity: 0; pointer-events: none; }
-        .phone-icon { width: 20px; height: 34px; border: 1.5px solid var(--dark-text); border-radius: 3px; position: relative; animation: tilt 2s infinite ease-in-out; }
-        @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
-
-        .liquid-divider { position: absolute; bottom: -2px; left: 0; width: 100%; z-index: 10; line-height: 0; }
-        .liquid-divider svg { display: block; width: 100%; height: 150px; }
-        .liquid-divider path { fill: var(--dark-blue); }
-
         .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 100vh; position: relative; z-index: 5; }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
         .headline.reveal { opacity: 1; transform: translateY(0); }
-        .eye-o { display: inline-block; height: 1.1em; width: auto; vertical-align: baseline; position: relative; transform: translateY(0.28em); margin: 0 -0.02em; }
         #dynamic-word { color: var(--accent-coral); display: block; min-height: 1.2em; }
     </style>
 </head>
 <body>
+
+    <svg style="display: none;">
+      <symbol id="icon-eye" viewBox="0 0 381.67 497.09">
+        <path d="M77.44,93.21c43.69,2.11,87.88-1.35,131.54-2.17,17.16-.5,61.82-.86,78.62-.93,11.83-.27,27.29.94,34.44-10.34h.01l.16-.26c5.91-11.82,4.19-26.37,4.51-39.34-.48-12-.29-25.81-7.19-33.2-5.81-6.37-15.27-6.75-23.54-6.88-48.97-.09-156.84-.06-206.12-.01-20.73-1.04-29.65,8.64-32.57,28.51-2.15,13.43-3.13,27.56-1.8,40.71,1.03,13.77,7.57,22.58,21.94,23.91ZM376.96,301.22h0c-3.35-14.51-8.25-28.43-14.43-41.66-22.52-48.21-61.56-84.36-107.95-102.7-36.92-14.6-76.1-19.58-109.74-11.08C64.9,165.99,2.25,250.18.06,340.32c-.69,28.62,4.38,58.06,18.56,82.06,15.19,25.72,39.8,43.42,66.01,53.93,26.21,10.51,54.17,14.42,81.94,17.48,58.77,6.48,124.21,7.25,169.44-34.53,40.23-37.14,53.86-102.05,40.95-158.04Z" fill="currentColor"/>
+      </symbol>
+    </svg>
 
     <div id="nav-logo-wrapper">
         <svg class="logo-svg" viewBox="0 0 500 328.12">
             <defs><mask id="m-nav"><rect width="500" height="400" fill="white"/><g class="p-mover"><circle cx="425" cy="245" r="14" fill="black"/></g></mask></defs>
             <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
             <g class="intero-occhio" style="mask: url(#m-nav);"><path class="st0" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
-            <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
         </svg>
     </div>
 
@@ -132,154 +100,52 @@
     <div id="menu-overlay">
         <div class="ink-container">
             <div class="spot s1"></div><div class="spot s2"></div><div class="spot s3"></div>
-            <div class="spot s4"></div><div class="spot s5"></div>
         </div>
         <div id="menu-content">
-            <a href="#" class="menu-link">Works</a>
-            <a href="#" class="menu-link">About</a>
-            <a href="#" class="menu-link">Contact</a>
+            <a href="#" class="menu-link">W<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>rks</a>
+            <a href="#" class="menu-link">Ab<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ut</a>
+            <a href="#" class="menu-link">C<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ntact</a>
         </div>
     </div>
 
     <section class="hero-container">
-        <div class="label">Creative Leadership</div>
-        <div class="label" style="text-align: right;">Studio '26</div>
         <div id="hero-logo-wrapper">
-            <svg class="logo-svg" viewBox="0 0 500 328.12">
-                <defs><mask id="m-hero"><rect width="500" height="400" fill="white"/><g class="p-mover"><circle cx="425" cy="245" r="14" fill="black"/></g></mask></defs>
-                <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
-                <g class="intero-occhio" style="mask: url(#m-hero);"><path class="st0" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
-                <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
-            </svg>
-        </div>
-        <div id="gyro-cta" onclick="requestGyroPermission()">
-            <div class="phone-icon"></div><span>Tap & Tilt</span>
-        </div>
-        <div class="label" style="grid-row: 3; align-self: end;">AI Workflows</div>
-        <div class="label" style="grid-row: 3; align-self: end; text-align: right;">Digital Production</div>
-        <div class="liquid-divider">
-            <svg viewBox="0 0 1440 150" preserveAspectRatio="none"><path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,74.7C1120,64,1280,64,1360,64L1440,64L1440,150L1360,150C1280,150,1120,150,960,150C800,150,640,150,480,150C320,150,160,150,80,150L0,150Z"></path></svg>
-        </div>
+            </div>
     </section>
 
     <section class="content-section">
         <h1 class="headline" id="headline">
-            FLUIDITY BEYND
+            FLUIDITY BEY<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ND
             <span id="dynamic-word">ART DIRECTION</span>
         </h1>
     </section>
 
     <svg style="visibility: hidden; position: absolute;" width="0" height="0">
         <defs>
-            <filter id="gooey-filter">
+            <filter id="sharp-gooey">
                 <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -15" result="goo" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 100 -40" result="goo" />
                 <feComposite in="SourceGraphic" in2="goo" operator="atop" />
             </filter>
         </defs>
     </svg>
 
     <script>
-        const hLog = document.getElementById('hero-logo-wrapper');
-        const nLog = document.getElementById('nav-logo-wrapper');
-        const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover') };
-        const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover') };
-        
-        let targetX = window.innerWidth/2, targetY = window.innerHeight/2;
-        let currentX = targetX, currentY = targetY;
-        let gyroActive = false, isMenuOpen = false;
-        let zeroBeta = 0, zeroGamma = 0, idleTimer;
-        const lerpFactor = 0.08;
-
-        // --- MENU LOGIC ---
+        // Logica Menu e Scroll (Resta la stessa dei passaggi precedenti)
         function toggleMenu() {
-            isMenuOpen = !isMenuOpen;
-            const overlay = document.getElementById('menu-overlay');
+            const isMenuOpen = document.getElementById('menu-overlay').classList.toggle('active');
             const btn = document.getElementById('nav-text-menu');
-            if (isMenuOpen) {
-                overlay.classList.add('active'); btn.innerText = "Close -"; btn.classList.add('menu-open');
-            } else {
-                overlay.classList.remove('active'); btn.innerText = "Menu +"; btn.classList.remove('menu-open');
-            }
+            btn.innerText = isMenuOpen ? "Close -" : "Menu +";
+            btn.classList.toggle('menu-open', isMenuOpen);
         }
-
-        // --- EYE LOGIC ---
-        function triggerBlink() {
-            const eyes = document.querySelectorAll('.intero-occhio');
-            const brows = document.querySelectorAll('.sopracciglio');
-            const performBlink = () => {
-                eyes.forEach(e => e.classList.add('blinking')); brows.forEach(b => b.classList.add('brow-down'));
-                setTimeout(() => {
-                    eyes.forEach(e => e.classList.remove('blinking')); brows.forEach(b => b.classList.remove('brow-down'));
-                }, 120);
-            };
-            performBlink();
-            if (Math.random() > 0.85) setTimeout(performBlink, 250);
-            setTimeout(triggerBlink, Math.random() * 4000 + 3000);
-        }
-        setTimeout(triggerBlink, 2000);
-
-        function startIdleMovement() {
-            clearInterval(idleTimer);
-            idleTimer = setInterval(() => { targetX = Math.random() * window.innerWidth; targetY = Math.random() * window.innerHeight; }, 2500);
-        }
-        startIdleMovement();
-
-        document.addEventListener('mousemove', (e) => {
-            if(!gyroActive && !isMenuOpen) { targetX = e.clientX; targetY = e.clientY; clearInterval(idleTimer); startIdleMovement(); }
-        });
-
-        function handleOrientation(e) {
-            if (!gyroActive) return;
-            targetX = window.innerWidth/2 + ((e.gamma - zeroGamma) * 25);
-            targetY = window.innerHeight/2 + ((e.beta - zeroBeta) * 25);
-        }
-
-        function updatePupils() {
-            currentX += (targetX - currentX) * lerpFactor;
-            currentY += (targetY - currentY) * lerpFactor;
-            const solve = (e, eye, r) => {
-                const rect = eye.getBoundingClientRect();
-                const dx = e.clientX - (rect.left + rect.width/2), dy = e.clientY - (rect.top + rect.height/2);
-                const angle = Math.atan2(dy, dx), dist = Math.min(Math.hypot(dx, dy)/600, 1);
-                return { x: Math.cos(angle)*r*dist, y: Math.sin(angle)*r*dist };
-            };
-            hp.pup.style.transform = `translate(${solve({clientX:currentX, clientY:currentY}, hp.eye, 70).x}px, ${solve({clientX:currentX, clientY:currentY}, hp.eye, 70).y}px)`;
-            np.pup.style.transform = `translate(${solve({clientX:currentX, clientY:currentY}, np.eye, 42).x}px, ${solve({clientX:currentX, clientY:currentY}, np.eye, 42).y}px)`;
-            requestAnimationFrame(updatePupils);
-        }
-        updatePupils();
-
-        function requestGyroPermission() {
-            if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => { if (res === 'granted') setupGyro(); });
-            } else { setupGyro(); }
-        }
-        function setupGyro() {
-            clearInterval(idleTimer);
-            const init = (e) => { zeroBeta = e.beta; zeroGamma = e.gamma; gyroActive = true; window.removeEventListener('deviceorientation', init); window.addEventListener('deviceorientation', handleOrientation); };
-            window.addEventListener('deviceorientation', init);
-            document.getElementById('gyro-cta').classList.add('hidden');
-        }
-
-        // --- DECODING WORDS ---
-        const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "CREATIVE LEADERSHIP", "AI WORKFLOWS", "DIGITAL PRODUCTION"];
-        let wIdx = 0;
-        function decode(txt) {
-            const dw = document.getElementById('dynamic-word');
-            let it = 0; clearInterval(dw.int);
-            dw.int = setInterval(() => {
-                dw.innerText = txt.split("").map((l, i) => i < it ? txt[i] : "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)]).join("");
-                if (it >= txt.length) clearInterval(dw.int);
-                it += 1/3;
-            }, 30);
-        }
-        setInterval(() => { wIdx = (wIdx+1)%words.length; decode(words[wIdx]); }, 4000);
 
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
-            if (y > 100) { hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); document.getElementById('headline').classList.add('reveal'); document.getElementById('nav-text-menu').classList.add('visible'); }
-            else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); }
+            if (y > 100) { 
+                document.getElementById('nav-logo-wrapper').classList.add('slide-in');
+                document.getElementById('nav-text-menu').classList.add('visible');
+                document.getElementById('headline').classList.add('reveal');
+            }
         });
     </script>
 </body>
