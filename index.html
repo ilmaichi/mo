@@ -7,6 +7,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
+        @font-face {
+          font-family: 'mo';
+          src: url('mo.woff2') format('woff2');
+          font-weight: normal;
+          font-style: normal;
+        }
+        .symbol-o {
+              font-family: 'mo';
+              font-variant: normal;
+              text-transform: none;
+              -webkit-font-smoothing: antialiased;
+              
+              /* Regolazioni tipografiche */
+              font-size: 0.95em; /* Regola la grandezza rispetto a 'Intro' */
+              margin: 0 0.02em;  /* Regola lo spazio laterale (kerning) */
+            }
         :root {
             --bg-color: #f7f7f2;      
             --dark-blue: #004f5e;    
@@ -164,9 +180,7 @@
 
     <section class="content-section">
         <h1 class="headline" id="headline">
-            FLUIDITY BEY<span class="eye-o">
-                <svg viewBox="0 0 383.31 500"><path style="fill:var(--accent-gold)" d="M322.89,79.77c-7.15,11.28-22.61,10.07-34.44,10.34-16.8.07-61.46.43-78.62.93-43.66.82-87.85,4.28-131.54,2.17-14.37-1.33-20.91-10.14-21.94-23.91-1.33-13.15-.35-27.28,1.8-40.71C61.07,8.72,69.99-.96,90.72.08c49.28-.05,157.15-.08,206.12.01,8.27.13,17.73.51,23.54,6.88,6.9,7.39,6.71,21.2,7.19,33.2-.32,12.97,1.4,27.52-4.51,39.34l-.16.26Z"/><path style="fill:var(--accent-coral)" d="M377.81,301.23c-3.35-14.52-8.25-28.44-14.43-41.67-22.52-48.21-61.56-84.36-107.95-102.7-36.92-14.6-76.1-19.58-109.74-11.08C65.75,165.99,3.1,250.18.91,340.32c-.69,28.62,4.38,58.06,18.56,82.06,15.19,25.72,39.8,43.42,66.01,53.93s54.17,14.42,81.94,17.48c58.77,6.48,124.21,7.25,169.44-34.53,40.23-37.14,53.86-102.05,40.95-158.04ZM227.74,350.33v.03h-.03s0-.01.02-.02c-7.03,6.81-17.24,10.24-30.67,10.24s-23.66-3.5-30.68-10.47c-7.03-6.97-10.55-17.14-10.55-30.5s3.53-23.99,10.55-30.96,17.24-10.47,30.68-10.47,23.25,3.58,30.43,10.7c7.18,7.13,10.78,17.53,10.78,31.19s-3.52,23.44-10.54,30.28c0,0,0,0,.01,0Z"/></svg>
-            </span>ND
+            FLUIDITY BEY<span class="symbol-o">o</span>ND
             <span id="dynamic-word">ART DIRECTION</span>
         </h1>
     </section>
