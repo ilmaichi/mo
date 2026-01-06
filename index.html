@@ -298,6 +298,10 @@
         //--- CURSORE ---//
         const cursor = document.getElementById('custom-cursor');
         const container = document.getElementById('cursor-container');
+        let currentRotation = 0;
+        let currentStretchX = 1;
+        let currentStretchY = 1;
+        let breathTime = 0;
         
         let mX = 0, mY = 0; // Mouse
         let cX = 0, cY = 0; // Cursor
@@ -328,28 +332,65 @@
             anim.onfinish = () => drop.remove();
         }
         
-        function update() {
-            const dx = mX - cX;
-            const dy = mY - cY;
-            
-            cX += dx * 0.15;
-            cY += dy * 0.15;
+function update() {
+    const dx = mX - cX;
+    const dy = mY - cY;
+    
+    cX += dx * 0.15;
+    cY += dy * 0.15;
+
+    const speed = Math.hypot(dx, dy);
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    
+    let targetRotation, targetStretchX, targetStretchY;
+    let lerpFactor = 0.1; // Velocità della transizione
+
+    if (speed < 1) { 
+        // --- MODALITÀ RESPIRO (FERMO) ---
+        breathTime += 0.05;
+        targetStretchX = 1 + Math.sin(breathTime) * 0.1;
+        targetStretchY = 1 + Math.cos(breathTime * 0.8) * 0.12;
+        targetRotation = Math.sin(breathTime * 0.5) * 5; 
+        lerpFactor = 0.08; // Più lento e morbido quando si ferma
+    } else {
+        // --- MODALITÀ DINAMICA (IN MOVIMENTO) ---
+        const movementStretch = Math.min(speed / 400, 0.6);
+        targetStretchX = 1 + movementStretch;
+        targetStretchY = 1 - movementStretch;
+        targetRotation = angle;
         
-            const speed = Math.hypot(dx, dy);
-            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-            const stretch = Math.min(speed / 400, 0.5);
-        
-            // Applica trasformazione al cursore principale
-            cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch})`;
-        
-            // Logica delle gocce: se la velocità è alta, "perdi" pezzi
-            if (speed > 15 && Math.random() > 0.8) {
-                createDrop(cX, cY, angle);
-            }
-        
-            requestAnimationFrame(update);
-        }
-        update();
+        // Se la velocità è alta, rendiamo la rotazione quasi istantanea
+        // per evitare che la forma sembri "storta" rispetto alla direzione
+        lerpFactor = Math.min(speed / 50, 1); 
+    }
+
+    // Applicazione fluida della rotazione (con lerp dinamico)
+    currentRotation = lerpAngle(currentRotation, targetRotation, lerpFactor);
+    
+    // Stretch più reattivo
+    currentStretchX += (targetStretchX - currentStretchX) * 0.15;
+    currentStretchY += (targetStretchY - currentStretchY) * 0.15;
+
+    cursor.style.transform = `
+        translate(${cX}px, ${cY}px) 
+        translate(-50%, -50%) 
+        rotate(${currentRotation}deg) 
+        scale(${currentStretchX}, ${currentStretchY})
+    `;
+    
+    if (speed > 15 && Math.random() > 0.8) {
+        createDrop(cX, cY, angle);
+    }
+
+    requestAnimationFrame(update);
+}
+
+function lerpAngle(start, end, amount) {
+    const delta = ((end - start + 180) % 360 + 360) % 360 - 180;
+    return start + delta * amount;
+}
+
+update();
 
         // --- MENU LOGIC ---
         function toggleMenu() {
