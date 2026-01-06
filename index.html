@@ -287,6 +287,48 @@
         let zeroBeta = 0, zeroGamma = 0, idleTimer;
         const lerpFactor = 0.08;
 
+        //--- CURSORE ---//
+        const cursor = document.getElementById('custom-cursor');
+        let cursorX = 0, cursorY = 0;
+        let mouseX = 0, mouseY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        function animateCursor() {
+            // Effetto "lag" fluido
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            
+            cursor.style.left = `${cursorX}px`;
+            cursor.style.top = `${cursorY}px`;
+            
+            // Piccola deformazione organica basata sulla velocità
+            const dist = Math.hypot(mouseX - cursorX, mouseY - cursorY);
+            const scale = Math.min(dist / 100, 0.3);
+            cursor.style.transform = `translate(-50%, -50%) scale(${1 + scale}, ${1 - scale})`;
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+        
+        // Feedback sulle interazioni (si ingrandisce sui link)
+        const links = document.querySelectorAll('a, #nav-text-menu, #gyro-cta');
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                cursor.style.width = '80px';
+                cursor.style.height = '80px';
+                cursor.style.borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%'; // Forma più organica
+            });
+            link.addEventListener('mouseleave', () => {
+                cursor.style.width = '40px';
+                cursor.style.height = '40px';
+                cursor.style.borderRadius = '50%';
+            });
+        });
+
         // --- MENU LOGIC ---
         function toggleMenu() {
             isMenuOpen = !isMenuOpen;
