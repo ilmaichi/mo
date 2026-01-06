@@ -18,7 +18,28 @@
 
         * { box-sizing: border-box; }
         body, html { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Inter', sans-serif; color: var(--dark-text); overflow-x: hidden; scroll-behavior: smooth; }
+        
+        /* Stile del cursore organico */
+        #custom-cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-coral);
+            border-radius: 50%; /* Inizialmente tondo */
+            pointer-events: none; /* Fondamentale per non bloccare i click */
+            z-index: 9999;
+            mix-blend-mode: multiply; /* Lo rende organico sui colori */
+            opacity: 0.7;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-radius 0.3s; /* Per trasformazioni organiche */
+        }
 
+        /* Nascondi il cursore standard su desktop */
+        @media (pointer: fine) {
+            body { cursor: none; }
+            a, button, #nav-text-menu { cursor: none; }
+        }
+        
         /* --- SYMBOL "O" STYLING --- */
         .eye-o {
             display: inline-block;
@@ -179,7 +200,7 @@
     </style>
 </head>
 <body>
-
+    <div id="custom-cursor"></div>
     <svg style="display: none;">
       <symbol id="icon-eye" viewBox="0 0 381.67 495.71">
         <path d="M77.96,92.82c43.5,2.1,87.5-1.35,130.98-2.16,17.09-.5,61.56-.86,78.29-.93,11.78-.27,27.17.94,34.29-10.29l.16-.26c5.88-11.77,4.17-26.26,4.49-39.17-.47-11.95-.29-25.7-7.16-33.06-5.78-6.35-15.21-6.72-23.44-6.86C246.81,0,139.4.03,90.33.08c-20.63-1.04-29.52,8.61-32.43,28.4-2.14,13.38-3.12,27.44-1.79,40.54,1.03,13.71,7.54,22.48,21.85,23.81ZM376.96,299.83c-3.35-14.52-8.25-28.44-14.43-41.67-22.52-48.21-61.57-84.36-107.95-102.7-36.92-14.6-76.1-19.58-109.75-11.08C64.9,164.59,2.25,248.79.06,338.93c-.69,28.62,4.38,58.06,18.56,82.06,15.19,25.72,39.8,43.43,66.01,53.93,26.21,10.5,54.17,14.42,81.94,17.48,58.78,6.48,124.21,7.25,169.44-34.53,40.23-37.14,53.86-102.06,40.95-158.04ZM226.89,348.93v.03h-.03s0-.01.02-.02c-7.03,6.81-17.24,10.24-30.67,10.24s-23.66-3.5-30.68-10.47c-7.03-6.97-10.55-17.14-10.55-30.51s3.53-23.99,10.55-30.96c7.03-6.97,17.25-10.48,30.68-10.48s23.25,3.58,30.43,10.7c7.18,7.13,10.78,17.53,10.78,31.19s-3.52,23.44-10.54,30.28c0,0,0,0,.01,0Z" fill="currentColor"/>
