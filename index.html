@@ -20,24 +20,23 @@
         body, html { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Inter', sans-serif; color: var(--dark-text); overflow-x: hidden; scroll-behavior: smooth; }
         
         /* Stile del cursore organico */
-        #custom-cursor {
+        #custom-cursor, .drop {
             position: fixed;
-            width: 40px;
-            height: 40px;
-            background-color: var(--accent-coral);
-            border-radius: 50%; /* Inizialmente tondo */
-            pointer-events: none; /* Fondamentale per non bloccare i click */
+            top: 0; left: 0;
+            width: 30px;
+            pointer-events: none;
             z-index: 9999;
-            mix-blend-mode: multiply; /* Lo rende organico sui colori */
-            opacity: 0.7;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, border-radius 0.3s; /* Per trasformazioni organiche */
+            fill: var(--accent-coral);
+            will-change: transform, opacity;
         }
-
-        /* Nascondi il cursore standard su desktop */
+        
+        .drop {
+            width: 12px; /* Gocce più piccole */
+            opacity: 0.6;
+        }
+        
         @media (pointer: fine) {
-            body { cursor: none; }
-            a, button, #nav-text-menu { cursor: none; }
+            body, a, button { cursor: none !important; }
         }
         
         /* --- SYMBOL "O" STYLING --- */
@@ -200,7 +199,13 @@
     </style>
 </head>
 <body>
-    <div id="custom-cursor"></div>
+    <div id="cursor-container">
+        <div id="custom-cursor">
+            <svg viewBox="0 0 500 465.69">
+                <path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/>
+            </svg>
+        </div>
+    </div>
     <svg style="display: none;">
       <symbol id="icon-eye" viewBox="0 0 381.67 495.71">
         <path d="M77.96,92.82c43.5,2.1,87.5-1.35,130.98-2.16,17.09-.5,61.56-.86,78.29-.93,11.78-.27,27.17.94,34.29-10.29l.16-.26c5.88-11.77,4.17-26.26,4.49-39.17-.47-11.95-.29-25.7-7.16-33.06-5.78-6.35-15.21-6.72-23.44-6.86C246.81,0,139.4.03,90.33.08c-20.63-1.04-29.52,8.61-32.43,28.4-2.14,13.38-3.12,27.44-1.79,40.54,1.03,13.71,7.54,22.48,21.85,23.81ZM376.96,299.83c-3.35-14.52-8.25-28.44-14.43-41.67-22.52-48.21-61.57-84.36-107.95-102.7-36.92-14.6-76.1-19.58-109.75-11.08C64.9,164.59,2.25,248.79.06,338.93c-.69,28.62,4.38,58.06,18.56,82.06,15.19,25.72,39.8,43.43,66.01,53.93,26.21,10.5,54.17,14.42,81.94,17.48,58.78,6.48,124.21,7.25,169.44-34.53,40.23-37.14,53.86-102.06,40.95-158.04ZM226.89,348.93v.03h-.03s0-.01.02-.02c-7.03,6.81-17.24,10.24-30.67,10.24s-23.66-3.5-30.68-10.47c-7.03-6.97-10.55-17.14-10.55-30.51s3.53-23.99,10.55-30.96c7.03-6.97,17.25-10.48,30.68-10.48s23.25,3.58,30.43,10.7c7.18,7.13,10.78,17.53,10.78,31.19s-3.52,23.44-10.54,30.28c0,0,0,0,.01,0Z" fill="currentColor"/>
@@ -289,45 +294,59 @@
 
         //--- CURSORE ---//
         const cursor = document.getElementById('custom-cursor');
-        let cursorX = 0, cursorY = 0;
-        let mouseX = 0, mouseY = 0;
+        const container = document.getElementById('cursor-container');
+        
+        let mX = 0, mY = 0; // Mouse
+        let cX = 0, cY = 0; // Cursor
+        let lastX = 0, lastY = 0;
         
         document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
+            mX = e.clientX;
+            mY = e.clientY;
         });
         
-        function animateCursor() {
-            // Effetto "lag" fluido
-            cursorX += (mouseX - cursorX) * 0.15;
-            cursorY += (mouseY - cursorY) * 0.15;
+        function createDrop(x, y, angle) {
+            const drop = document.createElement('div');
+            drop.className = 'drop';
+            drop.innerHTML = `<svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>`;
             
-            cursor.style.left = `${cursorX}px`;
-            cursor.style.top = `${cursorY}px`;
+            // Posiziona la goccia con una leggera variazione casuale
+            drop.style.left = `${x}px`;
+            drop.style.top = `${y}px`;
             
-            // Piccola deformazione organica basata sulla velocità
-            const dist = Math.hypot(mouseX - cursorX, mouseY - cursorY);
-            const scale = Math.min(dist / 100, 0.3);
-            cursor.style.transform = `translate(-50%, -50%) scale(${1 + scale}, ${1 - scale})`;
-            
-            requestAnimationFrame(animateCursor);
+            container.appendChild(drop);
+        
+            // Animazione di "stacco" e sparizione
+            const anim = drop.animate([
+                { transform: `translate(-50%, -50%) scale(1) rotate(${angle}deg)`, opacity: 0.6 },
+                { transform: `translate(-50%, -50%) scale(0) rotate(${angle}deg)`, opacity: 0 }
+            ], { duration: 600, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
+        
+            anim.onfinish = () => drop.remove();
         }
-        animateCursor();
         
-        // Feedback sulle interazioni (si ingrandisce sui link)
-        const links = document.querySelectorAll('a, #nav-text-menu, #gyro-cta');
-        links.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                cursor.style.width = '80px';
-                cursor.style.height = '80px';
-                cursor.style.borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%'; // Forma più organica
-            });
-            link.addEventListener('mouseleave', () => {
-                cursor.style.width = '40px';
-                cursor.style.height = '40px';
-                cursor.style.borderRadius = '50%';
-            });
-        });
+        function update() {
+            const dx = mX - cX;
+            const dy = mY - cY;
+            
+            cX += dx * 0.15;
+            cY += dy * 0.15;
+        
+            const speed = Math.hypot(dx, dy);
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            const stretch = Math.min(speed / 400, 0.5);
+        
+            // Applica trasformazione al cursore principale
+            cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch})`;
+        
+            // Logica delle gocce: se la velocità è alta, "perdi" pezzi
+            if (speed > 15 && Math.random() > 0.8) {
+                createDrop(cX, cY, angle);
+            }
+        
+            requestAnimationFrame(update);
+        }
+        update();
 
         // --- MENU LOGIC ---
         function toggleMenu() {
