@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Art Direction & AI</title>
+    <title>Portfolio | Michele Occhi</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -17,51 +17,59 @@
         }
 
         * { box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Inter', sans-serif; color: var(--dark-text); overflow-x: hidden; scroll-behavior: smooth; }
-        
-        /* Stile del cursore organico */
-        #custom-cursor, .drop {
-            position: fixed;
-            top: 0; left: 0;
-            width: 30px;
-            pointer-events: none;
-            z-index: 9999;
-            fill: var(--accent-coral);
-            will-change: transform, opacity;
+        body, html { 
+            margin: 0; padding: 0; 
+            background-color: var(--bg-color); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
         }
         
-        .drop {
-            width: 12px; /* Gocce più piccole */
-            opacity: 0.6;
+        /* --- CURSORE --- */
+        #cursor-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+        #custom-cursor {
+            position: absolute; width: 30px; fill: var(--accent-coral);
+            will-change: transform; transition: width 0.3s ease, height 0.3s ease;
         }
+        #custom-cursor.expanding { width: 75px; }
+        .drop { position: absolute; width: 12px; fill: var(--accent-coral); opacity: 0.6; pointer-events: none; }
         
-        @media (pointer: fine) {
-            body, a, button { cursor: none !important; }
+        @media (pointer: fine) { body, a, button { cursor: none !important; } }
+        
+        /* --- UI LABELS --- */
+        .ui-label {
+            position: fixed; z-index: 10001;
+            font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase;
+            color: #fff; mix-blend-mode: difference;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
         }
-        @media (pointer: coarse) {
-          #cursor-container { display: none; }
-      }
-        
+        #label-name { top: 45px; left: 40px; letter-spacing: 0.2em; }
+        #label-name.scrolled { transform: translateY(55px) translateX(-5px); }
+
+        #nav-text-menu { top: 45px; right: 40px; padding: 10px; cursor: pointer; }
+        #nav-text-menu.sticky-active { color: #f7f7f2; mix-blend-mode: normal; }
+
         /* --- SYMBOL "O" STYLING --- */
         .eye-o {
             display: inline-block;
-            height: 1em; /* Calibrato per pareggiare le maiuscole */
+            height: 1em;
             width: auto;
             vertical-align: baseline;
             position: relative;
-            top: 0.04em; /* Micro-aggiustamento ottico verso il basso */
+            top: 0.04em; 
             margin: 0 0.02em;
             color: inherit;
         }
         .eye-o svg {
             height: 100%;
-            width: 0.76em; /* Mantiene le proporzioni del tuo SVG */
+            width: 0.76em;
             display: block;
+            fill: currentColor;
         }
 
-        /* --- LOGOS & NAV --- */
+        /* --- LOGO WRAPPERS --- */
         #nav-logo-wrapper {
-            position: fixed; top: 25px; left: 35px; width: 110px; z-index: 1001;
+            position: fixed; top: 25px; left: 35px; width: 110px; z-index: 10001;
             opacity: 0; transform: translateY(-150%);
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
         }
@@ -73,135 +81,78 @@
             transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
         }
         #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); pointer-events: none; }
+
         .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
         .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
-
-        /* --- EYE DYNAMICS --- */
-        .intero-occhio { transform-origin: 435px 245px !important; transition: transform 0.12s ease-out; }
-        .sopracciglio { transform-origin: 425px 145px !important; transition: transform 0.12s ease-out; }
+        
+        .intero-occhio { transform-origin: 435px 245px !important; transition: transform 0.1s ease-out; }
+        .sopracciglio { transform-origin: 425px 145px !important; transition: transform 0.1s ease-out; }
         .blinking { transform: scaleY(0.01) !important; }
         .brow-down { transform: translateY(20px) !important; }
 
-        /* --- INK MENU OVERLAY --- */
+        /* --- MENU OVERLAY --- */
         #menu-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; z-index: 2000;
         }
         #menu-overlay.active { pointer-events: all; }
-
-        .ink-container {
-            position: absolute; width: 100%; height: 100%;
-            filter: url('#gooey-filter');
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .spot {
-            position: absolute; background: var(--dark-text); border-radius: 50%;
-            transform: scale(0); transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1);
-            will-change: transform;
+        .ink-container { position: absolute; width: 100%; height: 100%; filter: url('#gooey-filter'); display: flex; align-items: center; justify-content: center; }
+        .spot { 
+            position: absolute; background: var(--dark-text); border-radius: 50%; 
+            transform: scale(0); transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1); 
         }
         #menu-overlay.active .spot { transform: scale(1.6); }
-
-        .s1 { width: 85vmax; height: 85vmax; transition-delay: 0s; }
+        .s1 { width: 85vmax; height: 85vmax; }
         .s2 { width: 65vmax; height: 65vmax; left: -5%; top: -5%; transition-delay: 0.1s; }
         .s3 { width: 75vmax; height: 75vmax; right: -5%; bottom: -5%; transition-delay: 0.05s; }
-        .s4 { width: 55vmax; height: 55vmax; left: 20%; bottom: 10%; transition-delay: 0.2s; }
-        .s5 { width: 60vmax; height: 60vmax; right: 15%; top: 10%; transition-delay: 0.08s; }
-
-        #menu-content {
-            position: relative; z-index: 2001; text-align: center;
-            opacity: 0; transform: translateY(30px);
-            transition: all 0.5s ease; font-family: 'Inter', sans-serif;
-        }
+        
+        #menu-content { position: relative; z-index: 2001; text-align: center; opacity: 0; transform: translateY(30px); transition: 0.5s; }
         #menu-overlay.active #menu-content { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
-
-        .menu-link {
-            display: block; font-size: clamp(40px, 8vw, 90px); font-weight: 900;
-            color: var(--text-light); text-decoration: none; text-transform: uppercase;
-            margin: 15px 0; transition: color 0.3s;
+        .menu-link { 
+            display: block; font-size: clamp(40px, 8vw, 90px); font-weight: 900; color: var(--text-light); 
+            text-decoration: none; text-transform: uppercase; margin: 15px 0; transition: color 0.3s;
         }
         .menu-link:hover { color: var(--accent-coral); }
 
-        #nav-text-menu { 
-            position: fixed; top: 45px; right: 40px; z-index: 3000; 
-            font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; 
-            opacity: 0; transition: 0.5s; cursor: pointer; color: var(--dark-text); 
-        }
-        #nav-text-menu.visible { opacity: 1; }
-        #nav-text-menu.menu-open { color: var(--text-light); }
-
-        /* --- SECTIONS & UI --- */
-        .hero-container { height: 100vh; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto 1fr; padding: 40px; position: relative; }
-        .label { font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; z-index: 10; }
-        
-        #gyro-cta {
-            position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center; gap: 12px;
-            cursor: pointer; z-index: 20; font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase;
-        }
-        @media (pointer: fine) { #gyro-cta { display: none; } }
-        #gyro-cta.hidden { opacity: 0; pointer-events: none; }
-        .phone-icon { width: 20px; height: 34px; border: 1.5px solid var(--dark-text); border-radius: 3px; position: relative; animation: tilt 2s infinite ease-in-out; }
-        @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
-
-        .liquid-divider { position: absolute; bottom: -2px; left: 0; width: 100%; z-index: 10; line-height: 0; }
-        .liquid-divider svg { display: block; width: 100%; height: 150px; }
-        .liquid-divider path { fill: var(--dark-blue); }
-
+        /* --- SECTIONS --- */
+        .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
         .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 100vh; position: relative; z-index: 5; }
+        
         .headline { 
-            font-size: clamp(35px, 8.2vw, 110px); 
-            line-height: 1.05; 
-            text-transform: uppercase; 
-            font-weight: 900; 
-            opacity: 0; 
-            transform: translateY(40px); 
-            transition: 0.9s cubic-bezier(0.22, 1, 0.36, 1); 
-            /* Aiuta a contenere i movimenti del testo durante il decoding */
-            overflow-wrap: normal;
+            font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; 
+            opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; 
             word-break: keep-all;
         }
         .headline.reveal { opacity: 1; transform: translateY(0); }
+        .no-wrap { white-space: nowrap; display: inline-block; }
         
-        #dynamic-word { 
-            color: var(--accent-coral); 
-            display: inline-block; /* Cambiato da block a inline-block */
-            min-height: 1.1em;
-            min-width: 5ch; /* Riserva uno spazio minimo per evitare scatti eccessivi */
-            vertical-align: top;
-        }
-        
-        .beyond-description {
-                max-width: 600px;
-                margin-top: 40px;
-                font-family: 'JetBrains Mono', monospace;
-                font-size: clamp(14px, 1.2vw, 18px);
-                line-height: 1.6;
-                color: rgba(247, 247, 242, 0.8); /* Testo leggermente opaco per dare gerarchia */
-                opacity: 0;
-                transform: translateY(20px);
-                transition: 1s all ease 0.6s; /* Parte leggermente dopo la headline */
-            }
+        #dynamic-word { color: var(--accent-coral); display: inline-block; min-width: 5ch; vertical-align: top; }
 
-            /* Impedisce alla parola BEYOND di spezzarsi */
-            .no-wrap {
-                white-space: nowrap;
-                display: inline-block;
-            }
-            
-            .headline.reveal + .beyond-description {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            
-            .highlight-text {
-                color: var(--accent-gold);
-                font-weight: 700;
-            }
+        /* --- BEYOND DESCRIPTION --- */
+        .beyond-description {
+            max-width: 650px;
+            margin-top: 45px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(14px, 1.2vw, 18px);
+            line-height: 1.7;
+            color: rgba(247, 247, 242, 0.8);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 1s all ease 0.6s;
+        }
+        .headline.reveal + .beyond-description { opacity: 1; transform: translateY(0); }
+        .highlight-text { color: var(--accent-gold); font-weight: 700; }
     </style>
 </head>
 <body>
+
+    <svg style="display: none;">
+        <symbol id="icon-eye" viewBox="0 0 381.67 495.71">
+            <path d="M77.96,92.82c43.5,2.1,87.5-1.35,130.98-2.16,17.09-.5,61.56-.86,78.29-.93,11.78-.27,27.17.94,34.29-10.29l.16-.26c5.88-11.77,4.17-26.26,4.49-39.17-.47-11.95-.29-25.7-7.16-33.06-5.78-6.35-15.21-6.72-23.44-6.86C246.81,0,139.4.03,90.33.08c-20.63-1.04-29.52,8.61-32.43,28.4-2.14,13.38-3.12,27.44-1.79,40.54,1.03,13.71,7.54,22.48,21.85,23.81ZM376.96,299.83c-3.35-14.52-8.25-28.44-14.43-41.67-22.52-48.21-61.57-84.36-107.95-102.7-36.92-14.6-76.1-19.58-109.75-11.08C64.9,164.59,2.25,248.79.06,338.93c-.69,28.62,4.38,58.06,18.56,82.06,15.19,25.72,39.8,43.43,66.01,53.93,26.21,10.5,54.17,14.42,81.94,17.48,58.78,6.48,124.21,7.25,169.44-34.53,40.23-37.14,53.86-102.06,40.95-158.04ZM226.89,348.93v.03h-.03s0-.01.02-.02c-7.03,6.81-17.24,10.24-30.67,10.24s-23.66-3.5-30.68-10.47c-7.03-6.97-10.55-17.14-10.55-30.51s3.53-23.99,10.55-30.96c7.03-6.97,17.25-10.48,30.68-10.48s23.25,3.58,30.43,10.7c7.18,7.13,10.78,17.53,10.78,31.19s-3.52,23.44-10.54,30.28c0,0,0,0,.01,0Z"/>
+        </symbol>
+    </svg>
+
     <div id="cursor-container">
         <div id="custom-cursor">
             <svg viewBox="0 0 500 465.69">
@@ -209,11 +160,6 @@
             </svg>
         </div>
     </div>
-    <svg style="display: none;">
-      <symbol id="icon-eye" viewBox="0 0 381.67 495.71">
-        <path d="M77.96,92.82c43.5,2.1,87.5-1.35,130.98-2.16,17.09-.5,61.56-.86,78.29-.93,11.78-.27,27.17.94,34.29-10.29l.16-.26c5.88-11.77,4.17-26.26,4.49-39.17-.47-11.95-.29-25.7-7.16-33.06-5.78-6.35-15.21-6.72-23.44-6.86C246.81,0,139.4.03,90.33.08c-20.63-1.04-29.52,8.61-32.43,28.4-2.14,13.38-3.12,27.44-1.79,40.54,1.03,13.71,7.54,22.48,21.85,23.81ZM376.96,299.83c-3.35-14.52-8.25-28.44-14.43-41.67-22.52-48.21-61.57-84.36-107.95-102.7-36.92-14.6-76.1-19.58-109.75-11.08C64.9,164.59,2.25,248.79.06,338.93c-.69,28.62,4.38,58.06,18.56,82.06,15.19,25.72,39.8,43.43,66.01,53.93,26.21,10.5,54.17,14.42,81.94,17.48,58.78,6.48,124.21,7.25,169.44-34.53,40.23-37.14,53.86-102.06,40.95-158.04ZM226.89,348.93v.03h-.03s0-.01.02-.02c-7.03,6.81-17.24,10.24-30.67,10.24s-23.66-3.5-30.68-10.47c-7.03-6.97-10.55-17.14-10.55-30.51s3.53-23.99,10.55-30.96c7.03-6.97,17.25-10.48,30.68-10.48s23.25,3.58,30.43,10.7c7.18,7.13,10.78,17.53,10.78,31.19s-3.52,23.44-10.54,30.28c0,0,0,0,.01,0Z" fill="currentColor"/>
-      </symbol>
-    </svg>
 
     <div id="nav-logo-wrapper">
         <svg class="logo-svg" viewBox="0 0 500 328.12">
@@ -223,14 +169,11 @@
             <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
         </svg>
     </div>
-
-    <div id="nav-text-menu" onclick="toggleMenu()">Menu +</div>
+    <div id="label-name" class="ui-label">Michele Occhi</div>
+    <div id="nav-text-menu" class="ui-label" onclick="toggleMenu()">Menu +</div>
 
     <div id="menu-overlay">
-        <div class="ink-container">
-            <div class="spot s1"></div><div class="spot s2"></div><div class="spot s3"></div>
-            <div class="spot s4"></div><div class="spot s5"></div>
-        </div>
+        <div class="ink-container"><div class="spot s1"></div><div class="spot s2"></div><div class="spot s3"></div></div>
         <div id="menu-content">
             <a href="#" class="menu-link">W<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>rks</a>
             <a href="#" class="menu-link">Ab<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ut</a>
@@ -239,8 +182,6 @@
     </div>
 
     <section class="hero-container">
-        <div class="label">Creative Leadership</div>
-        <div class="label" style="text-align: right;">Studio '26</div>
         <div id="hero-logo-wrapper">
             <svg class="logo-svg" viewBox="0 0 500 328.12">
                 <defs><mask id="m-hero"><rect width="500" height="400" fill="white"/><g class="p-mover"><circle cx="425" cy="245" r="14" fill="black"/></g></mask></defs>
@@ -249,22 +190,12 @@
                 <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
         </div>
-        <div id="gyro-cta" onclick="requestGyroPermission()">
-            <div class="phone-icon"></div><span>Tap & Tilt</span>
-        </div>
-        <div class="label" style="grid-row: 3; align-self: end;">AI Workflows</div>
-        <div class="label" style="grid-row: 3; align-self: end; text-align: right;">Digital Production</div>
-        <div class="liquid-divider">
-            <svg viewBox="0 0 1440 150" preserveAspectRatio="none"><path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,74.7C1120,64,1280,64,1360,64L1440,64L1440,150L1360,150C1280,150,1120,150,960,150C800,150,640,150,480,150C320,150,160,150,80,150L0,150Z"></path></svg>
-        </div>
     </section>
 
     <section class="content-section">
         <h1 class="headline" id="headline">
-            <span class="no-wrap">BEY<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ND</span>
-            <br> <span id="dynamic-word">ART DIRECTION</span>
+            <span class="no-wrap">BEY<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ND</span> THE <br> <span id="dynamic-word">ART DIRECTION</span>
         </h1>
-        
         <div class="beyond-description">
             Essere <span class="highlight-text">beyond</span> significa orchestrare la complessità. 
             Unisco visione strategica e padronanza tecnica per connettere stakeholder, 
@@ -284,204 +215,119 @@
     </svg>
 
     <script>
-        const hLog = document.getElementById('hero-logo-wrapper');
-        const nLog = document.getElementById('nav-logo-wrapper');
-        const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover') };
-        const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover') };
-        
-        let targetX = window.innerWidth/2, targetY = window.innerHeight/2;
-        let currentX = targetX, currentY = targetY;
-        let gyroActive = false, isMenuOpen = false;
-        let zeroBeta = 0, zeroGamma = 0, idleTimer;
-        const lerpFactor = 0.08;
+        const hLog = document.getElementById('hero-logo-wrapper'), nLog = document.getElementById('nav-logo-wrapper');
+        const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover'), brow: hLog.querySelector('.sopracciglio') };
+        const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover'), brow: nLog.querySelector('.sopracciglio') };
+        const cursor = document.getElementById('custom-cursor'), container = document.getElementById('cursor-container');
+        const menuBtn = document.getElementById('nav-text-menu'), labelName = document.getElementById('label-name');
 
-        //--- CURSORE ---//
-        const cursor = document.getElementById('custom-cursor');
-        const container = document.getElementById('cursor-container');
-        let currentRotation = 0;
-        let currentStretchX = 1;
-        let currentStretchY = 1;
-        let breathTime = 0;
-        
-        let mX = 0, mY = 0; // Mouse
-        let cX = 0, cY = 0; // Cursor
-        let lastX = 0, lastY = 0;
-        
+        let mX = 0, mY = 0, cX = 0, cY = 0;
+        let tPX = 0, tPY = 0, cPX = 0, cPY = 0; 
+        let currentRotation = 0, currentStretchX = 1, currentStretchY = 1, breathTime = 0;
+        let isMenuOpen = false, isSticky = false;
+
         document.addEventListener('mousemove', (e) => {
-            mX = e.clientX;
-            mY = e.clientY;
-        });
-        
-        function createDrop(x, y, angle) {
-            const drop = document.createElement('div');
-            drop.className = 'drop';
-            drop.innerHTML = `<svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>`;
-            
-            // Posiziona la goccia con una leggera variazione casuale
-            drop.style.left = `${x}px`;
-            drop.style.top = `${y}px`;
-            
-            container.appendChild(drop);
-        
-            // Animazione di "stacco" e sparizione
-            const anim = drop.animate([
-                { transform: `translate(-50%, -50%) scale(1) rotate(${angle}deg)`, opacity: 0.6 },
-                { transform: `translate(-50%, -50%) scale(0) rotate(${angle}deg)`, opacity: 0 }
-            ], { duration: 600, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
-        
-            anim.onfinish = () => drop.remove();
-        }
-        
-function update() {
-    const dx = mX - cX;
-    const dy = mY - cY;
-    
-    cX += dx * 0.15;
-    cY += dy * 0.15;
+            mX = e.clientX; mY = e.clientY;
+            tPX = e.clientX; tPY = e.clientY;
 
-    const speed = Math.hypot(dx, dy);
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-    
-    let targetRotation, targetStretchX, targetStretchY;
-    let lerpFactor = 0.1; // Velocità della transizione
+            const btnRect = menuBtn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width/2;
+            const btnCenterY = btnRect.top + btnRect.height/2;
+            const dist = Math.hypot(mX - btnCenterX, mY - btnCenterY);
 
-    if (speed < 1) { 
-        // --- MODALITÀ RESPIRO (FERMO) ---
-        breathTime += 0.05;
-        targetStretchX = 1 + Math.sin(breathTime) * 0.1;
-        targetStretchY = 1 + Math.cos(breathTime * 0.8) * 0.12;
-        targetRotation = Math.sin(breathTime * 0.5) * 5; 
-        lerpFactor = 0.08; // Più lento e morbido quando si ferma
-    } else {
-        // --- MODALITÀ DINAMICA (IN MOVIMENTO) ---
-        const movementStretch = Math.min(speed / 400, 0.6);
-        targetStretchX = 1 + movementStretch;
-        targetStretchY = 1 - movementStretch;
-        targetRotation = angle;
-        
-        // Se la velocità è alta, rendiamo la rotazione quasi istantanea
-        // per evitare che la forma sembri "storta" rispetto alla direzione
-        lerpFactor = Math.min(speed / 50, 1); 
-    }
-
-    // Applicazione fluida della rotazione (con lerp dinamico)
-    currentRotation = lerpAngle(currentRotation, targetRotation, lerpFactor);
-    
-    // Stretch più reattivo
-    currentStretchX += (targetStretchX - currentStretchX) * 0.15;
-    currentStretchY += (targetStretchY - currentStretchY) * 0.15;
-
-    cursor.style.transform = `
-        translate(${cX}px, ${cY}px) 
-        translate(-50%, -50%) 
-        rotate(${currentRotation}deg) 
-        scale(${currentStretchX}, ${currentStretchY})
-    `;
-    
-    if (speed > 15 && Math.random() > 0.8) {
-        createDrop(cX, cY, angle);
-    }
-
-    requestAnimationFrame(update);
-}
-
-function lerpAngle(start, end, amount) {
-    const delta = ((end - start + 180) % 360 + 360) % 360 - 180;
-    return start + delta * amount;
-}
-
-update();
-
-        // --- MENU LOGIC ---
-        function toggleMenu() {
-            isMenuOpen = !isMenuOpen;
-            const overlay = document.getElementById('menu-overlay');
-            const btn = document.getElementById('nav-text-menu');
-            if (isMenuOpen) {
-                overlay.classList.add('active'); btn.innerText = "Close -"; btn.classList.add('menu-open');
-            } else {
-                overlay.classList.remove('active'); btn.innerText = "Menu +"; btn.classList.remove('menu-open');
+            if (dist < 60) { 
+                isSticky = true; cursor.classList.add('expanding');
+                menuBtn.classList.add('sticky-active');
+                mX = btnCenterX; mY = btnCenterY; 
+            } else { 
+                isSticky = false; cursor.classList.remove('expanding');
+                menuBtn.classList.remove('sticky-active');
             }
-        }
-
-        // --- EYE LOGIC ---
-        function triggerBlink() {
-            const eyes = document.querySelectorAll('.intero-occhio');
-            const brows = document.querySelectorAll('.sopracciglio');
-            const performBlink = () => {
-                eyes.forEach(e => e.classList.add('blinking')); brows.forEach(b => b.classList.add('brow-down'));
-                setTimeout(() => {
-                    eyes.forEach(e => e.classList.remove('blinking')); brows.forEach(b => b.classList.remove('brow-down'));
-                }, 120);
-            };
-            performBlink();
-            if (Math.random() > 0.85) setTimeout(performBlink, 250);
-            setTimeout(triggerBlink, Math.random() * 4000 + 3000);
-        }
-        setTimeout(triggerBlink, 2000);
-
-        function startIdleMovement() {
-            clearInterval(idleTimer);
-            idleTimer = setInterval(() => { targetX = Math.random() * window.innerWidth; targetY = Math.random() * window.innerHeight; }, 2500);
-        }
-        startIdleMovement();
-
-        document.addEventListener('mousemove', (e) => {
-            if(!gyroActive && !isMenuOpen) { targetX = e.clientX; targetY = e.clientY; clearInterval(idleTimer); startIdleMovement(); }
         });
 
-        function handleOrientation(e) {
-            if (!gyroActive) return;
-            targetX = window.innerWidth/2 + ((e.gamma - zeroGamma) * 25);
-            targetY = window.innerHeight/2 + ((e.beta - zeroBeta) * 25);
+        function lerpAngle(s, e, a) { const d = ((e - s + 180) % 360 + 360) % 360 - 180; return s + d * a; }
+
+        function createDrop(x, y, angle) {
+            const drop = document.createElement('div'); drop.className = 'drop';
+            drop.innerHTML = `<svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>`;
+            drop.style.left = `${x}px`; drop.style.top = `${y}px`; container.appendChild(drop);
+            drop.animate([{transform:`translate(-50%,-50%) scale(1) rotate(${angle}deg)`, opacity:0.6},{transform:`translate(-50%,-50%) scale(0) rotate(${angle}deg)`, opacity:0}], {duration:600}).onfinish=()=>drop.remove();
         }
 
-        function updatePupils() {
-            currentX += (targetX - currentX) * lerpFactor;
-            currentY += (targetY - currentY) * lerpFactor;
-            const solve = (e, eye, r) => {
+        function update() {
+            const dx = mX - cX, dy = mY - cY;
+            cX += dx * (isSticky ? 0.3 : 0.15); cY += dy * (isSticky ? 0.3 : 0.15);
+            const speed = Math.hypot(dx, dy), angle = Math.atan2(dy, dx) * (180/Math.PI);
+            
+            let tRot, tSX, tSY, lF = 0.1;
+            if (speed < 1 || isSticky) {
+                breathTime += 0.05;
+                tSX = 1 + Math.sin(breathTime)*0.1; tSY = 1 + Math.cos(breathTime*0.8)*0.12;
+                tRot = isSticky ? 0 : Math.sin(breathTime*0.5)*5;
+            } else {
+                const s = Math.min(speed/400,0.6); tSX = 1+s; tSY = 1-s; tRot = angle;
+                lF = Math.min(speed/50, 1);
+            }
+            currentRotation = lerpAngle(currentRotation, tRot, lF);
+            currentStretchX += (tSX - currentStretchX) * 0.15;
+            currentStretchY += (tSY - currentStretchY) * 0.15;
+
+            cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
+            if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
+            
+            cPX += (tPX - cPX) * 0.1; cPY += (tPY - cPY) * 0.1;
+            const solve = (eye, r) => {
                 const rect = eye.getBoundingClientRect();
-                const dx = e.clientX - (rect.left + rect.width/2), dy = e.clientY - (rect.top + rect.height/2);
-                const angle = Math.atan2(dy, dx), dist = Math.min(Math.hypot(dx, dy)/600, 1);
-                return { x: Math.cos(angle)*r*dist, y: Math.sin(angle)*r*dist };
+                const dx = cPX - (rect.left + rect.width/2), dy = cPY - (rect.top + rect.height/2);
+                const a = Math.atan2(dy, dx), d = Math.min(Math.hypot(dx, dy)/400, 1);
+                return { x: Math.cos(a)*r*d, y: Math.sin(a)*r*d };
             };
-            hp.pup.style.transform = `translate(${solve({clientX:currentX, clientY:currentY}, hp.eye, 70).x}px, ${solve({clientX:currentX, clientY:currentY}, hp.eye, 70).y}px)`;
-            np.pup.style.transform = `translate(${solve({clientX:currentX, clientY:currentY}, np.eye, 42).x}px, ${solve({clientX:currentX, clientY:currentY}, np.eye, 42).y}px)`;
-            requestAnimationFrame(updatePupils);
-        }
-        updatePupils();
+            hp.pup.style.transform = `translate(${solve(hp.eye, 70).x}px, ${solve(hp.eye, 70).y}px)`;
+            np.pup.style.transform = `translate(${solve(np.eye, 42).x}px, ${solve(np.eye, 42).y}px)`;
 
-        function requestGyroPermission() {
-            if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => { if (res === 'granted') setupGyro(); });
-            } else { setupGyro(); }
-        }
-        function setupGyro() {
-            clearInterval(idleTimer);
-            const init = (e) => { zeroBeta = e.beta; zeroGamma = e.gamma; gyroActive = true; window.removeEventListener('deviceorientation', init); window.addEventListener('deviceorientation', handleOrientation); };
-            window.addEventListener('deviceorientation', init);
-            document.getElementById('gyro-cta').classList.add('hidden');
+            requestAnimationFrame(update);
         }
 
-        // --- DECODING WORDS ---
-        const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "LEADERSHIP", "EXECUTION"];
+        function triggerBlink() {
+            const eyes = [hp.eye, np.eye], brows = [hp.brow, np.brow];
+            const doBlink = () => {
+                eyes.forEach(e => e.classList.add('blinking')); brows.forEach(b => b.classList.add('brow-down'));
+                setTimeout(() => { eyes.forEach(e => e.classList.remove('blinking')); brows.forEach(b => b.classList.remove('brow-down')); }, 120);
+            };
+            doBlink(); if (Math.random() > 0.8) setTimeout(doBlink, 250);
+            setTimeout(triggerBlink, Math.random() * 4000 + 2500);
+        }
+
+        const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "AI LOGIC", "SYSTEM DESIGN"];
         let wIdx = 0;
         function decode(txt) {
-            const dw = document.getElementById('dynamic-word');
-            let it = 0; clearInterval(dw.int);
+            const dw = document.getElementById('dynamic-word'); let it = 0; clearInterval(dw.int);
             dw.int = setInterval(() => {
                 dw.innerText = txt.split("").map((l, i) => i < it ? txt[i] : "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)]).join("");
-                if (it >= txt.length) clearInterval(dw.int);
-                it += 1/3;
-            }, 30);
+                if (it >= txt.length) clearInterval(dw.int); it += 1/3;
+            }, 35);
         }
-        setInterval(() => { wIdx = (wIdx+1)%words.length; decode(words[wIdx]); }, 4000);
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen; const overlay = document.getElementById('menu-overlay');
+            if (isMenuOpen) { overlay.classList.add('active'); menuBtn.innerText = "Close -"; }
+            else { overlay.classList.remove('active'); menuBtn.innerText = "Menu +"; }
+        }
 
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
-            if (y > 100) { hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); document.getElementById('headline').classList.add('reveal'); document.getElementById('nav-text-menu').classList.add('visible'); }
-            else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); }
+            if (y > 100) { 
+                hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); 
+                labelName.classList.add('scrolled');
+                document.getElementById('headline').classList.add('reveal'); 
+            } else { 
+                hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); 
+                labelName.classList.remove('scrolled');
+            }
         });
+
+        update(); triggerBlink();
+        setInterval(() => { wIdx = (wIdx+1)%words.length; decode(words[wIdx]); }, 4000);
     </script>
 </body>
 </html>
