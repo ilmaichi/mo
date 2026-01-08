@@ -48,6 +48,18 @@
         #nav-text-menu { top: 45px; right: 40px; padding: 10px; cursor: pointer; }
         #nav-text-menu.sticky-active { color: #f7f7f2; mix-blend-mode: normal; }
 
+        /* --- TAP & TILT UI (Mobile Only) --- */
+        #gyro-cta {
+            position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            cursor: pointer; z-index: 20; font-family: 'JetBrains Mono'; font-size: 10px; 
+            text-transform: uppercase; color: var(--dark-text);
+        }
+        @media (pointer: fine) { #gyro-cta { display: none; } }
+        #gyro-cta.hidden { opacity: 0; pointer-events: none; transition: 0.5s; }
+        .phone-icon { width: 20px; height: 34px; border: 1.5px solid var(--dark-text); border-radius: 3px; position: relative; animation: tilt 2s infinite ease-in-out; }
+        @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
+
         /* --- SYMBOL "O" STYLING --- */
         .eye-o { display: inline-block; height: 1em; width: auto; vertical-align: baseline; position: relative; top: 0.04em; margin: 0 0.02em; color: inherit; }
         .eye-o svg { height: 100%; width: 0.76em; display: block; fill: currentColor; }
@@ -129,7 +141,6 @@
         }
         .skill-pill:hover { background: var(--text-light); color: var(--dark-blue); transform: translateY(-2px); }
         
-        /* Varianti Colore */
         .skill-pill.core { border-color: var(--accent-coral); color: var(--accent-coral); }
         .skill-pill.core:hover { background: var(--accent-coral); color: white; }
         
@@ -182,6 +193,10 @@
                 <g class="intero-occhio" style="mask: url(#m-hero);"><path class="st0" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
                 <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
+        </div>
+
+        <div id="gyro-cta" onclick="requestGyroPermission()">
+            <div class="phone-icon"></div><span>Tap & Tilt</span>
         </div>
     </section>
 
@@ -254,12 +269,14 @@
         const cursor = document.getElementById('custom-cursor'), container = document.getElementById('cursor-container');
         const menuBtn = document.getElementById('nav-text-menu'), labelName = document.getElementById('label-name');
 
-        let mX = 0, mY = 0, cX = 0, cY = 0;
-        let tPX = 0, tPY = 0, cPX = 0, cPY = 0; 
+        let mX = window.innerWidth/2, mY = window.innerHeight/2, cX = mX, cY = mY;
+        let tPX = mX, tPY = mY, cPX = mX, cPY = mY; 
         let currentRotation = 0, currentStretchX = 1, currentStretchY = 1, breathTime = 0;
-        let isMenuOpen = false, isSticky = false;
+        let isMenuOpen = false, isSticky = false, gyroActive = false;
+        let zeroBeta = 0, zeroGamma = 0;
 
         document.addEventListener('mousemove', (e) => {
+            if (gyroActive) return;
             mX = e.clientX; mY = e.clientY;
             tPX = e.clientX; tPY = e.clientY;
             const btnRect = menuBtn.getBoundingClientRect();
@@ -279,11 +296,32 @@
             drop.animate([{transform:`translate(-50%,-50%) scale(1) rotate(${angle}deg)`, opacity:0.6},{transform:`translate(-50%,-50%) scale(0) rotate(${angle}deg)`, opacity:0}], {duration:600}).onfinish=()=>drop.remove();
         }
 
+        // --- GYRO LOGIC ---
+        function handleOrientation(e) {
+            if (!gyroActive) return;
+            // Sensibilità ritarata per le pupille
+            tPX = window.innerWidth/2 + ((e.gamma - zeroGamma) * 15);
+            tPY = window.innerHeight/2 + ((e.beta - zeroBeta) * 15);
+        }
+
+        function requestGyroPermission() {
+            if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then(res => { if (res === 'granted') setupGyro(); });
+            } else { setupGyro(); }
+        }
+
+        function setupGyro() {
+            const init = (e) => { zeroBeta = e.beta; zeroGamma = e.gamma; gyroActive = true; window.removeEventListener('deviceorientation', init); window.addEventListener('deviceorientation', handleOrientation); };
+            window.addEventListener('deviceorientation', init);
+            document.getElementById('gyro-cta').classList.add('hidden');
+        }
+
         function update() {
             const dx = mX - cX, dy = mY - cY;
             cX += dx * (isSticky ? 0.3 : 0.15); cY += dy * (isSticky ? 0.3 : 0.15);
             const speed = Math.hypot(dx, dy), angle = Math.atan2(dy, dx) * (180/Math.PI);
             let tRot, tSX, tSY, lF = 0.1;
+            
             if (speed < 1 || isSticky) {
                 breathTime += 0.05;
                 tSX = 1 + Math.sin(breathTime)*0.1; tSY = 1 + Math.cos(breathTime*0.8)*0.12;
@@ -292,9 +330,11 @@
                 const s = Math.min(speed/400,0.6); tSX = 1+s; tSY = 1-s; tRot = angle;
                 lF = Math.min(speed/50, 1);
             }
+            
             currentRotation = lerpAngle(currentRotation, tRot, lF);
             currentStretchX += (tSX - currentStretchX) * 0.15;
             currentStretchY += (tSY - currentStretchY) * 0.15;
+            
             cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
             if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
             
@@ -310,21 +350,17 @@
             requestAnimationFrame(update);
         }
 
-        /* LOGICA FILTRO SKILLS */
+        // --- SKILLS FILTER ---
         const searchInput = document.getElementById('skills-search');
         const skillPills = document.querySelectorAll('.skill-pill');
-
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             skillPills.forEach(pill => {
                 const text = pill.innerText.toLowerCase();
                 if (text.includes(term)) {
-                    pill.style.display = "block";
-                    pill.style.opacity = "1";
-                    pill.style.transform = "scale(1)";
+                    pill.style.display = "block"; pill.style.opacity = "1"; pill.style.transform = "scale(1)";
                 } else {
-                    pill.style.opacity = "0";
-                    pill.style.transform = "scale(0.8)";
+                    pill.style.opacity = "0"; pill.style.transform = "scale(0.8)";
                     setTimeout(() => { if(pill.style.opacity === "0") pill.style.display = "none"; }, 300);
                 }
             });
