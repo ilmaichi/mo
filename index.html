@@ -25,16 +25,25 @@
             scroll-behavior: smooth; 
         }
         
-        /* --- CURSORE --- */
-        #cursor-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+        /* --- CURSORE (Solo Desktop) --- */
+        #cursor-container { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            pointer-events: none; z-index: 9999; 
+            display: none; /* Nascosto di base */
+        }
+        
+        /* Attiva il cursore personalizzato e nascondi quello nativo solo su Desktop */
+        @media (pointer: fine) { 
+            body, a, button { cursor: none !important; } 
+            #cursor-container { display: block; }
+        }
+        
         #custom-cursor {
             position: absolute; width: 30px; fill: var(--accent-coral);
             will-change: transform; transition: width 0.3s ease, height 0.3s ease;
         }
         #custom-cursor.expanding { width: 75px; }
         .drop { position: absolute; width: 12px; fill: var(--accent-coral); opacity: 0.6; pointer-events: none; }
-        
-        @media (pointer: fine) { body, a, button { cursor: none !important; } }
         
         /* --- UI LABELS --- */
         .ui-label {
@@ -263,6 +272,7 @@
     </svg>
 
     <script>
+        const isDesktop = window.matchMedia("(pointer: fine)").matches;
         const hLog = document.getElementById('hero-logo-wrapper'), nLog = document.getElementById('nav-logo-wrapper');
         const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover'), brow: hLog.querySelector('.sopracciglio') };
         const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover'), brow: nLog.querySelector('.sopracciglio') };
@@ -317,27 +327,32 @@
         }
 
         function update() {
-            const dx = mX - cX, dy = mY - cY;
-            cX += dx * (isSticky ? 0.3 : 0.15); cY += dy * (isSticky ? 0.3 : 0.15);
-            const speed = Math.hypot(dx, dy), angle = Math.atan2(dy, dx) * (180/Math.PI);
-            let tRot, tSX, tSY, lF = 0.1;
-            
-            if (speed < 1 || isSticky) {
-                breathTime += 0.05;
-                tSX = 1 + Math.sin(breathTime)*0.1; tSY = 1 + Math.cos(breathTime*0.8)*0.12;
-                tRot = isSticky ? 0 : Math.sin(breathTime*0.5)*5;
-            } else {
-                const s = Math.min(speed/400,0.6); tSX = 1+s; tSY = 1-s; tRot = angle;
-                lF = Math.min(speed/50, 1);
+            // 1. Logica della macchia: solo se Desktop
+            if (isDesktop) {
+                const dx = mX - cX, dy = mY - cY;
+                cX += dx * (isSticky ? 0.3 : 0.15); cY += dy * (isSticky ? 0.3 : 0.15);
+                const speed = Math.hypot(dx, dy), angle = Math.atan2(dy, dx) * (180/Math.PI);
+                let tRot, tSX, tSY, lF = 0.1;
+        
+                if (speed < 1 || isSticky) {
+                    breathTime += 0.05;
+                    tSX = 1 + Math.sin(breathTime)*0.1; tSY = 1 + Math.cos(breathTime*0.8)*0.12;
+                    tRot = isSticky ? 0 : Math.sin(breathTime*0.5)*5;
+                } else {
+                    const s = Math.min(speed/400,0.6); tSX = 1+s; tSY = 1-s; tRot = angle;
+                    lF = Math.min(speed/50, 1);
+                }
+        
+                currentRotation = lerpAngle(currentRotation, tRot, lF);
+                currentStretchX += (tSX - currentStretchX) * 0.15;
+                currentStretchY += (tSY - currentStretchY) * 0.15;
+        
+                cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
+                
+                if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
             }
-            
-            currentRotation = lerpAngle(currentRotation, tRot, lF);
-            currentStretchX += (tSX - currentStretchX) * 0.15;
-            currentStretchY += (tSY - currentStretchY) * 0.15;
-            
-            cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
-            if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
-            
+        
+            // 2. Logica Occhi: funziona sempre (Mouse o Giroscopio)
             cPX += (tPX - cPX) * 0.1; cPY += (tPY - cPY) * 0.1;
             const solve = (eye, r) => {
                 const rect = eye.getBoundingClientRect();
@@ -347,9 +362,9 @@
             };
             hp.pup.style.transform = `translate(${solve(hp.eye, 70).x}px, ${solve(hp.eye, 70).y}px)`;
             np.pup.style.transform = `translate(${solve(np.eye, 42).x}px, ${solve(np.eye, 42).y}px)`;
+        
             requestAnimationFrame(update);
         }
-
         // --- SKILLS FILTER ---
         const searchInput = document.getElementById('skills-search');
         const skillPills = document.querySelectorAll('.skill-pill');
