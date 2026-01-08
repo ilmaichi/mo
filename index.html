@@ -8,141 +8,351 @@
     
     <style>
         :root {
-            --bg-color: #f7f7f2; --dark-blue: #004f5e; --accent-coral: #ff6f61;  
-            --accent-gold: #ffc857; --text-light: #f7f7f2; --dark-text: #2d2926; 
+            --bg-color: #f7f7f2;      
+            --dark-blue: #004f5e;    
+            --accent-coral: #ff6f61;  
+            --accent-gold: #ffc857;
+            --text-light: #f7f7f2;
+            --dark-text: #2d2926; 
         }
 
         * { box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+        body, html { 
+            margin: 0; padding: 0; 
+            background-color: var(--bg-color); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+        }
         
         /* --- CURSORE (Solo Desktop) --- */
         #cursor-container { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            pointer-events: none; z-index: 9999; display: none; 
+            pointer-events: none; z-index: 9999; 
+            display: none; /* Nascosto di base */
         }
+        
+        /* Attiva il cursore personalizzato e nascondi quello nativo solo su Desktop */
         @media (pointer: fine) { 
             body, a, button { cursor: none !important; } 
             #cursor-container { display: block; }
         }
+        
         #custom-cursor {
             position: absolute; width: 30px; fill: var(--accent-coral);
             will-change: transform; transition: width 0.3s ease, height 0.3s ease;
         }
         #custom-cursor.expanding { width: 75px; }
         .drop { position: absolute; width: 12px; fill: var(--accent-coral); opacity: 0.6; pointer-events: none; }
-
+        
         /* --- UI LABELS --- */
         .ui-label {
-            position: fixed; z-index: 10001; font-family: 'JetBrains Mono'; font-size: 11px; 
-            text-transform: uppercase; color: #fff; mix-blend-mode: difference;
+            position: fixed; z-index: 10001;
+            font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase;
+            color: #fff; mix-blend-mode: difference;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
         }
         #label-name { top: 45px; left: 40px; letter-spacing: 0.2em; }
+        #label-name.scrolled { transform: translateY(55px) translateX(-5px); }
         #nav-text-menu { top: 45px; right: 40px; padding: 10px; cursor: pointer; }
+        #nav-text-menu.sticky-active { color: #f7f7f2; mix-blend-mode: normal; }
 
         /* --- TAP & TILT UI (Mobile Only) --- */
         #gyro-cta {
             position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center; gap: 12px;
-            z-index: 20; font-family: 'JetBrains Mono'; font-size: 10px; 
+            cursor: pointer; z-index: 20; font-family: 'JetBrains Mono'; font-size: 10px; 
             text-transform: uppercase; color: var(--dark-text);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            pointer-events: none; /* Il tap viene gestito dal body */
         }
         @media (pointer: fine) { #gyro-cta { display: none; } }
-        #gyro-cta.hidden { opacity: 0; transform: translate(-50%, 20px); }
+        #gyro-cta.hidden { opacity: 0; pointer-events: none; transition: 0.5s; }
         .phone-icon { width: 20px; height: 34px; border: 1.5px solid var(--dark-text); border-radius: 3px; position: relative; animation: tilt 2s infinite ease-in-out; }
         @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
 
-        /* --- LOGO & STRUTTURA --- */
-        #hero-logo-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 480px; max-width: 85vw; z-index: 5; }
-        .logo-svg { width: 100%; height: auto; display: block; }
-        .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); }
-        .intero-occhio { transform-origin: 435px 245px !important; }
+        /* --- SYMBOL "O" STYLING --- */
+        .eye-o { display: inline-block; height: 1em; width: auto; vertical-align: baseline; position: relative; top: 0.04em; margin: 0 0.02em; color: inherit; }
+        .eye-o svg { height: 100%; width: 0.76em; display: block; fill: currentColor; }
+
+        /* --- LOGO WRAPPERS --- */
+        #nav-logo-wrapper {
+            position: fixed; top: 25px; left: 35px; width: 110px; z-index: 10001;
+            opacity: 0; transform: translateY(-150%);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+        }
+        #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; }
+        #hero-logo-wrapper {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 480px; max-width: 85vw; z-index: 5;
+            transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+        #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); pointer-events: none; }
+        .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
+        .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
+        .intero-occhio { transform-origin: 435px 245px !important; transition: transform 0.1s ease-out; }
+        .sopracciglio { transform-origin: 425px 145px !important; transition: transform 0.1s ease-out; }
         .blinking { transform: scaleY(0.01) !important; }
+        .brow-down { transform: translateY(20px) !important; }
+
+        /* --- MENU OVERLAY --- */
+        #menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2000; }
+        #menu-overlay.active { pointer-events: all; }
+        .ink-container { position: absolute; width: 100%; height: 100%; filter: url('#gooey-filter'); display: flex; align-items: center; justify-content: center; }
+        .spot { position: absolute; background: var(--dark-text); border-radius: 50%; transform: scale(0); transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1); }
+        #menu-overlay.active .spot { transform: scale(1.6); }
+        .s1 { width: 85vmax; height: 85vmax; }
+        .s2 { width: 65vmax; height: 65vmax; left: -5%; top: -5%; transition-delay: 0.1s; }
+        .s3 { width: 75vmax; height: 75vmax; right: -5%; bottom: -5%; transition-delay: 0.05s; }
+        #menu-content { position: relative; z-index: 2001; text-align: center; opacity: 0; transform: translateY(30px); transition: 0.5s; }
+        #menu-overlay.active #menu-content { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
+        .menu-link { display: block; font-size: clamp(40px, 8vw, 90px); font-weight: 900; color: var(--text-light); text-decoration: none; text-transform: uppercase; margin: 15px 0; transition: color 0.3s; }
+        .menu-link:hover { color: var(--accent-coral); }
+
+        /* --- SECTIONS --- */
+        .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
+        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 120vh; position: relative; z-index: 5; }
+        .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; word-break: keep-all; }
+        .headline.reveal { opacity: 1; transform: translateY(0); }
+        .no-wrap { white-space: nowrap; display: inline-block; }
+        #dynamic-word { color: var(--accent-coral); display: inline-block; min-width: 5ch; vertical-align: top; }
+
+        /* --- BEYOND DESCRIPTION --- */
+        .beyond-description {
+            max-width: 650px; margin-top: 45px; font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8);
+            opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s;
+        }
+        .headline.reveal + .beyond-description { opacity: 1; transform: translateY(0); }
+        .highlight-text { color: var(--accent-gold); font-weight: 700; }
+
+        /* --- SKILLS SECTION --- */
+        .skills-container {
+            margin-top: 80px; max-width: 1000px;
+            opacity: 0; transform: translateY(30px); transition: 1s all ease 0.9s;
+        }
+        .headline.reveal ~ .skills-container { opacity: 1; transform: translateY(0); }
+
+        .search-wrapper { margin-bottom: 40px; max-width: 450px; position: relative; }
+        #skills-search {
+            width: 100%; background: transparent; border: none; 
+            border-bottom: 1px solid rgba(247, 247, 242, 0.2);
+            color: var(--accent-gold); font-family: 'JetBrains Mono', monospace;
+            font-size: 16px; padding: 12px 0; outline: none; transition: border-color 0.3s;
+        }
+        #skills-search:focus { border-color: var(--accent-gold); }
+        #skills-search::placeholder { color: rgba(247, 247, 242, 0.2); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-start; }
+        .skill-pill {
+            padding: 8px 18px; border-radius: 50px; background: rgba(247, 247, 242, 0.05);
+            border: 1px solid rgba(247, 247, 242, 0.15); color: var(--text-light);
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;
+            white-space: nowrap; transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .skill-pill:hover { background: var(--text-light); color: var(--dark-blue); transform: translateY(-2px); }
+        
+        .skill-pill.core { border-color: var(--accent-coral); color: var(--accent-coral); }
+        .skill-pill.core:hover { background: var(--accent-coral); color: white; }
+        
+        .skill-pill.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+        .skill-pill.gold:hover { background: var(--accent-gold); color: var(--dark-blue); }
+
     </style>
 </head>
-<body onclick="handleGlobalClick()">
+<body>
+
+    <svg style="display: none;">
+        <symbol id="icon-eye" viewBox="0 0 381.67 495.71">
+            <path d="M77.96,92.82c43.5,2.1,87.5-1.35,130.98-2.16,17.09-.5,61.56-.86,78.29-.93,11.78-.27,27.17.94,34.29-10.29l.16-.26c5.88-11.77,4.17-26.26,4.49-39.17-.47-11.95-.29-25.7-7.16-33.06-5.78-6.35-15.21-6.72-23.44-6.86C246.81,0,139.4.03,90.33.08c-20.63-1.04-29.52,8.61-32.43,28.4-2.14,13.38-3.12,27.44-1.79,40.54,1.03,13.71,7.54,22.48,21.85,23.81ZM376.96,299.83c-3.35-14.52-8.25-28.44-14.43-41.67-22.52-48.21-61.57-84.36-107.95-102.7-36.92-14.6-76.1-19.58-109.75-11.08C64.9,164.59,2.25,248.79.06,338.93c-.69,28.62,4.38,58.06,18.56,82.06,15.19,25.72,39.8,43.43,66.01,53.93,26.21,10.5,54.17,14.42,81.94,17.48,58.78,6.48,124.21,7.25,169.44-34.53,40.23-37.14,53.86-102.06,40.95-158.04ZM226.89,348.93v.03h-.03s0-.01.02-.02c-7.03,6.81-17.24,10.24-30.67,10.24s-23.66-3.5-30.68-10.47c-7.03-6.97-10.55-17.14-10.55-30.51s3.53-23.99,10.55-30.96c7.03-6.97,17.25-10.48,30.68-10.48s23.25,3.58,30.43,10.7c7.18,7.13,10.78,17.53,10.78,31.19s-3.52,23.44-10.54,30.28c0,0,0,0,.01,0Z"/>
+        </symbol>
+    </svg>
 
     <div id="cursor-container">
         <div id="custom-cursor">
-            <svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>
+            <svg viewBox="0 0 500 465.69">
+                <path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/>
+            </svg>
         </div>
     </div>
 
-    <section style="height: 100vh; position: relative;">
+    <div id="nav-logo-wrapper">
+        <svg class="logo-svg" viewBox="0 0 500 328.12">
+            <defs><mask id="m-nav"><rect width="500" height="400" fill="white"/><g class="p-mover"><circle cx="425" cy="245" r="14" fill="black"/></g></mask></defs>
+            <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
+            <g class="intero-occhio" style="mask: url(#m-nav);"><path class="st0" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
+            <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
+        </svg>
+    </div>
+    <div id="label-name" class="ui-label">Michele Occhi</div>
+    <div id="nav-text-menu" class="ui-label" onclick="toggleMenu()">Menu +</div>
+
+    <div id="menu-overlay">
+        <div class="ink-container"><div class="spot s1"></div><div class="spot s2"></div><div class="spot s3"></div></div>
+        <div id="menu-content">
+            <a href="#" class="menu-link">W<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>rks</a>
+            <a href="#" class="menu-link">Ab<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ut</a>
+            <a href="#" class="menu-link">C<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ntact</a>
+        </div>
+    </div>
+
+    <section class="hero-container">
         <div id="hero-logo-wrapper">
             <svg class="logo-svg" viewBox="0 0 500 328.12">
                 <defs><mask id="m-hero"><rect width="500" height="400" fill="white"/><g class="p-mover"><circle cx="425" cy="245" r="14" fill="black"/></g></mask></defs>
-                <path class="st0" d="M330.22,220.62..."/> <g class="intero-occhio" style="mask: url(#m-hero);"><path class="st0" d="M480.03,305.97..."/></g>
+                <path class="st0" d="M330.22,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51-2.42-17.8-2.13-36.32-1.69-54.08C3.69,149.02,7.77,82.38,40.91,28.06,50.62,12.75,65.63-1.31,84.38.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
+                <g class="intero-occhio" style="mask: url(#m-hero);"><path class="st0" d="M480.03,305.97c-17.7,16.35-43.32,16.05-66.32,13.52-10.87-1.2-21.81-2.73-32.07-6.84-10.26-4.11-19.89-11.04-25.84-21.11-5.55-9.4-7.53-20.92-7.26-32.12.86-35.28,25.38-68.24,56.67-76.15,13.17-3.33,28.51-1.38,42.96,4.34,18.16,7.18,33.44,21.33,42.25,40.2,2.42,5.18,4.34,10.63,5.65,16.31,5.05,21.91-.28,47.32-16.03,61.86Z"/></g>
+                <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
         </div>
 
-        <div id="gyro-cta">
+        <div id="gyro-cta" onclick="requestGyroPermission()">
             <div class="phone-icon"></div><span>Tap & Tilt</span>
         </div>
     </section>
 
+    <section class="content-section">
+        <h1 class="headline" id="headline">
+            <span class="no-wrap">BEY<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ND</span><br> <span id="dynamic-word">ART DIRECTION</span>
+        </h1>
+        <div class="beyond-description">
+            Essere <span class="highlight-text">beyond</span> significa orchestrare la complessità. 
+            Unisco visione strategica e padronanza tecnica per connettere stakeholder, 
+            codice e produzione video. Trasformo flussi di lavoro avanzati in esperienze 
+            visive organiche, dove l'AI non è solo uno strumento, ma un catalizzatore di nuove possibilità.
+        </div>
+
+        <div class="skills-container">
+            <div class="search-wrapper">
+                <input type="text" id="skills-search" placeholder="Type to filter skills (e.g. 'design', 'mgmt', 'adobe')...">
+            </div>
+            <div class="skills-grid" id="skills-grid">
+                <span class="skill-pill core">Art Direction</span>
+                <span class="skill-pill core">Creative Strategy</span>
+                <span class="skill-pill core">Brand Identity</span>
+                
+                <span class="skill-pill gold">People Management</span>
+                <span class="skill-pill gold">Stakeholder Management</span>
+                <span class="skill-pill gold">Team Leadership</span>
+                <span class="skill-pill gold">Technical Direction</span>
+                <span class="skill-pill gold">Strategic Vision</span>
+
+                <span class="skill-pill">Photoshop</span>
+                <span class="skill-pill">Illustrator</span>
+                <span class="skill-pill">After Effects</span>
+                <span class="skill-pill">Premiere Pro</span>
+                <span class="skill-pill">Figma</span>
+                <span class="skill-pill">JavaScript (ES6)</span>
+                <span class="skill-pill">HTML5 Banner</span>
+                <span class="skill-pill">CSS3</span>
+                <span class="skill-pill">Web Design</span>
+                <span class="skill-pill">UI/UX Design</span>
+                <span class="skill-pill">Motion Design</span>
+                <span class="skill-pill">Design Systems</span>
+                <span class="skill-pill">AI Prompting</span>
+                <span class="skill-pill">Generative Art</span>
+                <span class="skill-pill">Creative Coding</span>
+                <span class="skill-pill">Webflow</span>
+                <span class="skill-pill">Landing Pages</span>
+                <span class="skill-pill">Responsive Design</span>
+                <span class="skill-pill">Typography</span>
+                <span class="skill-pill">Video Production</span>
+                <span class="skill-pill">Project Management</span>
+                <span class="skill-pill">Interactive Experiences</span>
+            </div>
+        </div>
+    </section>
+
+    <svg style="visibility: hidden; position: absolute;" width="0" height="0">
+        <defs>
+            <filter id="gooey-filter">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -15" result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+        </defs>
+    </svg>
+
     <script>
         const isDesktop = window.matchMedia("(pointer: fine)").matches;
-        const hLog = document.getElementById('hero-logo-wrapper');
-        const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover') };
+        const hLog = document.getElementById('hero-logo-wrapper'), nLog = document.getElementById('nav-logo-wrapper');
+        const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover'), brow: hLog.querySelector('.sopracciglio') };
+        const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover'), brow: nLog.querySelector('.sopracciglio') };
         const cursor = document.getElementById('custom-cursor'), container = document.getElementById('cursor-container');
-        
+        const menuBtn = document.getElementById('nav-text-menu'), labelName = document.getElementById('label-name');
+
         let mX = window.innerWidth/2, mY = window.innerHeight/2, cX = mX, cY = mY;
         let tPX = mX, tPY = mY, cPX = mX, cPY = mY; 
         let currentRotation = 0, currentStretchX = 1, currentStretchY = 1, breathTime = 0;
-        let gyroActive = false;
+        let isMenuOpen = false, isSticky = false, gyroActive = false;
+        let zeroBeta = 0, zeroGamma = 0;
 
-        // --- GESTIONE INPUT ---
-        if (isDesktop) {
-            document.addEventListener('mousemove', (e) => {
-                mX = e.clientX; mY = e.clientY;
-                tPX = e.clientX; tPY = e.clientY;
-            });
+        document.addEventListener('mousemove', (e) => {
+            if (gyroActive) return;
+            mX = e.clientX; mY = e.clientY;
+            tPX = e.clientX; tPY = e.clientY;
+            const btnRect = menuBtn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width/2;
+            const btnCenterY = btnRect.top + btnRect.height/2;
+            const dist = Math.hypot(mX - btnCenterX, mY - btnCenterY);
+            if (dist < 60) { isSticky = true; cursor.classList.add('expanding'); menuBtn.classList.add('sticky-active'); mX = btnCenterX; mY = btnCenterY; 
+            } else { isSticky = false; cursor.classList.remove('expanding'); menuBtn.classList.remove('sticky-active'); }
+        });
+
+        function lerpAngle(s, e, a) { const d = ((e - s + 180) % 360 + 360) % 360 - 180; return s + d * a; }
+
+        function createDrop(x, y, angle) {
+            const drop = document.createElement('div'); drop.className = 'drop';
+            drop.innerHTML = `<svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>`;
+            drop.style.left = `${x}px`; drop.style.top = `${y}px`; container.appendChild(drop);
+            drop.animate([{transform:`translate(-50%,-50%) scale(1) rotate(${angle}deg)`, opacity:0.6},{transform:`translate(-50%,-50%) scale(0) rotate(${angle}deg)`, opacity:0}], {duration:600}).onfinish=()=>drop.remove();
         }
 
-        function handleGlobalClick() {
-            if (!isDesktop && !gyroActive) {
-                requestGyroPermission();
-            }
+        // --- GYRO LOGIC ---
+        function handleOrientation(e) {
+            if (!gyroActive) return;
+            // Sensibilità ritarata per le pupille
+            tPX = window.innerWidth/2 + ((e.gamma - zeroGamma) * 15);
+            tPY = window.innerHeight/2 + ((e.beta - zeroBeta) * 15);
         }
 
         function requestGyroPermission() {
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission().then(res => { if (res === 'granted') setupGyro(); });
             } else { setupGyro(); }
         }
 
         function setupGyro() {
-            gyroActive = true;
+            const init = (e) => { zeroBeta = e.beta; zeroGamma = e.gamma; gyroActive = true; window.removeEventListener('deviceorientation', init); window.addEventListener('deviceorientation', handleOrientation); };
+            window.addEventListener('deviceorientation', init);
             document.getElementById('gyro-cta').classList.add('hidden');
-            window.addEventListener('deviceorientation', (e) => {
-                tPX = window.innerWidth/2 + (e.gamma * 15);
-                tPY = window.innerHeight/2 + ((e.beta - 45) * 15);
-            });
         }
 
-        // --- ANIMAZIONE LOOP ---
-        function lerpAngle(s, e, a) { const d = ((e - s + 180) % 360 + 360) % 360 - 180; return s + d * a; }
-
         function update() {
+            // 1. Logica della macchia: solo se Desktop
             if (isDesktop) {
                 const dx = mX - cX, dy = mY - cY;
-                cX += dx * 0.15; cY += dy * 0.15;
+                cX += dx * (isSticky ? 0.3 : 0.15); cY += dy * (isSticky ? 0.3 : 0.15);
                 const speed = Math.hypot(dx, dy), angle = Math.atan2(dy, dx) * (180/Math.PI);
-                let tRot, tSX, tSY;
-                if (speed < 1) {
+                let tRot, tSX, tSY, lF = 0.1;
+        
+                if (speed < 1 || isSticky) {
                     breathTime += 0.05;
-                    tSX = 1 + Math.sin(breathTime)*0.1; tSY = 1 + Math.cos(breathTime*0.8)*0.12; tRot = Math.sin(breathTime*0.5)*5;
+                    tSX = 1 + Math.sin(breathTime)*0.1; tSY = 1 + Math.cos(breathTime*0.8)*0.12;
+                    tRot = isSticky ? 0 : Math.sin(breathTime*0.5)*5;
                 } else {
                     const s = Math.min(speed/400,0.6); tSX = 1+s; tSY = 1-s; tRot = angle;
+                    lF = Math.min(speed/50, 1);
                 }
-                currentRotation = lerpAngle(currentRotation, tRot, 0.1);
+        
+                currentRotation = lerpAngle(currentRotation, tRot, lF);
                 currentStretchX += (tSX - currentStretchX) * 0.15;
                 currentStretchY += (tSY - currentStretchY) * 0.15;
+        
                 cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
+                
+                if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
             }
-
+        
+            // 2. Logica Occhi: funziona sempre (Mouse o Giroscopio)
             cPX += (tPX - cPX) * 0.1; cPY += (tPY - cPY) * 0.1;
             const solve = (eye, r) => {
                 const rect = eye.getBoundingClientRect();
@@ -151,9 +361,62 @@
                 return { x: Math.cos(a)*r*d, y: Math.sin(a)*r*d };
             };
             hp.pup.style.transform = `translate(${solve(hp.eye, 70).x}px, ${solve(hp.eye, 70).y}px)`;
+            np.pup.style.transform = `translate(${solve(np.eye, 42).x}px, ${solve(np.eye, 42).y}px)`;
+        
             requestAnimationFrame(update);
         }
-        update();
+        // --- SKILLS FILTER ---
+        const searchInput = document.getElementById('skills-search');
+        const skillPills = document.querySelectorAll('.skill-pill');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            skillPills.forEach(pill => {
+                const text = pill.innerText.toLowerCase();
+                if (text.includes(term)) {
+                    pill.style.display = "block"; pill.style.opacity = "1"; pill.style.transform = "scale(1)";
+                } else {
+                    pill.style.opacity = "0"; pill.style.transform = "scale(0.8)";
+                    setTimeout(() => { if(pill.style.opacity === "0") pill.style.display = "none"; }, 300);
+                }
+            });
+        });
+
+        function triggerBlink() {
+            const eyes = [hp.eye, np.eye], brows = [hp.brow, np.brow];
+            const doBlink = () => {
+                eyes.forEach(e => e.classList.add('blinking')); brows.forEach(b => b.classList.add('brow-down'));
+                setTimeout(() => { eyes.forEach(e => e.classList.remove('blinking')); brows.forEach(b => b.classList.remove('brow-down')); }, 120);
+            };
+            doBlink(); if (Math.random() > 0.8) setTimeout(doBlink, 250);
+            setTimeout(triggerBlink, Math.random() * 4000 + 2500);
+        }
+
+        const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "LEADERSHIP", "EXECUTION"];
+        let wIdx = 0;
+        function decode(txt) {
+            const dw = document.getElementById('dynamic-word'); let it = 0; clearInterval(dw.int);
+            dw.int = setInterval(() => {
+                dw.innerText = txt.split("").map((l, i) => i < it ? txt[i] : "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)]).join("");
+                if (it >= txt.length) clearInterval(dw.int); it += 1/3;
+            }, 35);
+        }
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen; const overlay = document.getElementById('menu-overlay');
+            if (isMenuOpen) { overlay.classList.add('active'); menuBtn.innerText = "Close -"; }
+            else { overlay.classList.remove('active'); menuBtn.innerText = "Menu +"; }
+        }
+
+        window.addEventListener('scroll', () => {
+            const y = window.scrollY;
+            if (y > 100) { 
+                hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); labelName.classList.add('scrolled');
+                document.getElementById('headline').classList.add('reveal'); 
+            } else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); labelName.classList.remove('scrolled'); }
+        });
+
+        update(); triggerBlink();
+        setInterval(() => { wIdx = (wIdx+1)%words.length; decode(words[wIdx]); }, 4000);
     </script>
 </body>
 </html>
