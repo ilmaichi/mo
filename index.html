@@ -310,20 +310,35 @@
         function handleOrientation(e) {
             if (!gyroActive) return;
             // Sensibilità ritarata per le pupille
-            tPX = window.innerWidth/2 + ((e.gamma - zeroGamma) * 15);
-            tPY = window.innerHeight/2 + ((e.beta - zeroBeta) * 15);
+            tPX = window.innerWidth / 2 + ((e.gamma - zeroGamma) * 15);
+            tPY = window.innerHeight / 2 + ((e.beta - zeroBeta) * 15);
         }
-
+        
         function requestGyroPermission() {
+            if (gyroActive) return; // Evita attivazioni multiple
+            
             if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => { if (res === 'granted') setupGyro(); });
-            } else { setupGyro(); }
+                DeviceOrientationEvent.requestPermission()
+                    .then(res => { if (res === 'granted') setupGyro(); })
+                    .catch(console.error);
+            } else {
+                setupGyro();
+            }
         }
-
+        
         function setupGyro() {
-            const init = (e) => { zeroBeta = e.beta; zeroGamma = e.gamma; gyroActive = true; window.removeEventListener('deviceorientation', init); window.addEventListener('deviceorientation', handleOrientation); };
+            const init = (e) => { 
+                zeroBeta = e.beta; 
+                zeroGamma = e.gamma; 
+                gyroActive = true; 
+                window.removeEventListener('deviceorientation', init); 
+                window.addEventListener('deviceorientation', handleOrientation); 
+            };
             window.addEventListener('deviceorientation', init);
-            document.getElementById('gyro-cta').classList.add('hidden');
+            
+            // Nasconde l'icona
+            const cta = document.getElementById('gyro-cta');
+            if (cta) cta.classList.add('hidden');
         }
 
         function update() {
@@ -414,6 +429,11 @@
                 document.getElementById('headline').classList.add('reveal'); 
             } else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); labelName.classList.remove('scrolled'); }
         });
+        // Attivazione giroscopio al tocco ovunque (solo se non è Desktop)
+        if (!isDesktop) {
+            document.body.addEventListener('touchstart', requestGyroPermission, { once: true });
+            document.body.addEventListener('click', requestGyroPermission, { once: true });
+        }
 
         update(); triggerBlink();
         setInterval(() => { wIdx = (wIdx+1)%words.length; decode(words[wIdx]); }, 4000);
