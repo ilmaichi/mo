@@ -42,9 +42,7 @@
         #custom-cursor.expanding { width: 75px; }
         .drop { position: absolute; width: 12px; fill: var(--accent-coral); opacity: 0.6; pointer-events: none; }
 
-        /* Ripristino Cursore Standard via Toggle */
         body.use-standard-cursor, body.use-standard-cursor a, body.use-standard-cursor button { cursor: auto !important; }
-        body.use-standard-cursor a, body.use-standard-cursor button, body.use-standard-cursor #nav-text-menu { cursor: pointer !important; }
         
         /* --- UI LABELS --- */
         .ui-label {
@@ -59,195 +57,86 @@
         #nav-text-menu { top: 45px; right: 40px; padding: 0; cursor: pointer; letter-spacing: 0.1em; }
         #nav-text-menu.sticky-active { color: #f7f7f2; mix-blend-mode: normal; }
 
-        /* Estensione della label per coprire l'intera pillola */
-        .full-clickable-label {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-            padding: 5px 10px; /* Spostiamo il padding qui per massimizzare l'area */
-        }
-        
-        /* --- TOGGLE CURSORE (Orizzontale per calibrazione) --- */
+        /* --- TOGGLE CURSORE --- */
         #cursor-ui-vertical {
-            display: none;
-            position: fixed;
-            /* Posizionamento temporaneo per debug */
-            right: -40px;
-            top: 50%;
-            
-            /* LA ROTAZIONE TOTALE SARÀ QUI */
-            transform: translateY(-50%) rotate(90deg); 
-            transform-origin: center center;
-            
-            z-index: 10001;
-            background: rgba(255, 255, 255, 0.4); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 5px 10px; 
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
-            
-            /* Layout orizzontale semplice */
-            flex-direction: row; 
-            align-items: center;
-            gap: 12px;
-            padding: 0; /* Rimuoviamo il padding dal container per darlo alla label */
-            overflow: hidden;
+            display: none; position: fixed; right: -40px; top: 50%;
+            transform: translateY(-50%) rotate(90deg); transform-origin: center center;
+            z-index: 10001; background: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03); overflow: hidden;
         }
         @media (pointer: fine) { #cursor-ui-vertical { display: flex; } }
+        .full-clickable-label { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 8px 15px; }
+        .toggle-tag { font-family: 'JetBrains Mono'; font-size: 8px; font-weight: 700; color: var(--dark-text); text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8; }
         
-        .toggle-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 8px;
-            font-weight: 700;
-            color: var(--dark-text);
-            /* Testo normale orizzontale */
-            writing-mode: horizontal-tb; 
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.8;
-        }
-        
-        .switch {
-            --switch-width: 38px;
-            --switch-height: 20px;
-            --circle-diameter: 14px;
-            --switch-bg: rgba(0, 0, 0, 0.1);
-            --switch-checked-bg: #00da50;
-            --circle-bg: #fff;
-            --switch-offset: calc((var(--switch-height) - var(--circle-diameter)) / 2);
-            --transition: all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
-            
-            display: block;
-            position: relative;
-            width: var(--switch-width);
-            height: var(--switch-height);
-        }
-        
+        .switch { --switch-width: 38px; --switch-height: 20px; --circle-diameter: 14px; position: relative; width: var(--switch-width); height: var(--switch-height); }
         .switch input { display: none; }
-        
-        .slider {
-            width: 100%;
-            height: 100%;
-            background: var(--switch-bg);
-            border-radius: 999px;
-            position: relative;
-            transition: var(--transition);
-            cursor: pointer;
+        .slider { width: 100%; height: 100%; background: rgba(0,0,0,0.1); border-radius: 999px; transition: .2s; }
+        .circle { 
+            width: var(--circle-diameter); height: var(--circle-diameter); background: #fff; border-radius: 50%; 
+            position: absolute; top: 3px; left: 3px; transition: .2s;
+            display: flex; align-items: center; justify-content: center;
         }
-        
-        .circle {
-            width: var(--circle-diameter);
-            height: var(--circle-diameter);
-            background: var(--circle-bg);
-            border-radius: 50%;
-            position: absolute;
-            top: var(--switch-offset);
-            left: var(--switch-offset);
-            
-            /* Centratura icone perfetta tramite Flex */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            
-            transition: var(--transition);
-            z-index: 1;
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        /* Icone centrate nel cerchietto */
-        .switch svg { position: absolute; transition: var(--transition); }
-        .switch .checkmark { width: 9px; color: var(--switch-checked-bg); transform: scale(0); }
-        .switch .cross { width: 6px; color: rgba(0,0,0,0.4); transform: scale(1); }
-        
-        /* Effetto linea (pillola interna) */
-        .slider::before {
-            content: "";
-            position: absolute;
-            background: #fff;
-            border-radius: 1px;
-            width: 7px;
-            height: 3px;
-            transition: var(--transition);
-            top: 50%;
-            transform: translateY(-50%);
-            left: calc(var(--switch-offset) + 3.5px);
-        }
-        
-        /* Azioni al click */
-        .switch input:checked + .slider { background: var(--switch-checked-bg); }
+        .switch input:checked + .slider { background: #00da50; }
+        .switch input:checked + .slider .circle { left: calc(100% - var(--circle-diameter) - 3px); }
+        .switch .checkmark { width: 9px; color: #00da50; transform: scale(0); position: absolute; }
+        .switch .cross { width: 6px; color: rgba(0,0,0,0.4); transform: scale(1); position: absolute; }
         .switch input:checked + .slider .checkmark { transform: scale(1); }
         .switch input:checked + .slider .cross { transform: scale(0); }
-        .switch input:checked + .slider .circle { left: calc(100% - var(--circle-diameter) - var(--switch-offset)); }
-        .switch input:checked + .slider::before { left: calc(100% - 10.5px - var(--switch-offset)); }
-               
-        /* --- SYMBOL "O" --- */
-        .eye-o { display: inline-block; height: 1em; width: auto; vertical-align: baseline; position: relative; top: 0.04em; margin: 0 0.02em; color: inherit; }
-        .eye-o svg { height: 100%; width: 0.76em; display: block; fill: currentColor; }
-
-        /* --- LOGOS --- */
-        #nav-logo-wrapper {
-            position: fixed; top: 25px; left: 35px; width: 110px; z-index: 10001;
-            opacity: 0; transform: translateY(-150%);
-            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
-        }
-        #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; }
-        #hero-logo-wrapper {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 480px; max-width: 85vw; z-index: 5;
-            transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
-        }
-        #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); pointer-events: none; }
-        .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
-        .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
-        .intero-occhio { transform-origin: 435px 245px !important; transition: transform 0.1s ease-out; }
-        .sopracciglio { transform-origin: 425px 145px !important; transition: transform 0.1s ease-out; }
-        .blinking { transform: scaleY(0.01) !important; }
-        .brow-down { transform: translateY(20px) !important; }
-
-        /* --- MENU OVERLAY --- */
-        #menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2000; }
-        #menu-overlay.active { pointer-events: all; }
-        .ink-container { position: absolute; width: 100%; height: 100%; filter: url('#gooey-filter'); display: flex; align-items: center; justify-content: center; }
-        .spot { position: absolute; background: var(--dark-text); border-radius: 50%; transform: scale(0); transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1); }
-        #menu-overlay.active .spot { transform: scale(1.6); }
-        .s1 { width: 85vmax; height: 85vmax; }
-        .s2 { width: 65vmax; height: 65vmax; left: -5%; top: -5%; transition-delay: 0.1s; }
-        .s3 { width: 75vmax; height: 75vmax; right: -5%; bottom: -5%; transition-delay: 0.05s; }
-        #menu-content { position: relative; z-index: 2001; text-align: center; opacity: 0; transform: translateY(30px); transition: 0.5s; }
-        #menu-overlay.active #menu-content { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
-        .menu-link { display: block; font-size: clamp(40px, 8vw, 90px); font-weight: 900; color: var(--text-light); text-decoration: none; text-transform: uppercase; margin: 15px 0; transition: color 0.3s; }
-        .menu-link:hover { color: var(--accent-coral); }
 
         /* --- SECTIONS --- */
         .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
-        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 120vh; position: relative; z-index: 5; }
+        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 100vh; position: relative; z-index: 5; }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
         .headline.reveal { opacity: 1; transform: translateY(0); }
-        .no-wrap { white-space: nowrap; display: inline-block; }
-        #dynamic-word { color: var(--accent-coral); display: inline-block; min-width: 5ch; }
+        #dynamic-word { color: var(--accent-coral); }
 
-        /* --- SKILLS --- */
-        .beyond-description { max-width: 650px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
-        .headline.reveal + .beyond-description { opacity: 1; transform: translateY(0); }
-        .skills-container { margin-top: 80px; opacity: 0; transform: translateY(30px); transition: 1s all ease 0.9s; }
+        /* --- SKILLS FILTERS --- */
+        .skills-container { margin-top: 60px; opacity: 0; transform: translateY(30px); transition: 1s all ease 0.8s; }
         .headline.reveal ~ .skills-container { opacity: 1; transform: translateY(0); }
-        #skills-search { width: 100%; max-width: 450px; background: transparent; border: none; border-bottom: 1px solid rgba(247,247,242,0.2); color: var(--accent-gold); font-family: 'JetBrains Mono'; padding: 12px 0; outline: none; margin-bottom: 40px; }
-        .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-        .skill-pill { padding: 8px 18px; border-radius: 50px; background: rgba(247,247,242,0.05); border: 1px solid rgba(247,247,242,0.15); font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase; transition: 0.3s; }
-        .skill-pill:hover { background: var(--text-light); color: var(--dark-blue); }
-        .skill-pill.core { border-color: var(--accent-coral); color: var(--accent-coral); }
-        .skill-pill.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+        
+        .skills-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+        .filter-btn {
+            background: transparent; border: 1px solid rgba(247,247,242,0.15);
+            color: var(--text-light); padding: 10px 22px; border-radius: 50px;
+            font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase;
+            cursor: pointer; transition: 0.3s;
+        }
+        .filter-btn:hover { border-color: var(--accent-coral); color: var(--accent-coral); }
+        .filter-btn.active { background: var(--accent-coral); border-color: var(--accent-coral); color: var(--dark-blue); font-weight: 700; }
 
-        /* --- MOBILE GYRO CTA --- */
-        #gyro-cta { position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase; color: var(--dark-text); cursor: pointer; }
-        @media (pointer: fine) { #gyro-cta { display: none; } }
-        #gyro-cta.hidden { opacity: 0; pointer-events: none; transition: 0.5s; }
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; min-height: 200px; align-content: flex-start; }
+        .skill-pill { 
+            padding: 8px 18px; border-radius: 50px; background: rgba(247,247,242,0.05); 
+            border: 1px solid rgba(247,247,242,0.15); font-family: 'JetBrains Mono'; 
+            font-size: 11px; text-transform: uppercase; transition: 0.3s;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-pill.core { border-color: var(--accent-coral); color: var(--accent-coral); }
+
+        /* LOGO & MENU (Stili precedenti mantenuti) */
+        #nav-logo-wrapper { position: fixed; top: 25px; left: 35px; width: 110px; z-index: 10001; opacity: 0; transform: translateY(-150%); transition: 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+        #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; }
+        #hero-logo-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 480px; max-width: 85vw; z-index: 5; transition: 0.9s cubic-bezier(0.85, 0, 0.15, 1); }
+        #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); pointer-events: none; }
+        .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
+        .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
+        .intero-occhio { transform-origin: 435px 245px !important; transition: 0.1s; }
+        .blinking { transform: scaleY(0.01) !important; }
+        
+        #menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2000; }
+        #menu-overlay.active { pointer-events: all; }
+        .spot { position: absolute; background: var(--dark-text); border-radius: 50%; transform: scale(0); transition: 1.2s cubic-bezier(0.6, 0, 0.4, 1); }
+        #menu-overlay.active .spot { transform: scale(1.6); }
+        .s1 { width: 85vmax; height: 85vmax; } .s2 { width: 65vmax; height: 65vmax; left: -5%; top: -5%; transition-delay: 0.1s; } .s3 { width: 75vmax; height: 75vmax; right: -5%; bottom: -5%; transition-delay: 0.05s; }
+        #menu-content { position: relative; z-index: 2001; text-align: center; opacity: 0; transform: translateY(30px); transition: 0.5s; }
+        #menu-overlay.active #menu-content { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
+        .menu-link { display: block; font-size: clamp(40px, 8vw, 90px); font-weight: 900; color: var(--text-light); text-decoration: none; text-transform: uppercase; margin: 15px 0; }
+        
+        #gyro-cta { position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase; color: var(--dark-text); }
+        #gyro-cta.hidden { opacity: 0; pointer-events: none; }
         .phone-icon { width: 20px; height: 34px; border: 1.5px solid var(--dark-text); border-radius: 3px; animation: tilt 2s infinite ease-in-out; }
         @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
     </style>
@@ -260,11 +149,7 @@
         </symbol>
     </svg>
 
-    <div id="cursor-container">
-        <div id="custom-cursor">
-            <svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>
-        </div>
-    </div>
+    <div id="cursor-container"><div id="custom-cursor"><svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg></div></div>
 
     <div id="label-name" class="ui-label">Michele Occhi</div>
     <div id="nav-text-menu" class="ui-label" onclick="toggleMenu()">Menu +</div>
@@ -311,7 +196,6 @@
                 <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
         </div>
-
         <div id="gyro-cta" onclick="requestGyroPermission()">
             <div class="phone-icon"></div><span>Tap & Tilt</span>
         </div>
@@ -321,22 +205,16 @@
         <h1 class="headline" id="headline">
             <span class="no-wrap">BEY<span class="eye-o"><svg><use href="#icon-eye"></use></svg></span>ND</span><br> <span id="dynamic-word">ART DIRECTION</span>
         </h1>
-        <div class="beyond-description">
-            Essere <span class="highlight-text">beyond</span> significa orchestrare la complessità. Unisco visione strategica e padronanza tecnica per connettere stakeholder, codice e produzione video. Trasformo flussi di lavoro avanzati in esperienze visive organiche.
-        </div>
-
+        
         <div class="skills-container">
-            <input type="text" id="skills-search" placeholder="Filter skills...">
-            <div class="skills-grid" id="skills-grid">
-                <span class="skill-pill core">Art Direction</span>
-                <span class="skill-pill core">Creative Strategy</span>
-                <span class="skill-pill gold">Technical Direction</span>
-                <span class="skill-pill">Photoshop</span>
-                <span class="skill-pill">After Effects</span>
-                <span class="skill-pill">Figma</span>
-                <span class="skill-pill">JavaScript</span>
-                <span class="skill-pill">AI Prompting</span>
+            <div class="skills-filters" id="skills-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="strategy">Vision & Strategy</button>
+                <button class="filter-btn" data-filter="creative">Execution & Production</button>
+                <button class="filter-btn" data-filter="tech">Digital & Tech</button>
+                <button class="filter-btn" data-filter="tools">Tools</button>
             </div>
+            <div class="skills-grid" id="skills-grid"></div>
         </div>
     </section>
 
@@ -363,6 +241,50 @@
         let currentRotation = 0, currentStretchX = 1, currentStretchY = 1, breathTime = 0;
         let isMenuOpen = false, isSticky = false, gyroActive = false;
         let zeroBeta = 0, zeroGamma = 0;
+
+        const mySkills = [
+            { name: "Art Direction", cat: "strategy" }, { name: "Creative Leadership", cat: "strategy" },
+            { name: "Brand Strategy", cat: "strategy" }, { name: "Creative Strategy", cat: "strategy" },
+            { name: "Brainstorming", cat: "strategy" }, { name: "Pitch & Speech", cat: "strategy" },
+            { name: "Coordinamento Team", cat: "strategy" }, { name: "Coordinamento Fornitori", cat: "strategy" },
+            { name: "Project Management", cat: "strategy" },
+            { name: "Video Production", cat: "creative" }, { name: "Montaggio Video", cat: "creative" },
+            { name: "Motion Graphics", cat: "creative" }, { name: "Brand Identity", cat: "creative" },
+            { name: "Graphic Design", cat: "creative" }, { name: "Social Media Design", cat: "creative" },
+            { name: "Coordinamento Shooting", cat: "creative" }, { name: "Fotoritocco", cat: "creative" },
+            { name: "Amazon A+ & Shop in Shop", cat: "creative" }, { name: "Eventi & Concorsi", cat: "creative" },
+            { name: "Banner HTML5", cat: "tech" }, { name: "AI Workflows", cat: "tech" },
+            { name: "AI Generativa", cat: "tech" }, { name: "Landing Pages", cat: "tech" },
+            { name: "Web Design", cat: "tech" }, { name: "Meta Ads", cat: "tech" },
+            { name: "Display Ads", cat: "tech" }, { name: "Newsletter & DEM", cat: "tech" },
+            { name: "UI/UX", cat: "tech" },
+            { name: "Figma", cat: "tools" }, { name: "Photoshop", cat: "tools" },
+            { name: "After Effects", cat: "tools" }, { name: "Premiere", cat: "tools" },
+            { name: "Illustrator", cat: "tools" }, { name: "InDesign", cat: "tools" },
+            { name: "Canva", cat: "tools" }, { name: "Capcut", cat: "tools" },
+            { name: "HTML5/CSS", cat: "tools" }, { name: "Filtri Instagram", cat: "tools" }
+        ];
+
+        function renderSkills(filter = 'all') {
+            const grid = document.getElementById('skills-grid');
+            grid.innerHTML = '';
+            mySkills.forEach(skill => {
+                if (filter === 'all' || skill.cat === filter) {
+                    const pill = document.createElement('span');
+                    pill.className = `skill-pill ${skill.cat === 'strategy' ? 'core' : ''}`;
+                    pill.innerText = skill.name;
+                    grid.appendChild(pill);
+                }
+            });
+        }
+
+        document.getElementById('skills-filters').addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                renderSkills(e.target.dataset.filter);
+            }
+        });
 
         document.addEventListener('mousemove', (e) => {
             if (gyroActive) return;
@@ -417,9 +339,8 @@
         }
 
         function triggerBlink() {
-            const eyes = [hp.eye, np.eye], brows = [hp.brow, np.brow];
-            eyes.forEach(e => e.classList.add('blinking')); brows.forEach(b => b.classList.add('brow-down'));
-            setTimeout(() => { eyes.forEach(e => e.classList.remove('blinking')); brows.forEach(b => b.classList.remove('brow-down')); }, 120);
+            [hp.eye, np.eye].forEach(e => e.classList.add('blinking'));
+            setTimeout(() => { [hp.eye, np.eye].forEach(e => e.classList.remove('blinking')); }, 120);
             setTimeout(triggerBlink, Math.random() * 4000 + 2500);
         }
 
@@ -439,7 +360,7 @@
         });
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
-        update(); triggerBlink();
+        renderSkills(); update(); triggerBlink();
         setInterval(() => { wIdx = (wIdx+1)%words.length; decode(words[wIdx]); }, 4000);
     </script>
 </body>
