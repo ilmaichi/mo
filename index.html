@@ -59,119 +59,133 @@
         #nav-text-menu { top: 45px; right: 40px; padding: 0; cursor: pointer; letter-spacing: 0.1em; }
         #nav-text-menu.sticky-active { color: #f7f7f2; mix-blend-mode: normal; }
 
-/* --- TOGGLE CURSORE (Orizzontale per calibrazione) --- */
-#cursor-ui-vertical {
-    display: none;
-    position: fixed;
-    /* Posizionamento temporaneo per debug */
-    right: 0px;
-    top: 50%;
-    
-    /* LA ROTAZIONE TOTALE SARÀ QUI */
-    transform: translateY(-50%) rotate(90deg); 
-    transform-origin: center center;
-    
-    z-index: 10001;
-    background: rgba(255, 255, 255, 0.4); 
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 5px 10px; 
-    border-radius: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.03);
-    
-    /* Layout orizzontale semplice */
-    flex-direction: row; 
-    align-items: center;
-    gap: 12px;
-}
-@media (pointer: fine) { #cursor-ui-vertical { display: flex; } }
-
-.toggle-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 8px;
-    font-weight: 700;
-    color: var(--dark-text);
-    /* Testo normale orizzontale */
-    writing-mode: horizontal-tb; 
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.8;
-}
-
-.switch {
-    --switch-width: 38px;
-    --switch-height: 20px;
-    --circle-diameter: 14px;
-    --switch-bg: rgba(0, 0, 0, 0.1);
-    --switch-checked-bg: #00da50;
-    --circle-bg: #fff;
-    --switch-offset: calc((var(--switch-height) - var(--circle-diameter)) / 2);
-    --transition: all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
-    
-    display: block;
-    position: relative;
-    width: var(--switch-width);
-    height: var(--switch-height);
-}
-
-.switch input { display: none; }
-
-.slider {
-    width: 100%;
-    height: 100%;
-    background: var(--switch-bg);
-    border-radius: 999px;
-    position: relative;
-    transition: var(--transition);
-    cursor: pointer;
-}
-
-.circle {
-    width: var(--circle-diameter);
-    height: var(--circle-diameter);
-    background: var(--circle-bg);
-    border-radius: 50%;
-    position: absolute;
-    top: var(--switch-offset);
-    left: var(--switch-offset);
-    
-    /* Centratura icone perfetta tramite Flex */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    transition: var(--transition);
-    z-index: 1;
-    box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
-
-/* Icone centrate nel cerchietto */
-.switch svg { position: absolute; transition: var(--transition); }
-.switch .checkmark { width: 9px; color: var(--switch-checked-bg); transform: scale(0); }
-.switch .cross { width: 6px; color: rgba(0,0,0,0.4); transform: scale(1); }
-
-/* Effetto linea (pillola interna) */
-.slider::before {
-    content: "";
-    position: absolute;
-    background: #fff;
-    border-radius: 1px;
-    width: 7px;
-    height: 3px;
-    transition: var(--transition);
-    top: 50%;
-    transform: translateY(-50%);
-    left: calc(var(--switch-offset) + 3.5px);
-}
-
-/* Azioni al click */
-.switch input:checked + .slider { background: var(--switch-checked-bg); }
-.switch input:checked + .slider .checkmark { transform: scale(1); }
-.switch input:checked + .slider .cross { transform: scale(0); }
-.switch input:checked + .slider .circle { left: calc(100% - var(--circle-diameter) - var(--switch-offset)); }
-.switch input:checked + .slider::before { left: calc(100% - 10.5px - var(--switch-offset)); }
-        /* --- SYMBOL "O" --- */        
+        /* Estensione della label per coprire l'intera pillola */
+        .full-clickable-label {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            padding: 5px 10px; /* Spostiamo il padding qui per massimizzare l'area */
+        }
+        
+        /* --- TOGGLE CURSORE (Orizzontale per calibrazione) --- */
+        #cursor-ui-vertical {
+            display: none;
+            position: fixed;
+            /* Posizionamento temporaneo per debug */
+            right: -40px;
+            top: 50%;
+            
+            /* LA ROTAZIONE TOTALE SARÀ QUI */
+            transform: translateY(-50%) rotate(90deg); 
+            transform-origin: center center;
+            
+            z-index: 10001;
+            background: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 5px 10px; 
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+            
+            /* Layout orizzontale semplice */
+            flex-direction: row; 
+            align-items: center;
+            gap: 12px;
+            padding: 0; /* Rimuoviamo il padding dal container per darlo alla label */
+            overflow: hidden;
+        }
+        @media (pointer: fine) { #cursor-ui-vertical { display: flex; } }
+        
+        .toggle-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            font-weight: 700;
+            color: var(--dark-text);
+            /* Testo normale orizzontale */
+            writing-mode: horizontal-tb; 
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.8;
+        }
+        
+        .switch {
+            --switch-width: 38px;
+            --switch-height: 20px;
+            --circle-diameter: 14px;
+            --switch-bg: rgba(0, 0, 0, 0.1);
+            --switch-checked-bg: #00da50;
+            --circle-bg: #fff;
+            --switch-offset: calc((var(--switch-height) - var(--circle-diameter)) / 2);
+            --transition: all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
+            
+            display: block;
+            position: relative;
+            width: var(--switch-width);
+            height: var(--switch-height);
+        }
+        
+        .switch input { display: none; }
+        
+        .slider {
+            width: 100%;
+            height: 100%;
+            background: var(--switch-bg);
+            border-radius: 999px;
+            position: relative;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .circle {
+            width: var(--circle-diameter);
+            height: var(--circle-diameter);
+            background: var(--circle-bg);
+            border-radius: 50%;
+            position: absolute;
+            top: var(--switch-offset);
+            left: var(--switch-offset);
+            
+            /* Centratura icone perfetta tramite Flex */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            transition: var(--transition);
+            z-index: 1;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        /* Icone centrate nel cerchietto */
+        .switch svg { position: absolute; transition: var(--transition); }
+        .switch .checkmark { width: 9px; color: var(--switch-checked-bg); transform: scale(0); }
+        .switch .cross { width: 6px; color: rgba(0,0,0,0.4); transform: scale(1); }
+        
+        /* Effetto linea (pillola interna) */
+        .slider::before {
+            content: "";
+            position: absolute;
+            background: #fff;
+            border-radius: 1px;
+            width: 7px;
+            height: 3px;
+            transition: var(--transition);
+            top: 50%;
+            transform: translateY(-50%);
+            left: calc(var(--switch-offset) + 3.5px);
+        }
+        
+        /* Azioni al click */
+        .switch input:checked + .slider { background: var(--switch-checked-bg); }
+        .switch input:checked + .slider .checkmark { transform: scale(1); }
+        .switch input:checked + .slider .cross { transform: scale(0); }
+        .switch input:checked + .slider .circle { left: calc(100% - var(--circle-diameter) - var(--switch-offset)); }
+        .switch input:checked + .slider::before { left: calc(100% - 10.5px - var(--switch-offset)); }
+               
         /* --- SYMBOL "O" --- */
         .eye-o { display: inline-block; height: 1em; width: auto; vertical-align: baseline; position: relative; top: 0.04em; margin: 0 0.02em; color: inherit; }
         .eye-o svg { height: 100%; width: 0.76em; display: block; fill: currentColor; }
@@ -256,13 +270,15 @@
     <div id="nav-text-menu" class="ui-label" onclick="toggleMenu()">Menu +</div>
 
     <div id="cursor-ui-vertical">
-        <span class="toggle-tag">Organic Cursor</span>
-        <label class="switch">
-            <input type="checkbox" id="cursor-toggle" checked onchange="toggleCursorMode()">
-            <div class="slider">
-                <div class="circle">
-                    <svg class="cross" viewBox="0 0 365.696 365.696"><path fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path></svg>
-                    <svg class="checkmark" viewBox="0 0 24 24"><path fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path></svg>
+        <label class="full-clickable-label" for="cursor-toggle">
+            <span class="toggle-tag">Organic Cursor</span>
+            <div class="switch">
+                <input type="checkbox" id="cursor-toggle" checked onchange="toggleCursorMode()">
+                <div class="slider">
+                    <div class="circle">
+                        <svg class="cross" viewBox="0 0 365.696 365.696"><path fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path></svg>
+                        <svg class="checkmark" viewBox="0 0 24 24"><path fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path></svg>
+                    </div>
                 </div>
             </div>
         </label>
