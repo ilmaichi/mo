@@ -232,6 +232,38 @@
         .no-wrap { white-space: nowrap; display: inline-block; }
         #dynamic-word { color: var(--accent-coral); display: inline-block; min-width: 5ch; }
 
+        .blob-divider {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            line-height: 0;
+            z-index: 10;
+        }
+        
+        .blob-divider svg {
+            display: block;
+            width: 100%;
+            height: 60px;
+        }
+        
+        .blob-divider .blob-path {
+            fill: var(--dark-blue);
+            animation: real-wave 8s infinite ease-in-out;
+        }
+        
+        @keyframes real-wave {
+            0% {
+                d: path("M0,60 Q300,0 600,30 T1200,60 L1200,60 L0,60 Z");
+            }
+            50% {
+                d: path("M0,60 Q300,60 600,30 T1200,0 L1200,60 L0,60 Z");
+            }
+            100% {
+                d: path("M0,60 Q300,0 600,30 T1200,60 L1200,60 L0,60 Z");
+            }
+        }
+
         /* --- SKILLS --- */
         .beyond-description { max-width: 650px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
         .headline.reveal + .beyond-description { opacity: 1; transform: translateY(0); }
@@ -394,9 +426,13 @@
                 <g class="sopracciglio"><path class="st2" d="M474.36,157.84c-2.79,4.4-8.81,3.93-13.42,4.03-6.55.03-23.95.17-30.64.36-17.02.32-34.24,1.67-51.27.85-5.6-.52-8.15-3.95-8.55-9.32-.52-5.12-.14-10.63.7-15.87,1.14-7.75,4.62-11.52,12.69-11.12,19.21-.02,61.25-.03,80.33,0,3.22.05,6.91.2,9.17,2.68,2.69,2.88,2.62,8.26,2.8,12.94-.12,5.05.55,10.73-1.76,15.33l-.06.1Z"/></g>
             </svg>
         </div>
-
         <div id="gyro-cta" onclick="requestGyroPermission()">
             <div class="phone-icon"></div><span>Tap & Tilt</span>
+        </div>
+        <div class="blob-divider">
+            <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path d="M0,60 Q300,0 600,30 T1200,60 L1200,60 L0,60 Z" class="blob-path"></path>
+            </svg>
         </div>
     </section>
 
