@@ -245,14 +245,9 @@
             min-height: 120vh;
             position: relative;
             z-index: 5;
-        
             /* Usiamo le variabili --mouse-x e --mouse-y per il centro del cerchio */
             clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
-            transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1);
-            
-            opacity: 0;
-            /* La transizione dell'opacity è più rapida per non bloccare la vista */
-            transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.3s ease;
+            transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s ease;
         }
         
         .content-section.is-active {
@@ -596,7 +591,7 @@ function performJump(direction) {
     if (direction === 'down' && !hasJumped) {
         hasJumped = true;
         
-        // Per la macchia: se non abbiamo coordinate mouse (es. scroll barra), usiamo il centro
+        // Se non abbiamo coordinate mouse (es. scroll barra), usiamo il centro
         if (!target.style.getPropertyValue('--mouse-x')) {
             target.style.setProperty('--mouse-x', '50%');
             target.style.setProperty('--mouse-y', '50%');
@@ -612,6 +607,8 @@ function performJump(direction) {
 
     } else if (direction === 'up' && hasJumped) {
         hasJumped = false;
+        
+        // Effetto inverso: chiudiamo la macchia e resettiamo i loghi
         target.classList.remove('is-active');
         hLog.classList.remove('fade-out');
         nLog.classList.remove('slide-in');
@@ -620,37 +617,51 @@ function performJump(direction) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Sblocca l'animazione dopo che lo scroll è finito
-    setTimeout(() => { isAnimating = false; }, 1000);
+    // Tempo per completare l'animazione prima di permettere un altro salto
+    setTimeout(() => { isAnimating = false; }, 1200);
 }
 
-// 1. CATTURA COORDINATE MOUSE (Sempre attivo)
-// Questo serve per sapere dove far partire la macchia quando l'utente userà la rotella
+// 1. COORDINATE MOUSE (per la macchia)
 document.addEventListener('mousemove', (e) => {
-    if (!hasJumped) {
-        const posX = (e.clientX / window.innerWidth) * 100;
-        const posY = (e.clientY / window.innerHeight) * 100;
-        document.querySelector('.content-section').style.setProperty('--mouse-x', posX + '%');
-        document.querySelector('.content-section').style.setProperty('--mouse-y', posY + '%');
-    }
+    const posX = (e.clientX / window.innerWidth) * 100;
+    const posY = (e.clientY / window.innerHeight) * 100;
+    const target = document.querySelector('.content-section');
+    target.style.setProperty('--mouse-x', posX + '%');
+    target.style.setProperty('--mouse-y', posY + '%');
 });
 
-// 2. IL LISTENER UNIVERSALE
+// 2. LISTENER RUOTA MOUSE (per rilevare la direzione "UP")
+window.addEventListener('wheel', (e) => {
+    const sectionTop = document.querySelector('.content-section').offsetTop;
+    
+    // Se scrolli giù dalla Hero
+    if (e.deltaY > 0 && !hasJumped && window.scrollY < 100) {
+        e.preventDefault();
+        performJump('down');
+    } 
+    // Se sei nella seconda sezione e scrolli su mentre sei in cima alla sezione
+    else if (e.deltaY < 0 && hasJumped && window.scrollY <= sectionTop + 10) {
+        e.preventDefault();
+        performJump('up');
+    }
+}, { passive: false });
+
+// 3. LISTENER SCROLL UNIVERSALE (per barra laterale e tastiera)
 window.addEventListener('scroll', () => {
     if (isAnimating) return;
-
+    
     const scrollY = window.scrollY;
     const sectionTop = document.querySelector('.content-section').offsetTop;
 
-    // Se l'utente scrolla verso il basso dalla Hero
-    if (scrollY > 20 && !hasJumped) {
+    // Se l'utente usa la barra laterale per scendere
+    if (scrollY > 50 && !hasJumped) {
         performJump('down');
     } 
-    // Se l'utente scrolla verso l'alto mentre è sulla soglia della seconda sezione
-    else if (scrollY < sectionTop - 50 && hasJumped) {
+    // Se l'utente usa la barra laterale per salire sopra la soglia
+    else if (scrollY < 50 && hasJumped) {
         performJump('up');
     }
-}, { passive: true });
+});
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
