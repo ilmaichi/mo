@@ -258,37 +258,6 @@
             font-weight: 900; /* Per farlo matchare con la pesantezza di BEYOND */
             letter-spacing: -0.02em; 
         }
-        .blob-divider {
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            line-height: 0;
-            z-index: 10;
-        }
-        
-        .blob-divider svg {
-            display: block;
-            width: 100%;
-            height: 60px;
-        }
-        
-        .blob-divider .blob-path {
-            fill: var(--dark-blue);
-            animation: real-wave 8s infinite ease-in-out;
-        }
-        
-        @keyframes real-wave {
-            0% {
-                d: path("M0,60 Q300,0 600,30 T1200,60 L1200,60 L0,60 Z");
-            }
-            50% {
-                d: path("M0,60 Q300,60 600,30 T1200,0 L1200,60 L0,60 Z");
-            }
-            100% {
-                d: path("M0,60 Q300,0 600,30 T1200,60 L1200,60 L0,60 Z");
-            }
-        }
 
         /* --- SKILLS --- */
         .beyond-description { max-width: 650px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
@@ -470,11 +439,6 @@
         </div>
         <div id="gyro-cta" onclick="requestGyroPermission()">
             <div class="phone-icon"></div><span>Tap & Tilt</span>
-        </div>
-        <div class="blob-divider">
-            <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
-                <path d="M0,60 Q300,0 600,30 T1200,60 L1200,60 L0,60 Z" class="blob-path"></path>
-            </svg>
         </div>
     </section>
 
