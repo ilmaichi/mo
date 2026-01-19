@@ -246,18 +246,17 @@
             position: relative;
             z-index: 5;
         
-            /* Effetto Macchia: un cerchio al centro di raggio 0% */
-            clip-path: circle(0% at 50% 50%);
-            transition: clip-path 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+            /* Usiamo le variabili --mouse-x e --mouse-y per il centro del cerchio */
+            clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
+            transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1);
             
-            /* Impedisce ai contenuti di vedersi finché la macchia non è grande */
             opacity: 0;
-            transition: clip-path 1.5s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s ease;
+            /* La transizione dell'opacity è più rapida per non bloccare la vista */
+            transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.3s ease;
         }
         
-        /* Quando la macchia si espande */
         .content-section.is-active {
-            clip-path: circle(150% at 50% 50%); /* 150% assicura di coprire gli angoli dello schermo */
+            clip-path: circle(150% at var(--mouse-x, 50%) var(--mouse-y, 50%));
             opacity: 1;
         }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
@@ -588,48 +587,63 @@
 
 let hasJumped = false;
 
-function performJump() {
+function performJump(e) {
     if (hasJumped) return;
     hasJumped = true;
+    
     const target = document.querySelector('.content-section');
     
-    // 1. Attiviamo la macchia
+    // Calcoliamo la posizione del cursore in percentuale rispetto alla finestra
+    // Se l'evento non esiste (es. mobile), usiamo il centro 50%
+    const posX = e && e.clientX ? (e.clientX / window.innerWidth) * 100 : 50;
+    const posY = e && e.clientY ? (e.clientY / window.innerHeight) * 100 : 50;
+    
+    // Passiamo le coordinate al CSS
+    target.style.setProperty('--mouse-x', posX + '%');
+    target.style.setProperty('--mouse-y', posY + '%');
+    
+    // Attiviamo l'espansione
     target.classList.add('is-active');
 
-    // 2. Coordinazione loghi e scroll
     setTimeout(() => {
         hLog.classList.add('fade-out');
         nLog.classList.add('slide-in');
         labelName.classList.add('scrolled');
         
-        // Iniziamo lo scroll verso il basso mentre la macchia si espande
         window.scrollTo({
             top: target.offsetTop,
             behavior: 'smooth'
         });
         
-        // Rivela la headline
         document.getElementById('headline').classList.add('reveal');
-    }, 200); // Il delay sincronizza l'espansione con il movimento
+    }, 150);
 }
 
-// Listener Mouse
+// Listener per Mouse: passiamo l'evento 'e' per avere le coordinate
 window.addEventListener('wheel', (e) => {
     if (!hasJumped && e.deltaY > 0) {
         e.preventDefault();
-        performJump();
+        performJump(e);
     }
 }, { passive: false });
 
-// Listener Mobile (Tap & Tilt)
-let touchStartY = 0;
-window.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; }, { passive: true });
+// Listener per Mobile: qui usiamo il centro dello schermo
 window.addEventListener('touchmove', (e) => {
-    let touchEndY = e.touches[0].clientY;
-    if (!hasJumped && touchStartY > touchEndY + 10) {
-        performJump();
+    if (!hasJumped) {
+        performJump(); 
     }
 }, { passive: true });
+
+// Reset se si torna su
+window.addEventListener('scroll', () => {
+    if (window.scrollY < 50 && hasJumped) {
+        hasJumped = false;
+        document.querySelector('.content-section').classList.remove('is-active');
+        hLog.classList.remove('fade-out');
+        nLog.classList.remove('slide-in');
+        labelName.classList.remove('scrolled');
+    }
+});
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
