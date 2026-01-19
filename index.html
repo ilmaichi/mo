@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michele Occhi - Art Direction</title>
+    <title>Michele Occhi | Art Direction</title>
     <style>
         :root {
             --bg-color: #f4f1ea;
@@ -15,84 +15,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
 
         body {
-            font-family: 'Helvetica', sans-serif;
             background-color: var(--bg-color);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             overflow-x: hidden;
-            /* Altezza necessaria per permettere lo scroll del blob */
-            min-height: 250vh; 
         }
 
-        /* --- NAV & LOGHI --- */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .logo-nav {
-            width: 40px;
-            transform: translateY(-100px);
-            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .logo-nav.slide-in { transform: translateY(0); }
-
-        .label-name {
-            font-weight: bold;
-            transition: transform 0.8s ease, color 0.8s ease;
-        }
-        .label-name.scrolled { color: var(--text-light); }
-
-        /* --- HERO SECTION --- */
-        .hero-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--bg-color);
-            will-change: opacity, transform;
-        }
-
-        .hero-logo {
-            width: 300px;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .hero-logo.fade-out { opacity: 0; transform: translateY(-50px); }
-
-        /* --- CONTENT SECTION (IL BLOB) --- */
-        .content-section {
-            position: relative;
-            z-index: 10;
-            margin-top: 100vh; /* Inizia dopo la hero */
-            min-height: 150vh;
-            background-color: var(--dark-blue);
-            color: var(--text-light);
-            padding: 100px 50px;
-            
-            /* Il Blob Iniziale */
-            clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
-            will-change: clip-path;
-        }
-
-        .headline {
-            font-size: 8vw;
-            line-height: 0.9;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease;
-        }
-        .headline.reveal { opacity: 1; transform: translateY(0); }
-
-        /* --- CURSORE ORGANICO (Codice Buono) --- */
+        /* --- CURSORE ORGANICO --- */
         #cursor {
             position: fixed;
             width: 20px;
@@ -102,7 +30,103 @@
             pointer-events: none;
             z-index: 9999;
             mix-blend-mode: difference;
+            will-change: transform;
         }
+
+        /* --- NAV & LOGHI --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .logo-nav {
+            width: 40px;
+            transform: translateY(-120px);
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .logo-nav.slide-in { transform: translateY(0); }
+
+        .label-name {
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: color 0.6s ease;
+        }
+        .label-name.scrolled { color: var(--text-light); }
+
+        /* --- STRUTTURA REVEAL --- */
+        .scroll-container {
+            position: relative;
+            width: 100%;
+            /* Altezza totale: 100vh (Hero) + 150vh (Petrolio) */
+            height: 250vh; 
+        }
+
+        /* La Hero resta bloccata mentre scrolli */
+        .hero-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            overflow: hidden;
+            background-color: var(--bg-color);
+        }
+
+        .hero-logo {
+            width: 350px;
+            max-width: 80%;
+            transition: opacity 0.5s ease, transform 0.8s ease;
+        }
+        .hero-logo.fade-out { 
+            opacity: 0; 
+            transform: scale(0.9) translateY(-20px); 
+        }
+
+        /* Sezione Petrolio: sale sopra la Hero */
+        .content-reveal {
+            position: relative;
+            z-index: 2;
+            margin-top: -100vh; /* La porta sopra la Hero sticky */
+            min-height: 150vh;
+            background-color: var(--dark-blue);
+            color: var(--text-light);
+            
+            /* Il Blob Iniziale */
+            clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
+            will-change: clip-path;
+            pointer-events: none; /* Trasparente finché non si apre */
+        }
+
+        .content-reveal.is-active {
+            pointer-events: auto;
+        }
+
+        .content-inner {
+            padding: 150px 10%;
+            max-width: 1200px;
+        }
+
+        .headline {
+            font-size: clamp(40px, 8vw, 120px);
+            line-height: 0.85;
+            font-weight: 900;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .headline.reveal { opacity: 1; transform: translateY(0); }
+
     </style>
 </head>
 <body>
@@ -110,53 +134,51 @@
     <div id="cursor"></div>
 
     <nav>
-        <img src="logo-small.svg" class="logo-nav" id="navLogo" alt="Logo">
+        <img src="logo-small.svg" class="logo-nav" id="navLogo" alt="Logo Nav">
         <div class="label-name" id="labelName">MICHELE OCCHI</div>
     </nav>
 
-    <div class="main-wrapper">
-        <section class="hero-container">
-            <img src="logo-big.svg" class="hero-logo" id="heroLogo" alt="Hero Logo">
+    <main class="scroll-container">
+        <section class="hero-sticky" id="hero">
+            <img src="logo-big.svg" class="hero-logo" id="heroLogo" alt="Michele Occhi Hero">
             </section>
 
-        <section class="content-section">
-            <h1 class="headline" id="headline">BEYOND<br>ART DIRECTION</h1>
-            <div style="margin-top: 100px; max-width: 600px;">
-                <p>Digital design, craft, and motion.</p>
+        <section class="content-reveal" id="revealSection">
+            <div class="content-inner">
+                <h1 class="headline" id="headline">BEYOND<br>ART DIRECTION</h1>
+                <div style="margin-top: 60px; font-size: 20px; line-height: 1.6; max-width: 500px;">
+                    <p>Blending digital craftsmanship with organic motion to create immersive visual experiences.</p>
                 </div>
+            </div>
         </section>
-    </div>
+    </main>
 
     <script>
         const cursor = document.getElementById('cursor');
         const hLog = document.getElementById('heroLogo');
         const nLog = document.getElementById('navLogo');
         const labelName = document.getElementById('labelName');
-        const content = document.querySelector('.content-section');
-        const hero = document.querySelector('.hero-container');
+        const revealSection = document.getElementById('revealSection');
+        const headline = document.getElementById('headline');
 
         let mX = 0, mY = 0, cX = 0, cY = 0;
         let targetProgress = 0, currentProgress = 0;
 
-        // 1. GESTIONE MOUSE (Cursore + Coordinate Blob)
+        // 1. CATTURA COORDINATE MOUSE
         document.addEventListener('mousemove', (e) => {
             mX = e.clientX;
             mY = e.clientY;
             
-            // Passiamo le coordinate al CSS per il centro del blob
+            // Coordinate per il centro del blob (in percentuale)
             const pX = (mX / window.innerWidth) * 100;
             const pY = (mY / window.innerHeight) * 100;
-            content.style.setProperty('--mouse-x', pX + '%');
-            content.style.setProperty('--mouse-y', pY + '%');
+            revealSection.style.setProperty('--mouse-x', pX + '%');
+            revealSection.style.setProperty('--mouse-y', pY + '%');
         });
 
-        // 2. MOTORE CURSORE (Dal tuo Codice Buono base)
-        let currentRotation = 0;
-        let currentStretchX = 1;
-        let currentStretchY = 1;
-
+        // 2. MOTORE DI ANIMAZIONE (Update Loop)
         function update() {
-            // Logica Cursore
+            // Animazione Cursore Fluido
             const dx = mX - cX;
             const dy = mY - cY;
             cX += dx * 0.15;
@@ -165,46 +187,51 @@
             const speed = Math.hypot(dx, dy);
             const angle = Math.atan2(dy, dx) * (180 / Math.PI);
             
-            let targetStretchX = 1 + Math.min(speed / 400, 0.6);
-            let targetStretchY = 1 - Math.min(speed / 400, 0.6);
+            // Deformazione cursore in base alla velocità
+            const stretch = Math.min(speed / 500, 0.7);
+            cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${1 + stretch}, ${1 - stretch})`;
 
-            cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${targetStretchX}, ${targetStretchY})`;
-
-            // 3. LOGICA BLOB FLUIDO (Inerzia)
+            // LOGICA BLOB REVEAL (Basata sullo scroll reale)
             const scrollY = window.scrollY;
             const vh = window.innerHeight;
             
-            // Il progresso della macchia segue lo scroll
+            // targetProgress: raggio del blob (0 a 150%)
+            // Usiamo i primi 100vh per completare l'apertura
             targetProgress = Math.min(150, (scrollY / vh) * 150);
+            
+            // Lerp per rendere l'espansione fluida (inerzia)
             currentProgress += (targetProgress - currentProgress) * 0.1;
 
-            // Effetto Blob (vibrazione organica)
-            const wobble = Math.sin(Date.now() * 0.003) * (currentProgress > 5 ? 2 : 0);
-            content.style.clipPath = `circle(${currentProgress + wobble}% at var(--mouse-x) var(--mouse-y))`;
+            // Effetto "Wobble" (vibrazione organica del bordo)
+            const wobble = Math.sin(Date.now() * 0.003) * (currentProgress > 2 ? 3 : 0);
+            const finalRadius = currentProgress + wobble;
 
-            // Gestione UI Loghi e Opacità Hero
-            if (currentProgress > 45) {
+            revealSection.style.clipPath = `circle(${finalRadius}% at var(--mouse-x, 50%) var(--mouse-y, 50%))`;
+
+            // GESTIONE STATI UI
+            if (currentProgress > 1) {
+                revealSection.classList.add('is-active');
+            } else {
+                revealSection.classList.remove('is-active');
+            }
+
+            // Trigger loghi e testi a metà transizione (50% del raggio)
+            if (currentProgress > 50) {
                 hLog.classList.add('fade-out');
                 nLog.classList.add('slide-in');
                 labelName.classList.add('scrolled');
-                hero.style.opacity = Math.max(0, 1 - (currentProgress - 45) / 50);
-                document.getElementById('headline').classList.add('reveal');
+                headline.classList.add('reveal');
             } else {
                 hLog.classList.remove('fade-out');
                 nLog.classList.remove('slide-in');
                 labelName.classList.remove('scrolled');
-                hero.style.opacity = 1;
             }
 
             requestAnimationFrame(update);
         }
 
+        // Avvio del loop
         update();
-
-        // Supporto Mobile Tap & Tilt (Icona aggiuntiva come da istruzioni)
-        window.addEventListener('deviceorientation', (e) => {
-            // Qui andrà la logica tilt se necessaria su mobile
-        });
     </script>
 </body>
 </html>
