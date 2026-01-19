@@ -259,14 +259,16 @@
         .content-section {
             position: relative;
             z-index: 10;
-            margin-top: -100vh; /* La tira sopra la Hero */
-            min-height: 200vh; /* Spazio per lo scroll */
+            margin-top: -100vh;
+            min-height: 200vh;
             background-color: var(--dark-blue);
             
-            /* Il Blob */
-            clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
-            /* Rimuoviamo la transition per gestirla via JS in modo fluido */
-            will-change: clip-path;
+            /* Usiamo l'SVG come maschera */
+            clip-path: url(#blob-mask);
+            
+            /* Centro della macchia gestito da coordinate */
+            transform-origin: var(--mouse-x, 50%) var(--mouse-y, 50%);
+            will-change: transform, clip-path;
         }
         
         .content-section.is-active {
@@ -405,7 +407,13 @@
     </style>
 </head>
 <body>
-
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+      <defs>
+        <clipPath id="blob-mask" clipPathUnits="objectBoundingBox">
+          <path id="blob-path" d="M0.5,0 C0.7,0.1 0.9,0.3 1,0.5 C0.9,0.7 0.7,0.9 0.5,1 C0.3,0.9 0.1,0.7 0,0.5 C0.1,0.3 0.3,0.1 0.5,0" />
+        </clipPath>
+      </defs>
+    </svg>
     <div id="cursor-container">
         <div id="custom-cursor">
             <svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>
@@ -618,22 +626,36 @@ window.addEventListener('scroll', () => {
     targetProgress = Math.min(150, (scrollY / vh) * 150);
 }, { passive: true });
 
+let targetScale = 0;
+let currentScale = 0;
+let currentRotation = 0;
+
 function updateLoop() {
-    // Inerzia (Lerp)
-    currentProgress += (targetProgress - currentProgress) * 0.1;
+    // Inerzia fluida (Lerp)
+    currentScale += (targetScale - currentScale) * 0.08;
+    // Aggiungiamo una rotazione lenta mentre la macchia cresce
+    currentRotation += currentScale * 0.05;
 
     const target = document.querySelector('.content-section');
     const hero = document.querySelector('.hero-container');
+    const blobPath = document.getElementById('blob-path');
 
-    // Applichiamo il raggio
-    target.style.clipPath = `circle(${currentProgress}% at var(--mouse-x, 50%) var(--mouse-y, 50%))`;
+    // Trasformiamo l'intero clipPath basandoci sulla posizione del mouse
+    // e sulla scala calcolata dallo scroll
+    const posX = target.style.getPropertyValue('--mouse-x') || '50%';
+    const posY = target.style.getPropertyValue('--mouse-y') || '50%';
 
-    // Effetti sui loghi e Hero
-    if (currentProgress > 40) {
+    // Applichiamo la scala e la posizione tramite transform
+    // Nota: usiamo scale massicce (es. 20) per coprire tutto lo schermo partendo dal centro
+    target.style.transform = `scale(${currentScale * 0.15})`; 
+    target.style.transformOrigin = `${posX} ${posY}`;
+
+    // Effetti UI (Loghi/Hero)
+    if (currentScale > 30) {
         hLog.classList.add('fade-out');
         nLog.classList.add('slide-in');
         labelName.classList.add('scrolled');
-        hero.style.opacity = Math.max(0, 1 - (currentProgress - 40) / 60);
+        hero.style.opacity = Math.max(0, 1 - (currentScale - 30) / 40);
         document.getElementById('headline').classList.add('reveal');
     } else {
         hLog.classList.remove('fade-out');
@@ -645,7 +667,14 @@ function updateLoop() {
     requestAnimationFrame(updateLoop);
 }
 
-// Avvia il loop di animazione
+// Aggiorna la scala target basandoti sullo scroll
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const vh = window.innerHeight;
+    // La scala cresce con lo scroll
+    targetScale = (scrollY / vh) * 150; 
+}, { passive: true });
+
 updateLoop();
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
