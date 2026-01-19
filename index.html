@@ -237,22 +237,37 @@
         .menu-link:hover { color: var(--accent-coral); }
 
         /* --- SECTIONS --- */
-        .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
+        .hero-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1; /* Sta sotto */
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+        .hero-container.fade-out {
+            opacity: 0.5; /* Non scompare del tutto, resta come ombra sotto */
+            pointer-events: none;
+        }
         .content-section {
-            background-color: var(--dark-blue);
-            color: var(--text-light);
-            padding: 160px 40px;
-            min-height: 120vh;
             position: relative;
-            z-index: 5;
-            /* Usiamo le variabili --mouse-x e --mouse-y per il centro del cerchio */
+            z-index: 10; /* Sta sopra la Hero */
+            margin-top: 100vh; /* Inizia dopo l'altezza della Hero */
+            background-color: var(--dark-blue);
+            min-height: 120vh;
+            
+            /* Manteniamo la tua macchia dal cursore */
             clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
-            transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s ease;
+            transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1);
         }
         
         .content-section.is-active {
             clip-path: circle(150% at var(--mouse-x, 50%) var(--mouse-y, 50%));
-            opacity: 1;
         }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
         .headline.reveal { opacity: 1; transform: translateY(0); }
@@ -587,41 +602,37 @@ function performJump(direction) {
     if (isAnimating) return;
     isAnimating = true;
     const target = document.querySelector('.content-section');
+    const hero = document.querySelector('.hero-container');
     
     if (direction === 'down' && !hasJumped) {
         hasJumped = true;
         
-        // Se non abbiamo coordinate mouse (es. scroll barra), usiamo il centro
-        if (!target.style.getPropertyValue('--mouse-x')) {
-            target.style.setProperty('--mouse-x', '50%');
-            target.style.setProperty('--mouse-y', '50%');
-        }
-
         target.classList.add('is-active');
-        hLog.classList.add('fade-out');
+        hero.classList.add('fade-out'); // La hero sotto diventa più scura/eterea
+        
         nLog.classList.add('slide-in');
         labelName.classList.add('scrolled');
 
-        window.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
+        // Scrolliamo fisicamente la pagina per mostrare il contenuto sopra
+        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
         document.getElementById('headline').classList.add('reveal');
 
     } else if (direction === 'up' && hasJumped) {
         hasJumped = false;
         
-        // Effetto inverso: chiudiamo la macchia e resettiamo i loghi
         target.classList.remove('is-active');
-        hLog.classList.remove('fade-out');
+        hero.classList.remove('fade-out');
+        
         nLog.classList.remove('slide-in');
         labelName.classList.remove('scrolled');
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Tempo per completare l'animazione prima di permettere un altro salto
     setTimeout(() => { isAnimating = false; }, 1200);
 }
 
-// 1. COORDINATE MOUSE (per la macchia)
+// Coordinate mouse per la macchia (già nel codice buono)
 document.addEventListener('mousemove', (e) => {
     const posX = (e.clientX / window.innerWidth) * 100;
     const posY = (e.clientY / window.innerHeight) * 100;
@@ -630,38 +641,21 @@ document.addEventListener('mousemove', (e) => {
     target.style.setProperty('--mouse-y', posY + '%');
 });
 
-// 2. LISTENER RUOTA MOUSE (per rilevare la direzione "UP")
+// Listener per la rotella
 window.addEventListener('wheel', (e) => {
-    const sectionTop = document.querySelector('.content-section').offsetTop;
-    
-    // Se scrolli giù dalla Hero
-    if (e.deltaY > 0 && !hasJumped && window.scrollY < 100) {
-        e.preventDefault();
-        performJump('down');
-    } 
-    // Se sei nella seconda sezione e scrolli su mentre sei in cima alla sezione
-    else if (e.deltaY < 0 && hasJumped && window.scrollY <= sectionTop + 10) {
-        e.preventDefault();
-        performJump('up');
-    }
-}, { passive: false });
-
-// 3. LISTENER SCROLL UNIVERSALE (per barra laterale e tastiera)
-window.addEventListener('scroll', () => {
     if (isAnimating) return;
     
-    const scrollY = window.scrollY;
-    const sectionTop = document.querySelector('.content-section').offsetTop;
-
-    // Se l'utente usa la barra laterale per scendere
-    if (scrollY > 50 && !hasJumped) {
+    if (e.deltaY > 0 && !hasJumped && window.scrollY < 50) {
+        e.preventDefault();
         performJump('down');
-    } 
-    // Se l'utente usa la barra laterale per salire sopra la soglia
-    else if (scrollY < 50 && hasJumped) {
-        performJump('up');
+    } else if (e.deltaY < 0 && hasJumped && window.scrollY <= window.innerHeight + 10) {
+        // Se l'utente è tornato in cima alla sezione 2 e scrolla ancora su
+        if (window.scrollY <= window.innerHeight) {
+            e.preventDefault();
+            performJump('up');
+        }
     }
-});
+}, { passive: false });
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
