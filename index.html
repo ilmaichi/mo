@@ -237,43 +237,8 @@
         .menu-link:hover { color: var(--accent-coral); }
 
         /* --- SECTIONS --- */
-        /* Contenitore principale che permette lo scroll */
-        .main-wrapper {
-            perspective: 1000px;
-        }
-        
-        .hero-container {
-            position: sticky; /* Resta bloccata mentre scrolli */
-            top: 0;
-            height: 100vh;
-            width: 100%;
-            z-index: 1;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.8s ease, opacity 0.8s ease;
-        }
-        
-        /* La sezione 2 "scorre" sopra la Hero */
-        .content-section {
-            position: relative;
-            z-index: 10;
-            margin-top: -100vh;
-            min-height: 200vh;
-            background-color: var(--dark-blue);
-            
-            /* Usiamo l'SVG come maschera */
-            clip-path: url(#blob-mask);
-            
-            /* Centro della macchia gestito da coordinate */
-            transform-origin: var(--mouse-x, 50%) var(--mouse-y, 50%);
-            will-change: transform, clip-path;
-        }
-        
-        .content-section.is-active {
-            pointer-events: auto;
-        }
+        .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
+        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 120vh; position: relative; z-index: 5; }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
         .headline.reveal { opacity: 1; transform: translateY(0); }
         .no-wrap { white-space: nowrap; display: inline-block; }
@@ -282,15 +247,6 @@
             font-size: 1.15em; /* Aumenta del 15% rispetto alla dimensione base */
             display: inline-block;
             vertical-align: middle;
-        }
-        /* Assicurati che il testo sia invisibile finché lo sfondo è chiaro */
-        .headline, .beyond-description, .skills-container {
-            color: var(--bg-color); /* Sarà visibile solo quando lo sfondo diventa blu */
-            transition: color 0.8s ease 0.4s, opacity 0.9s ease, transform 0.9s ease;
-        }
-        .content-section.is-active .headline,
-        .content-section.is-active .beyond-description {
-            color: var(--text-light);
         }
         
         #dynamic-word { 
@@ -407,13 +363,7 @@
     </style>
 </head>
 <body>
-    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
-      <defs>
-        <clipPath id="blob-mask" clipPathUnits="objectBoundingBox">
-          <path id="blob-path" d="M0.5,0 C0.7,0.1 0.9,0.3 1,0.5 C0.9,0.7 0.7,0.9 0.5,1 C0.3,0.9 0.1,0.7 0,0.5 C0.1,0.3 0.3,0.1 0.5,0" />
-        </clipPath>
-      </defs>
-    </svg>
+
     <div id="cursor-container">
         <div id="custom-cursor">
             <svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>
@@ -606,76 +556,11 @@
 
         function toggleMenu() { isMenuOpen = !isMenuOpen; const o = document.getElementById('menu-overlay'); if (isMenuOpen) { o.classList.add('active'); menuBtn.innerText = "Close -"; } else { o.classList.remove('active'); menuBtn.innerText = "Menu +"; } }
 
-let targetProgress = 0;
-let currentProgress = 0;
-
-// Gestione mouse (sempre necessaria per il blob)
-document.addEventListener('mousemove', (e) => {
-    const target = document.querySelector('.content-section');
-    const posX = (e.clientX / window.innerWidth) * 100;
-    const posY = (e.clientY / window.innerHeight) * 100;
-    target.style.setProperty('--mouse-x', posX + '%');
-    target.style.setProperty('--mouse-y', posY + '%');
-});
-
-// Ascolta lo scroll reale
-window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const vh = window.innerHeight;
-    // Calcoliamo il raggio (0 a 150)
-    targetProgress = Math.min(150, (scrollY / vh) * 150);
-}, { passive: true });
-
-let targetScale = 0;
-let currentScale = 0;
-let currentRotation = 0;
-
-function updateLoop() {
-    // Inerzia fluida (Lerp)
-    currentScale += (targetScale - currentScale) * 0.08;
-    // Aggiungiamo una rotazione lenta mentre la macchia cresce
-    currentRotation += currentScale * 0.05;
-
-    const target = document.querySelector('.content-section');
-    const hero = document.querySelector('.hero-container');
-    const blobPath = document.getElementById('blob-path');
-
-    // Trasformiamo l'intero clipPath basandoci sulla posizione del mouse
-    // e sulla scala calcolata dallo scroll
-    const posX = target.style.getPropertyValue('--mouse-x') || '50%';
-    const posY = target.style.getPropertyValue('--mouse-y') || '50%';
-
-    // Applichiamo la scala e la posizione tramite transform
-    // Nota: usiamo scale massicce (es. 20) per coprire tutto lo schermo partendo dal centro
-    target.style.transform = `scale(${currentScale * 0.15})`; 
-    target.style.transformOrigin = `${posX} ${posY}`;
-
-    // Effetti UI (Loghi/Hero)
-    if (currentScale > 30) {
-        hLog.classList.add('fade-out');
-        nLog.classList.add('slide-in');
-        labelName.classList.add('scrolled');
-        hero.style.opacity = Math.max(0, 1 - (currentScale - 30) / 40);
-        document.getElementById('headline').classList.add('reveal');
-    } else {
-        hLog.classList.remove('fade-out');
-        nLog.classList.remove('slide-in');
-        labelName.classList.remove('scrolled');
-        hero.style.opacity = 1;
-    }
-
-    requestAnimationFrame(updateLoop);
-}
-
-// Aggiorna la scala target basandoti sullo scroll
-window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const vh = window.innerHeight;
-    // La scala cresce con lo scroll
-    targetScale = (scrollY / vh) * 150; 
-}, { passive: true });
-
-updateLoop();
+        window.addEventListener('scroll', () => {
+            const y = window.scrollY;
+            if (y > 100) { hLog.classList.add('fade-out'); nLog.classList.add('slide-in'); labelName.classList.add('scrolled'); document.getElementById('headline').classList.add('reveal'); }
+            else { hLog.classList.remove('fade-out'); nLog.classList.remove('slide-in'); labelName.classList.remove('scrolled'); }
+        });
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
