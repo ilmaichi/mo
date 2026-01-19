@@ -250,10 +250,11 @@
         }
         /* Classe per l'effetto di uscita/entrata */
         .word-transition {
-            opacity: 0;
+            opacity: 0 !important;
             transform: translateY(10px) skewY(2deg); /* Leggera inclinazione per dinamismo */
             filter: blur(8px);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            
         }
         #dynamic-word { 
             color: var(--accent-coral); 
