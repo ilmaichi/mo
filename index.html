@@ -238,8 +238,28 @@
 
         /* --- SECTIONS --- */
         .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
-        .content-section { background-color: var(--bg-color); transition: background-color 1.2s cubic-bezier(0.45, 0, 0.55, 1); color: var(--text-light); padding: 160px 40px; min-height: 120vh; position: relative; z-index: 5; }
-        .content-section.is-active { background-color: var(--dark-blue); }
+        .content-section {
+            background-color: var(--dark-blue);
+            color: var(--text-light);
+            padding: 160px 40px;
+            min-height: 120vh;
+            position: relative;
+            z-index: 5;
+        
+            /* Effetto Macchia: un cerchio al centro di raggio 0% */
+            clip-path: circle(0% at 50% 50%);
+            transition: clip-path 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+            
+            /* Impedisce ai contenuti di vedersi finché la macchia non è grande */
+            opacity: 0;
+            transition: clip-path 1.5s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s ease;
+        }
+        
+        /* Quando la macchia si espande */
+        .content-section.is-active {
+            clip-path: circle(150% at 50% 50%); /* 150% assicura di coprire gli angoli dello schermo */
+            opacity: 1;
+        }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
         .headline.reveal { opacity: 1; transform: translateY(0); }
         .no-wrap { white-space: nowrap; display: inline-block; }
@@ -568,28 +588,32 @@
 
 let hasJumped = false;
 
-// Funzione centrale per il salto
 function performJump() {
     if (hasJumped) return;
     hasJumped = true;
     const target = document.querySelector('.content-section');
     
-    window.scrollTo({
-        top: target.offsetTop,
-        behavior: 'smooth'
-    });
+    // 1. Attiviamo la macchia
+    target.classList.add('is-active');
 
-    // Attivazione elementi UI e colori
+    // 2. Coordinazione loghi e scroll
     setTimeout(() => {
-        target.classList.add('is-active');
         hLog.classList.add('fade-out');
         nLog.classList.add('slide-in');
         labelName.classList.add('scrolled');
+        
+        // Iniziamo lo scroll verso il basso mentre la macchia si espande
+        window.scrollTo({
+            top: target.offsetTop,
+            behavior: 'smooth'
+        });
+        
+        // Rivela la headline
         document.getElementById('headline').classList.add('reveal');
-    }, 200);
+    }, 200); // Il delay sincronizza l'espansione con il movimento
 }
 
-// Intercetta lo scroll del mouse/trackpad
+// Listener Mouse
 window.addEventListener('wheel', (e) => {
     if (!hasJumped && e.deltaY > 0) {
         e.preventDefault();
@@ -597,7 +621,7 @@ window.addEventListener('wheel', (e) => {
     }
 }, { passive: false });
 
-// Intercetta il tocco su mobile
+// Listener Mobile (Tap & Tilt)
 let touchStartY = 0;
 window.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; }, { passive: true });
 window.addEventListener('touchmove', (e) => {
@@ -606,17 +630,6 @@ window.addEventListener('touchmove', (e) => {
         performJump();
     }
 }, { passive: true });
-
-// Gestione ritorno in alto (reset)
-window.addEventListener('scroll', () => {
-    if (window.scrollY < 50 && hasJumped) {
-        hasJumped = false;
-        document.querySelector('.content-section').classList.remove('is-active');
-        hLog.classList.remove('fade-out');
-        nLog.classList.remove('slide-in');
-        labelName.classList.remove('scrolled');
-    }
-});
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
