@@ -257,28 +257,28 @@
             pointer-events: none;
         }
         .content-section {
-    position: fixed; /* La blocchiamo sopra la hero */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 10;
-    background-color: var(--dark-blue);
-    overflow-y: auto; /* Permette di scrollare i contenuti interni */
-    pointer-events: none; /* Inizialmente "trasparente" ai click */
-    opacity: 0;
-    
-    /* Il segreto del Blob: un cerchio che diventa irregolare */
-    clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
-    
-    /* Transizione morbidissima per seguire lo scroll senza scatti */
-    transition: clip-path 0.2s linear, opacity 0.5s ease;
-}
-
-.content-section.is-visible {
-    opacity: 1;
-    pointer-events: auto;
-}
+            position: fixed; /* La blocchiamo sopra la hero */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 10;
+            background-color: var(--dark-blue);
+            overflow-y: auto; /* Permette di scrollare i contenuti interni */
+            pointer-events: none; /* Inizialmente "trasparente" ai click */
+            opacity: 0;
+            
+            /* Il segreto del Blob: un cerchio che diventa irregolare */
+            clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
+            
+            /* Transizione morbidissima per seguire lo scroll senza scatti */
+            transition: clip-path 0.2s linear, opacity 0.5s ease;
+        }
+        
+        .content-section.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
         .headline.reveal { opacity: 1; transform: translateY(0); }
         .no-wrap { white-space: nowrap; display: inline-block; }
@@ -605,47 +605,63 @@
 
         function toggleMenu() { isMenuOpen = !isMenuOpen; const o = document.getElementById('menu-overlay'); if (isMenuOpen) { o.classList.add('active'); menuBtn.innerText = "Close -"; } else { o.classList.remove('active'); menuBtn.innerText = "Menu +"; } }
 
-/* La tua Hero rimane quasi identica, aggiungiamo solo l'altezza fissa */
-.hero-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 1; /* Sta sotto */
-    background-color: var(--bg-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.8s ease, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
+let currentProgress = 0; // 0 = Hero, 100 = Petrolio pieno
 
-.hero-container.fade-out {
-    opacity: 0.3; /* Leggermente più trasparente per dare focus al petrolio */
-    transform: scale(0.95); /* Un leggero zoom-out per dare profondità */
-    pointer-events: none;
-}
+window.addEventListener('wheel', (e) => {
+    // Calcoliamo la direzione e incrementiamo il progresso
+    const delta = e.deltaY * 0.1; // Sensibilità
+    currentProgress = Math.max(0, Math.min(150, currentProgress + delta));
 
-/* LA MODIFICA CHIAVE: La sezione 2 ora è un "cappello" sopra la Hero */
-.content-section {
-    position: relative; /* Non più fixed, così possiamo scrollarla */
-    z-index: 10;
-    margin-top: 0; /* Inizialmente copre la hero visivamente solo tramite clip-path */
-    background-color: var(--dark-blue);
-    min-height: 200vh; /* Molto alta per permettere lo scroll dei contenuti */
+    updateOrganicTransition();
+}, { passive: false });
+
+// Supporto Mobile
+let touchStart = 0;
+window.addEventListener('touchstart', (e) => { touchStart = e.touches[0].clientY; });
+window.addEventListener('touchmove', (e) => {
+    let touchEnd = e.touches[0].clientY;
+    currentProgress = Math.max(0, Math.min(150, currentProgress + (touchStart - touchEnd) * 0.5));
+    touchStart = touchEnd;
+    updateOrganicTransition();
+});
+
+function updateOrganicTransition() {
+    const target = document.querySelector('.content-section');
     
-    /* Applichiamo il Blob iniziale */
-    clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
+    // Mostra/Nascondi la sezione
+    if (currentProgress > 1) {
+        target.classList.add('is-visible');
+    } else {
+        target.classList.remove('is-visible');
+    }
+
+    // Effetto Blob dinamico: aggiungiamo un po' di "vibrazione" basata sul progresso
+    const blobSize = currentProgress;
+    // Creiamo una forma leggermente irregolare che cambia mentre cresce
+    const wobble = Math.sin(currentProgress * 0.1) * 5; 
     
-    /* Transizione fluida ma reattiva */
-    transition: clip-path 0.1s linear; 
-    pointer-events: none; /* Disattivata finché il blob non è abbastanza grande */
+    target.style.clipPath = `circle(${blobSize + wobble}% at var(--mouse-x, 50%) var(--mouse-y, 50%))`;
+
+    // Gestione Loghi basata sul progresso
+    if (currentProgress > 50) {
+        hLog.classList.add('fade-out');
+        nLog.classList.add('slide-in');
+        labelName.classList.add('scrolled');
+        document.getElementById('headline').classList.add('reveal');
+    } else {
+        hLog.classList.remove('fade-out');
+        nLog.classList.remove('slide-in');
+        labelName.classList.remove('scrolled');
+    }
 }
 
-/* Quando il blob ha mangiato abbastanza schermo, riattiviamo i click */
-.content-section.is-active {
-    pointer-events: auto;
-}
+// Coordinate mouse costanti per il blob (già nel codice buono)
+document.addEventListener('mousemove', (e) => {
+    const posX = (e.clientX / window.innerWidth) * 100;
+    const posY = (e.clientY / window.innerHeight) * 100;
+    document.querySelector('.content-section').style.setProperty('--mouse-x', posX + '%');
+    document.querySelector('.content-section').style.setProperty('--mouse-y', posY + '%');
+});
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
