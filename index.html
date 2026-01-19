@@ -586,64 +586,71 @@
         function toggleMenu() { isMenuOpen = !isMenuOpen; const o = document.getElementById('menu-overlay'); if (isMenuOpen) { o.classList.add('active'); menuBtn.innerText = "Close -"; } else { o.classList.remove('active'); menuBtn.innerText = "Menu +"; } }
 
 let hasJumped = false;
+let isAnimating = false;
 
-function performJump(e) {
-    if (hasJumped) return;
-    hasJumped = true;
-    
+function performJump(direction) {
+    if (isAnimating) return;
+    isAnimating = true;
     const target = document.querySelector('.content-section');
     
-    // Calcoliamo la posizione del cursore in percentuale rispetto alla finestra
-    // Se l'evento non esiste (es. mobile), usiamo il centro 50%
-    const posX = e && e.clientX ? (e.clientX / window.innerWidth) * 100 : 50;
-    const posY = e && e.clientY ? (e.clientY / window.innerHeight) * 100 : 50;
-    
-    // Passiamo le coordinate al CSS
-    target.style.setProperty('--mouse-x', posX + '%');
-    target.style.setProperty('--mouse-y', posY + '%');
-    
-    // Attiviamo l'espansione
-    target.classList.add('is-active');
+    if (direction === 'down' && !hasJumped) {
+        hasJumped = true;
+        
+        // Per la macchia: se non abbiamo coordinate mouse (es. scroll barra), usiamo il centro
+        if (!target.style.getPropertyValue('--mouse-x')) {
+            target.style.setProperty('--mouse-x', '50%');
+            target.style.setProperty('--mouse-y', '50%');
+        }
 
-    setTimeout(() => {
+        target.classList.add('is-active');
         hLog.classList.add('fade-out');
         nLog.classList.add('slide-in');
         labelName.classList.add('scrolled');
-        
-        window.scrollTo({
-            top: target.offsetTop,
-            behavior: 'smooth'
-        });
-        
+
+        window.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
         document.getElementById('headline').classList.add('reveal');
-    }, 150);
-}
 
-// Listener per Mouse: passiamo l'evento 'e' per avere le coordinate
-window.addEventListener('wheel', (e) => {
-    if (!hasJumped && e.deltaY > 0) {
-        e.preventDefault();
-        performJump(e);
-    }
-}, { passive: false });
-
-// Listener per Mobile: qui usiamo il centro dello schermo
-window.addEventListener('touchmove', (e) => {
-    if (!hasJumped) {
-        performJump(); 
-    }
-}, { passive: true });
-
-// Reset se si torna su
-window.addEventListener('scroll', () => {
-    if (window.scrollY < 50 && hasJumped) {
+    } else if (direction === 'up' && hasJumped) {
         hasJumped = false;
-        document.querySelector('.content-section').classList.remove('is-active');
+        target.classList.remove('is-active');
         hLog.classList.remove('fade-out');
         nLog.classList.remove('slide-in');
         labelName.classList.remove('scrolled');
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Sblocca l'animazione dopo che lo scroll è finito
+    setTimeout(() => { isAnimating = false; }, 1000);
+}
+
+// 1. CATTURA COORDINATE MOUSE (Sempre attivo)
+// Questo serve per sapere dove far partire la macchia quando l'utente userà la rotella
+document.addEventListener('mousemove', (e) => {
+    if (!hasJumped) {
+        const posX = (e.clientX / window.innerWidth) * 100;
+        const posY = (e.clientY / window.innerHeight) * 100;
+        document.querySelector('.content-section').style.setProperty('--mouse-x', posX + '%');
+        document.querySelector('.content-section').style.setProperty('--mouse-y', posY + '%');
     }
 });
+
+// 2. IL LISTENER UNIVERSALE
+window.addEventListener('scroll', () => {
+    if (isAnimating) return;
+
+    const scrollY = window.scrollY;
+    const sectionTop = document.querySelector('.content-section').offsetTop;
+
+    // Se l'utente scrolla verso il basso dalla Hero
+    if (scrollY > 20 && !hasJumped) {
+        performJump('down');
+    } 
+    // Se l'utente scrolla verso l'alto mentre è sulla soglia della seconda sezione
+    else if (scrollY < sectionTop - 50 && hasJumped) {
+        performJump('up');
+    }
+}, { passive: true });
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
