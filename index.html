@@ -242,8 +242,15 @@
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
         .headline.reveal { opacity: 1; transform: translateY(0); }
         .no-wrap { white-space: nowrap; display: inline-block; }
-        #dynamic-word { color: var(--accent-coral); display: inline-block; min-width: 5ch; }
-
+        #dynamic-word { 
+            color: var(--accent-coral); 
+            display: inline-block; 
+            min-width: 5ch;
+            /* Aggiungi queste righe: */
+            font-family: 'Inter', sans-serif;
+            font-weight: 900; /* Per farlo matchare con la pesantezza di BEYOND */
+            letter-spacing: -0.02em; 
+        }
         .blob-divider {
             position: absolute;
             bottom: -1px;
