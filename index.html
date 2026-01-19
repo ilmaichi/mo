@@ -3,756 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Michele Occhi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;500;700&family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
-    
+    <title>Michele Occhi - Art Direction</title>
     <style>
         :root {
-            --bg-color: #f7f7f2;      
-            --dark-blue: #004f5e;    
-            --accent-coral: #ff6f61;  
-            --accent-gold: #ffc857;
-            --text-light: #f7f7f2;
-            --dark-text: #2d2926; 
+            --bg-color: #f4f1ea;
+            --text-dark: #1a1a1a;
+            --dark-blue: #0b1a2a;
+            --text-light: #f4f1ea;
         }
 
-        * { box-sizing: border-box; }
-        body, html { 
-            margin: 0; padding: 0; 
-            background-color: var(--bg-color); 
-            font-family: 'MoFont', sans-serif; 
-            overflow-x: hidden; 
-            scroll-behavior: smooth; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
 
-        @font-face {
-            font-family: 'MoFont';
-            /* Il percorso parte da dove si trova index.html */
-            src: url('fonts/MoFont-ExtraBold.woff2') format('woff2'),
-                 url('fonts/MoFont-ExtraBold.ttf') format('truetype');
-            font-weight: 800;
-            font-style: normal;
-            font-display: swap;
-          }
-        
-        /* --- CURSORE --- */
-        #cursor-container { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            pointer-events: none; z-index: 9999; 
-            display: none;
-        }
-        @media (pointer: fine) { 
-            body, a, button { cursor: none !important; } 
-            #cursor-container { display: block; }
-        }
-        #custom-cursor {
-            position: absolute; width: 30px; fill: var(--accent-coral);
-            will-change: transform; transition: width 0.3s ease, height 0.3s ease;
-        }
-        #custom-cursor.expanding { width: 75px; }
-        .drop { position: absolute; width: 12px; fill: var(--accent-coral); opacity: 0.6; pointer-events: none; }
-
-        /* Ripristino Cursore Standard via Toggle */
-        body.use-standard-cursor, body.use-standard-cursor a, body.use-standard-cursor button { cursor: auto !important; }
-        body.use-standard-cursor a, body.use-standard-cursor button, body.use-standard-cursor #nav-text-menu { cursor: pointer !important; }
-        
-        /* --- UI LABELS --- */
-        .ui-label {
-            position: fixed; z-index: 10001;
-            font-family: 'JetBrains Mono'; font-size: 11px; text-transform: uppercase;
-            color: #fff; mix-blend-mode: difference;
-            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
-            line-height: 1;
-        }
-        #label-name { top: 45px; left: 40px; letter-spacing: 0.2em; }
-        #label-name.scrolled { transform: translateY(55px) translateX(-5px); }
-        #nav-text-menu { top: 45px; right: 40px; padding: 0; cursor: pointer; letter-spacing: 0.1em; }
-        #nav-text-menu.sticky-active { color: #f7f7f2; mix-blend-mode: normal; }
-
-        /* Estensione della label per coprire l'intera pillola */
-        .full-clickable-label {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-            padding: 5px 10px; /* Spostiamo il padding qui per massimizzare l'area */
-        }
-        
-        /* --- TOGGLE CURSORE (Orizzontale per calibrazione) --- */
-        #cursor-ui-vertical {
-            display: none;
-            position: fixed;
-            /* Posizionamento temporaneo per debug */
-            right: -40px;
-            top: 50%;
-            
-            /* LA ROTAZIONE TOTALE SARÀ QUI */
-            transform: translateY(-50%) rotate(90deg); 
-            transform-origin: center center;
-            
-            z-index: 10001;
-            background: rgba(255, 255, 255, 0.4); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 5px 10px; 
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
-            
-            /* Layout orizzontale semplice */
-            flex-direction: row; 
-            align-items: center;
-            gap: 12px;
-            padding: 0; /* Rimuoviamo il padding dal container per darlo alla label */
-            overflow: hidden;
-        }
-        @media (pointer: fine) { #cursor-ui-vertical { display: flex; } }
-        
-        .toggle-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 8px;
-            font-weight: 700;
-            color: var(--dark-text);
-            /* Testo normale orizzontale */
-            writing-mode: horizontal-tb; 
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.8;
-        }
-        
-        .switch {
-            --switch-width: 38px;
-            --switch-height: 20px;
-            --circle-diameter: 14px;
-            --switch-bg: rgba(0, 0, 0, 0.1);
-            --switch-checked-bg: #00da50;
-            --circle-bg: #fff;
-            --switch-offset: calc((var(--switch-height) - var(--circle-diameter)) / 2);
-            --transition: all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
-            
-            display: block;
-            position: relative;
-            width: var(--switch-width);
-            height: var(--switch-height);
-        }
-        
-        .switch input { display: none; }
-        
-        .slider {
-            width: 100%;
-            height: 100%;
-            background: var(--switch-bg);
-            border-radius: 999px;
-            position: relative;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        
-        .circle {
-            width: var(--circle-diameter);
-            height: var(--circle-diameter);
-            background: var(--circle-bg);
-            border-radius: 50%;
-            position: absolute;
-            top: var(--switch-offset);
-            left: var(--switch-offset);
-            
-            /* Centratura icone perfetta tramite Flex */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            
-            transition: var(--transition);
-            z-index: 1;
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        /* Icone centrate nel cerchietto */
-        .switch svg { position: absolute; transition: var(--transition); }
-        .switch .checkmark { width: 9px; color: var(--switch-checked-bg); transform: scale(0); }
-        .switch .cross { width: 6px; color: rgba(0,0,0,0.4); transform: scale(1); }
-        
-        /* Effetto linea (pillola interna) */
-        .slider::before {
-            content: "";
-            position: absolute;
-            background: #fff;
-            border-radius: 1px;
-            width: 7px;
-            height: 3px;
-            transition: var(--transition);
-            top: 50%;
-            transform: translateY(-50%);
-            left: calc(var(--switch-offset) + 3.5px);
-        }
-        
-        /* Azioni al click */
-        .switch input:checked + .slider { background: var(--switch-checked-bg); }
-        .switch input:checked + .slider .checkmark { transform: scale(1); }
-        .switch input:checked + .slider .cross { transform: scale(0); }
-        .switch input:checked + .slider .circle { left: calc(100% - var(--circle-diameter) - var(--switch-offset)); }
-        .switch input:checked + .slider::before { left: calc(100% - 10.5px - var(--switch-offset)); }
-
-        /* --- LOGOS --- */
-        #nav-logo-wrapper {
-            position: fixed; top: 25px; left: 35px; width: 110px; z-index: 10001;
-            opacity: 0; transform: translateY(-150%);
-            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
-        }
-        #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; }
-        #hero-logo-wrapper {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 480px; max-width: 85vw; z-index: 5;
-            transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
-        }
-        #hero-logo-wrapper.fade-out { transform: translate(-50%, -180%); pointer-events: none; }
-        .logo-svg { width: 100%; height: auto; display: block; overflow: visible; }
-        .st0 { fill: var(--accent-coral); } .st2 { fill: var(--accent-gold); } 
-        .intero-occhio { 
-            transform-origin: 420px 245px !important; 
-            transition: transform 0.1s ease-out; 
-        }
-        .sopracciglio { 
-            transform-origin: 410px 145px !important; 
-            transition: transform 0.1s ease-out; 
-        }
-        .blinking { transform: scaleY(0.01) !important; }
-        .brow-down { transform: translateY(20px) !important; }
-
-        /* --- MENU OVERLAY --- */
-        #menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2000; }
-        #menu-overlay.active { pointer-events: all; }
-        .ink-container { position: absolute; width: 100%; height: 100%; filter: url('#gooey-filter'); display: flex; align-items: center; justify-content: center; }
-        .spot { position: absolute; background: var(--dark-text); border-radius: 50%; transform: scale(0); transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1); }
-        #menu-overlay.active .spot { transform: scale(1.6); }
-        .s1 { width: 85vmax; height: 85vmax; }
-        .s2 { width: 65vmax; height: 65vmax; left: -5%; top: -5%; transition-delay: 0.1s; }
-        .s3 { width: 75vmax; height: 75vmax; right: -5%; bottom: -5%; transition-delay: 0.05s; }
-        #menu-content { position: relative; z-index: 2001; text-align: center; opacity: 0; transform: translateY(30px); transition: 0.5s; }
-        #menu-overlay.active #menu-content { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
-        .menu-link { display: block; font-size: clamp(40px, 8vw, 90px); font-weight: 900; color: var(--text-light); text-decoration: none; text-transform: uppercase; margin: 15px 0; transition: color 0.3s; }
-        .menu-link:hover { color: var(--accent-coral); }
-
-        /* --- SECTIONS --- */
-        /* Contenitore principale che permette lo scroll */
-        .main-wrapper {
-            perspective: 1000px;
-        }
-        
-        .hero-container {
-            position: sticky; /* Resta bloccata mentre scrolli */
-            top: 0;
-            height: 100vh;
-            width: 100%;
-            z-index: 1;
+        body {
+            font-family: 'Helvetica', sans-serif;
             background-color: var(--bg-color);
+            overflow-x: hidden;
+            /* Altezza necessaria per permettere lo scroll del blob */
+            min-height: 250vh; 
+        }
+
+        /* --- NAV & LOGHI --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .logo-nav {
+            width: 40px;
+            transform: translateY(-100px);
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .logo-nav.slide-in { transform: translateY(0); }
+
+        .label-name {
+            font-weight: bold;
+            transition: transform 0.8s ease, color 0.8s ease;
+        }
+        .label-name.scrolled { color: var(--text-light); }
+
+        /* --- HERO SECTION --- */
+        .hero-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: transform 0.8s ease, opacity 0.8s ease;
+            background-color: var(--bg-color);
+            will-change: opacity, transform;
         }
-        
-        /* La sezione 2 "scorre" sopra la Hero */
+
+        .hero-logo {
+            width: 300px;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .hero-logo.fade-out { opacity: 0; transform: translateY(-50px); }
+
+        /* --- CONTENT SECTION (IL BLOB) --- */
         .content-section {
             position: relative;
             z-index: 10;
-            margin-top: -100vh;
-            min-height: 200vh;
+            margin-top: 100vh; /* Inizia dopo la hero */
+            min-height: 150vh;
             background-color: var(--dark-blue);
-            
-            /* Usiamo l'SVG come maschera */
-            clip-path: url(#blob-mask);
-            
-            /* Centro della macchia gestito da coordinate */
-            transform-origin: var(--mouse-x, 50%) var(--mouse-y, 50%);
-            will-change: transform, clip-path;
-        }
-        
-        .content-section.is-active {
-            pointer-events: auto;
-        }
-        .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
-        .headline.reveal { opacity: 1; transform: translateY(0); }
-        .no-wrap { white-space: nowrap; display: inline-block; }
-        /* 1. Ingrandiamo leggermente Beyond per compensare il disegno del font */
-        .headline .no-wrap {
-            font-size: 1.15em; /* Aumenta del 15% rispetto alla dimensione base */
-            display: inline-block;
-            vertical-align: middle;
-        }
-        /* Assicurati che il testo sia invisibile finché lo sfondo è chiaro */
-        .headline, .beyond-description, .skills-container {
-            color: var(--bg-color); /* Sarà visibile solo quando lo sfondo diventa blu */
-            transition: color 0.8s ease 0.4s, opacity 0.9s ease, transform 0.9s ease;
-        }
-        .content-section.is-active .headline,
-        .content-section.is-active .beyond-description {
             color: var(--text-light);
-        }
-        
-        #dynamic-word { 
-            color: var(--accent-coral); 
-            display: inline-block; 
-            min-width: 5ch;
-            /* Aggiungi queste righe: */
-            font-family: 'Inter', sans-serif;
-            font-weight: 900; /* Per farlo matchare con la pesantezza di BEYOND */
-            letter-spacing: -0.02em; 
+            padding: 100px 50px;
+            
+            /* Il Blob Iniziale */
+            clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
+            will-change: clip-path;
         }
 
-        /* --- SKILLS --- */
-        .beyond-description { max-width: 650px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
-        .headline.reveal + .beyond-description { opacity: 1; transform: translateY(0); }
-        .skills-container { margin-top: 80px; opacity: 0; transform: translateY(30px); transition: 1s all ease 0.9s; }
-        .headline.reveal ~ .skills-container { opacity: 1; transform: translateY(0); }
-        #skills-search { width: 100%; max-width: 450px; background: transparent; border: none; border-bottom: 1px solid rgba(247,247,242,0.2); color: var(--accent-gold); font-family: 'JetBrains Mono'; padding: 12px 0; outline: none; margin-bottom: 40px; }
-        .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-        /* --- SKILLS PILLS (Uniformi con Hover pieno) --- */
-.skill-pill { 
-    padding: 10px 22px; 
-    border-radius: 50px; 
-    background: var(--text-light); /* Fondo chiaro di base */
-    border: 1.5px solid var(--text-light); 
-    color: var(--dark-blue); 
-    font-family: 'JetBrains Mono'; 
-    font-size: 11px; 
-    font-weight: 700; /* Leggermente più bold per leggibilità */
-    text-transform: uppercase; 
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Transizione morbida */
-    animation: fadeIn 0.4s ease forwards;
-    cursor: default;
-}
+        .headline {
+            font-size: 8vw;
+            line-height: 0.9;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+        .headline.reveal { opacity: 1; transform: translateY(0); }
 
-/* Effetto riempimento Ocra */
-.skill-pill:hover {
-    background: var(--accent-gold);
-    border-color: var(--accent-gold);
-    color: var(--dark-text); /* Il testo diventa scuro per contrasto */
-    transform: translateY(-3px) scale(1.02); /* Leggera elevazione */
-    box-shadow: 0 5px 15px rgba(255, 200, 87, 0.2); /* Glow delicato color ocra */
-}
-        .skill-pill.core { border-color: var(--accent-coral); color: var(--accent-coral); }
-        .skill-pill.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
-        
-        /* --- SKILLS FILTERS --- */
-.skills-filters { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 12px; 
-    margin-bottom: 50px; 
-    border-bottom: 1px solid rgba(247,247,242,0.1);
-    padding-bottom: 20px;
-}
-
-.filter-btn {
-    background: rgba(247,247,242,0.05); 
-    border: 1px solid rgba(247,247,242,0.2);
-    color: var(--text-light); 
-    padding: 8px 20px; 
-    border-radius: 4px; /* Più squadrati per differenziarli */
-    font-family: 'JetBrains Mono'; 
-    font-size: 10px; 
-    text-transform: uppercase;
-    cursor: pointer; 
-    transition: all 0.3s ease;
-}
-
-.filter-btn:hover { 
-    background: rgba(247,247,242,0.1);
-    border-color: var(--accent-gold); 
-}
-
-.filter-btn.active { 
-    background: var(--accent-gold); 
-    border-color: var(--accent-gold); 
-    color: var(--dark-text); 
-    font-weight: 700; 
-}
-
-/* --- SKILLS PILLS (Uniformi) --- */
-.skill-pill { 
-    padding: 10px 22px; 
-    border-radius: 50px; 
-    background: var(--text-light); /* Fondo chiaro di base */
-    border: 1.5px solid var(--text-light); 
-    color: var(--dark-blue); /* Testo scuro leggibile */
-    font-family: 'JetBrains Mono'; 
-    font-size: 11px; 
-    font-weight: 500;
-    text-transform: uppercase; 
-    transition: 0.3s;
-    animation: fadeIn 0.4s ease forwards;
-}
-
-/* Accento Ocra al passaggio o per evidenziare */
-.skill-pill:hover {
-    border-color: var(--accent-gold);
-    transform: translateY(-2px);
-}
-
-/* Rimuoviamo la distinzione 'core' precedente per uniformità */
-.skill-pill.core { 
-    border-color: var(--accent-gold); 
-}        
-        
-        /* --- MOBILE GYRO CTA --- */
-        #gyro-cta { position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; font-family: 'JetBrains Mono'; font-size: 10px; text-transform: uppercase; color: var(--dark-text); cursor: pointer; }
-        @media (pointer: fine) { #gyro-cta { display: none; } }
-        #gyro-cta.hidden { opacity: 0; pointer-events: none; transition: 0.5s; }
-        .phone-icon { width: 20px; height: 34px; border: 1.5px solid var(--dark-text); border-radius: 3px; animation: tilt 2s infinite ease-in-out; }
-        @keyframes tilt { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg); } }
+        /* --- CURSORE ORGANICO (Codice Buono) --- */
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--text-dark);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
     </style>
 </head>
 <body>
-    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
-      <defs>
-        <clipPath id="blob-mask" clipPathUnits="objectBoundingBox">
-          <path id="blob-path" d="M0.5,0 C0.7,0.1 0.9,0.3 1,0.5 C0.9,0.7 0.7,0.9 0.5,1 C0.3,0.9 0.1,0.7 0,0.5 C0.1,0.3 0.3,0.1 0.5,0" />
-        </clipPath>
-      </defs>
-    </svg>
-    <div id="cursor-container">
-        <div id="custom-cursor">
-            <svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>
-        </div>
-    </div>
 
-    <div id="label-name" class="ui-label">Michele Occhi</div>
-    <div id="nav-text-menu" class="ui-label" onclick="toggleMenu()">Menu +</div>
+    <div id="cursor"></div>
 
-    <div id="cursor-ui-vertical">
-        <label class="full-clickable-label" for="cursor-toggle">
-            <span class="toggle-tag">Organic Cursor</span>
-            <div class="switch">
-                <input type="checkbox" id="cursor-toggle" checked onchange="toggleCursorMode()">
-                <div class="slider">
-                    <div class="circle">
-                        <svg class="cross" viewBox="0 0 365.696 365.696"><path fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path></svg>
-                        <svg class="checkmark" viewBox="0 0 24 24"><path fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path></svg>
-                    </div>
+    <nav>
+        <img src="logo-small.svg" class="logo-nav" id="navLogo" alt="Logo">
+        <div class="label-name" id="labelName">MICHELE OCCHI</div>
+    </nav>
+
+    <div class="main-wrapper">
+        <section class="hero-container">
+            <img src="logo-big.svg" class="hero-logo" id="heroLogo" alt="Hero Logo">
+            </section>
+
+        <section class="content-section">
+            <h1 class="headline" id="headline">BEYOND<br>ART DIRECTION</h1>
+            <div style="margin-top: 100px; max-width: 600px;">
+                <p>Digital design, craft, and motion.</p>
                 </div>
-            </div>
-        </label>
+        </section>
     </div>
-
-    <div id="nav-logo-wrapper">
-        <svg class="logo-svg" viewBox="0 0 485.55 328.12">
-            <defs>
-                <mask id="m-nav">
-                    <rect width="100%" height="100%" fill="white"/>
-                    <g class="p-mover">
-                        <path d="M417.01,243.77c-2.32,0-4.33.84-6.04,2.53-1.71,1.69-2.42,3.57-2.15,5.64.27,2.72,1.12,4.6,2.56,5.64,1.43,1.04,3.31,1.55,5.63,1.55s4.23-.65,5.73-1.94c1.5-1.29,2.25-3.05,2.25-5.25,0-2.07-.68-3.95-2.05-5.64-1.37-1.68-3.34-2.53-5.93-2.53Z" fill="black"/>
-                    </g>
-                </mask>
-            </defs>
-            <path class="st0" d="M328.12,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51C-.43,247.94-.14,229.43.29,211.67,1.59,149.02,5.67,82.37,38.82,28.06,48.52,12.75,63.53-1.31,82.29.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
-            <g class="intero-occhio" style="mask: url(#m-nav);">
-                <path class="st0" d="M420.08,181.34c8.18,0,15.38.94,21.59,2.82,6.2,1.88,11.63,4.38,16.27,7.49,4.64,3.11,8.52,6.65,11.66,10.6,3.14,3.96,5.73,8.01,7.78,12.16,4.77,9.72,7.5,20.68,8.18,32.87,0,9.21-.96,17.28-2.86,24.21-1.91,6.94-4.4,12.97-7.47,18.09-3.07,5.12-6.55,9.43-10.44,12.93-3.89,3.5-7.88,6.42-11.97,8.75-9.55,5.32-20.46,8.36-32.74,9.14-9.28,0-17.39-.94-24.35-2.82-6.96-1.88-13.03-4.34-18.21-7.39-5.19-3.05-9.55-6.55-13.1-10.5-3.55-3.95-6.48-8-8.8-12.16-5.46-9.59-8.53-20.55-9.21-32.87,0-10.11,1.06-18.87,3.17-26.26,2.11-7.39,4.91-13.78,8.39-19.16,3.48-5.38,7.4-9.79,11.77-13.23,4.36-3.43,8.87-6.19,13.5-8.27,10.77-4.79,23.05-6.93,36.83-6.42Z"/>
-            </g>
-            <g class="sopracciglio">
-                <path class="st2" d="M452.67,128.55c4.21.51,7.43,1.57,9.66,3.17,2.23,1.6,3.82,3.3,4.79,5.09,1.2,2.18,1.81,4.48,1.81,6.91.12,2.56-.24,4.99-1.08,7.29-.72,1.92-1.96,3.78-3.7,5.57-1.75,1.79-4.43,3.01-8.04,3.65-4.58.77-10,1.37-16.26,1.82-6.26.45-12.86.73-19.78.86-6.93.13-13.91.06-20.95-.19-7.05-.26-13.52-.64-19.42-1.15-4.22-.38-7.47-1.41-9.75-3.07-2.29-1.66-3.91-3.39-4.88-5.18-1.21-2.17-1.87-4.54-1.99-7.1-.24-2.81.24-5.37,1.44-7.68.96-2.05,2.62-4.03,4.97-5.95,2.35-1.92,5.93-3.26,10.75-4.03,8.67-1.28,17.31-1.98,25.92-2.11,8.61-.13,16.35-.06,23.21.19,8.07.38,15.83,1.03,23.3,1.92Z"/>
-            </g>
-        </svg>
-    </div>
-
-    <div id="menu-overlay">
-        <div class="ink-container"><div class="spot s1"></div><div class="spot s2"></div><div class="spot s3"></div></div>
-        <div id="menu-content">
-            <a href="#" class="menu-link">SKILLS</a>
-            <a href="#" class="menu-link">ABO&#770;UT</a>
-            <a href="#" class="menu-link">CO&#770;NTACT</a>
-        </div>
-    </div>
-
-    <section class="hero-container">
-        <div id="hero-logo-wrapper">
-            <svg class="logo-svg" viewBox="0 0 485.55 328.12">
-                <defs>
-                    <mask id="m-hero">
-                        <rect width="100%" height="100%" fill="white"/>
-                        <g class="p-mover">
-                            <path d="M417.01,243.77c-2.32,0-4.33.84-6.04,2.53-1.71,1.69-2.42,3.57-2.15,5.64.27,2.72,1.12,4.6,2.56,5.64,1.43,1.04,3.31,1.55,5.63,1.55s4.23-.65,5.73-1.94c1.5-1.29,2.25-3.05,2.25-5.25,0-2.07-.68-3.95-2.05-5.64-1.37-1.68-3.34-2.53-5.93-2.53Z" fill="black"/>
-                        </g>
-                    </mask>
-                </defs>
-                <path class="st0" d="M328.12,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51C-.43,247.94-.14,229.43.29,211.67,1.59,149.02,5.67,82.37,38.82,28.06,48.52,12.75,63.53-1.31,82.29.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
-                <g class="intero-occhio" style="mask: url(#m-hero);">
-                    <path class="st0" d="M420.08,181.34c8.18,0,15.38.94,21.59,2.82,6.2,1.88,11.63,4.38,16.27,7.49,4.64,3.11,8.52,6.65,11.66,10.6,3.14,3.96,5.73,8.01,7.78,12.16,4.77,9.72,7.5,20.68,8.18,32.87,0,9.21-.96,17.28-2.86,24.21-1.91,6.94-4.4,12.97-7.47,18.09-3.07,5.12-6.55,9.43-10.44,12.93-3.89,3.5-7.88,6.42-11.97,8.75-9.55,5.32-20.46,8.36-32.74,9.14-9.28,0-17.39-.94-24.35-2.82-6.96-1.88-13.03-4.34-18.21-7.39-5.19-3.05-9.55-6.55-13.1-10.5-3.55-3.95-6.48-8-8.8-12.16-5.46-9.59-8.53-20.55-9.21-32.87,0-10.11,1.06-18.87,3.17-26.26,2.11-7.39,4.91-13.78,8.39-19.16,3.48-5.38,7.4-9.79,11.77-13.23,4.36-3.43,8.87-6.19,13.5-8.27,10.77-4.79,23.05-6.93,36.83-6.42Z"/>
-                </g>
-                <g class="sopracciglio">
-                    <path class="st2" d="M452.67,128.55c4.21.51,7.43,1.57,9.66,3.17,2.23,1.6,3.82,3.3,4.79,5.09,1.2,2.18,1.81,4.48,1.81,6.91.12,2.56-.24,4.99-1.08,7.29-.72,1.92-1.96,3.78-3.7,5.57-1.75,1.79-4.43,3.01-8.04,3.65-4.58.77-10,1.37-16.26,1.82-6.26.45-12.86.73-19.78.86-6.93.13-13.91.06-20.95-.19-7.05-.26-13.52-.64-19.42-1.15-4.22-.38-7.47-1.41-9.75-3.07-2.29-1.66-3.91-3.39-4.88-5.18-1.21-2.17-1.87-4.54-1.99-7.1-.24-2.81.24-5.37,1.44-7.68.96-2.05,2.62-4.03,4.97-5.95,2.35-1.92,5.93-3.26,10.75-4.03,8.67-1.28,17.31-1.98,25.92-2.11,8.61-.13,16.35-.06,23.21.19,8.07.38,15.83,1.03,23.3,1.92Z"/>
-                </g>
-            </svg>
-        </div>
-        <div id="gyro-cta" onclick="requestGyroPermission()">
-            <div class="phone-icon"></div><span>Tap & Tilt</span>
-        </div>
-    </section>
-
-    <section class="content-section">
-        <h1 class="headline" id="headline">
-            <span class="no-wrap">BEYO&#770;ND</span><br> <span id="dynamic-word">ART DIRECTION</span>
-        </h1>
-        <div class="beyond-description">
-            Essere <span class="highlight-text">beyond</span> significa orchestrare la complessità. Unisco visione strategica e padronanza tecnica per connettere stakeholder, codice e produzione video. Trasformo flussi di lavoro avanzati in esperienze visive organiche.
-        </div>
-
-        <div class="skills-container">
-            <div class="skills-filters" id="skills-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="strategy">Vision & Strategy</button>
-                <button class="filter-btn" data-filter="creative">Execution & Production</button>
-                <button class="filter-btn" data-filter="tech">Digital & Tech</button>
-                <button class="filter-btn" data-filter="tools">Tools</button>
-            </div>
-            
-            <div class="skills-grid" id="skills-grid">
-                </div>
-        </div>
-    </section>
-
-    <svg style="visibility: hidden; position: absolute;" width="0" height="0">
-        <defs>
-            <filter id="gooey-filter">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -15" result="goo" />
-                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-            </filter>
-        </defs>
-    </svg>
 
     <script>
-        const isDesktop = window.matchMedia("(pointer: fine)").matches;
-        const hLog = document.getElementById('hero-logo-wrapper'), nLog = document.getElementById('nav-logo-wrapper');
-        const hp = { eye: hLog.querySelector('.intero-occhio'), pup: hLog.querySelector('.p-mover'), brow: hLog.querySelector('.sopracciglio') };
-        const np = { eye: nLog.querySelector('.intero-occhio'), pup: nLog.querySelector('.p-mover'), brow: nLog.querySelector('.sopracciglio') };
-        const cursor = document.getElementById('custom-cursor'), container = document.getElementById('cursor-container');
-        const menuBtn = document.getElementById('nav-text-menu'), labelName = document.getElementById('label-name');
+        const cursor = document.getElementById('cursor');
+        const hLog = document.getElementById('heroLogo');
+        const nLog = document.getElementById('navLogo');
+        const labelName = document.getElementById('labelName');
+        const content = document.querySelector('.content-section');
+        const hero = document.querySelector('.hero-container');
 
-        let mX = window.innerWidth/2, mY = window.innerHeight/2, cX = mX, cY = mY;
-        let tPX = mX, tPY = mY, cPX = mX, cPY = mY; 
-        let currentRotation = 0, currentStretchX = 1, currentStretchY = 1, breathTime = 0;
-        let isMenuOpen = false, isSticky = false, gyroActive = false;
-        let zeroBeta = 0, zeroGamma = 0;
+        let mX = 0, mY = 0, cX = 0, cY = 0;
+        let targetProgress = 0, currentProgress = 0;
 
+        // 1. GESTIONE MOUSE (Cursore + Coordinate Blob)
         document.addEventListener('mousemove', (e) => {
-            if (gyroActive) return;
-            mX = e.clientX; mY = e.clientY; tPX = e.clientX; tPY = e.clientY;
-            const btnRect = menuBtn.getBoundingClientRect();
-            const dist = Math.hypot(mX - (btnRect.left + btnRect.width/2), mY - (btnRect.top + btnRect.height/2));
-            if (dist < 60 && !document.body.classList.contains('use-standard-cursor')) { 
-                isSticky = true; cursor.classList.add('expanding'); menuBtn.classList.add('sticky-active'); 
-                mX = btnRect.left + btnRect.width/2; mY = btnRect.top + btnRect.height/2; 
-            } else { isSticky = false; cursor.classList.remove('expanding'); menuBtn.classList.remove('sticky-active'); }
+            mX = e.clientX;
+            mY = e.clientY;
+            
+            // Passiamo le coordinate al CSS per il centro del blob
+            const pX = (mX / window.innerWidth) * 100;
+            const pY = (mY / window.innerHeight) * 100;
+            content.style.setProperty('--mouse-x', pX + '%');
+            content.style.setProperty('--mouse-y', pY + '%');
         });
 
-        function lerpAngle(s, e, a) { const d = ((e - s + 180) % 360 + 360) % 360 - 180; return s + d * a; }
-
-        function createDrop(x, y, angle) {
-            const drop = document.createElement('div'); drop.className = 'drop';
-            drop.innerHTML = `<svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>`;
-            drop.style.left = `${x}px`; drop.style.top = `${y}px`; container.appendChild(drop);
-            drop.animate([{transform:`translate(-50%,-50%) scale(1) rotate(${angle}deg)`, opacity:0.6},{transform:`translate(-50%,-50%) scale(0) rotate(${angle}deg)`, opacity:0}], {duration:600}).onfinish=()=>drop.remove();
-        }
-
-        function toggleCursorMode() {
-            const isChecked = document.getElementById('cursor-toggle').checked;
-            if (isChecked) { document.body.classList.remove('use-standard-cursor'); container.style.display = 'block'; }
-            else { document.body.classList.add('use-standard-cursor'); container.style.display = 'none'; }
-        }
-
-        function handleOrientation(e) { if (!gyroActive) return; tPX = window.innerWidth/2 + ((e.gamma - zeroGamma)*15); tPY = window.innerHeight/2 + ((e.beta - zeroBeta)*15); }
-        function setupGyro() {
-            const init = (e) => { zeroBeta = e.beta; zeroGamma = e.gamma; gyroActive = true; window.removeEventListener('deviceorientation', init); window.addEventListener('deviceorientation', handleOrientation); document.getElementById('gyro-cta').classList.add('hidden'); };
-            window.addEventListener('deviceorientation', init);
-        }
-        function requestGyroPermission() { if (typeof DeviceOrientationEvent?.requestPermission === 'function') DeviceOrientationEvent.requestPermission().then(r => {if(r==='granted')setupGyro();}); else setupGyro(); }
+        // 2. MOTORE CURSORE (Dal tuo Codice Buono base)
+        let currentRotation = 0;
+        let currentStretchX = 1;
+        let currentStretchY = 1;
 
         function update() {
-            if (isDesktop && !document.body.classList.contains('use-standard-cursor')) {
-                const dx = mX - cX, dy = mY - cY; cX += dx * (isSticky ? 0.3 : 0.15); cY += dy * (isSticky ? 0.3 : 0.15);
-                const speed = Math.hypot(dx, dy), angle = Math.atan2(dy, dx) * (180/Math.PI);
-                let tRot, tSX, tSY, lF = 0.1;
-                if (speed < 1 || isSticky) { breathTime += 0.05; tSX = 1 + Math.sin(breathTime)*0.1; tSY = 1 + Math.cos(breathTime*0.8)*0.12; tRot = isSticky ? 0 : Math.sin(breathTime*0.5)*5; }
-                else { const s = Math.min(speed/400,0.6); tSX = 1+s; tSY = 1-s; tRot = angle; lF = Math.min(speed/50, 1); }
-                currentRotation = lerpAngle(currentRotation, tRot, lF);
-                currentStretchX += (tSX - currentStretchX) * 0.15; currentStretchY += (tSY - currentStretchY) * 0.15;
-                cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
-                if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
+            // Logica Cursore
+            const dx = mX - cX;
+            const dy = mY - cY;
+            cX += dx * 0.15;
+            cY += dy * 0.15;
+            
+            const speed = Math.hypot(dx, dy);
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            
+            let targetStretchX = 1 + Math.min(speed / 400, 0.6);
+            let targetStretchY = 1 - Math.min(speed / 400, 0.6);
+
+            cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${angle}deg) scale(${targetStretchX}, ${targetStretchY})`;
+
+            // 3. LOGICA BLOB FLUIDO (Inerzia)
+            const scrollY = window.scrollY;
+            const vh = window.innerHeight;
+            
+            // Il progresso della macchia segue lo scroll
+            targetProgress = Math.min(150, (scrollY / vh) * 150);
+            currentProgress += (targetProgress - currentProgress) * 0.1;
+
+            // Effetto Blob (vibrazione organica)
+            const wobble = Math.sin(Date.now() * 0.003) * (currentProgress > 5 ? 2 : 0);
+            content.style.clipPath = `circle(${currentProgress + wobble}% at var(--mouse-x) var(--mouse-y))`;
+
+            // Gestione UI Loghi e Opacità Hero
+            if (currentProgress > 45) {
+                hLog.classList.add('fade-out');
+                nLog.classList.add('slide-in');
+                labelName.classList.add('scrolled');
+                hero.style.opacity = Math.max(0, 1 - (currentProgress - 45) / 50);
+                document.getElementById('headline').classList.add('reveal');
+            } else {
+                hLog.classList.remove('fade-out');
+                nLog.classList.remove('slide-in');
+                labelName.classList.remove('scrolled');
+                hero.style.opacity = 1;
             }
-            cPX += (tPX - cPX) * 0.1; cPY += (tPY - cPY) * 0.1;
-            const solve = (eye, r) => { const rect = eye.getBoundingClientRect(); const dx = cPX - (rect.left + rect.width/2), dy = cPY - (rect.top + rect.height/2); const a = Math.atan2(dy, dx), d = Math.min(Math.hypot(dx, dy)/400, 1); return { x: Math.cos(a)*r*d, y: Math.sin(a)*r*d }; };
-            hp.pup.style.transform = `translate(${solve(hp.eye, 50).x}px, ${solve(hp.eye, 50).y}px)`;
-            np.pup.style.transform = `translate(${solve(np.eye, 30).x}px, ${solve(np.eye, 30).y}px)`;
+
             requestAnimationFrame(update);
         }
 
-        function triggerBlink() {
-            const eyes = [hp.eye, np.eye], brows = [hp.brow, np.brow];
-            eyes.forEach(e => e.classList.add('blinking')); brows.forEach(b => b.classList.add('brow-down'));
-            setTimeout(() => { eyes.forEach(e => e.classList.remove('blinking')); brows.forEach(b => b.classList.remove('brow-down')); }, 120);
-            setTimeout(triggerBlink, Math.random() * 4000 + 2500);
-        }
+        update();
 
-        const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "LEADERSHIP", "EXECUTION"];
-        let wIdx = 0;
-        function decode(txt) {
-            const dw = document.getElementById('dynamic-word'); let it = 0; clearInterval(dw.int);
-            dw.int = setInterval(() => { dw.innerText = txt.split("").map((l, i) => i < it ? txt[i] : "ABCDEFGHIJKLMNOPQRSTUVWXYZ!£$%&/_=?123456789^@"[Math.floor(Math.random()*46)]).join(""); if (it >= txt.length) clearInterval(dw.int); it += 1/3; }, 35);
-        }
-
-        function toggleMenu() { isMenuOpen = !isMenuOpen; const o = document.getElementById('menu-overlay'); if (isMenuOpen) { o.classList.add('active'); menuBtn.innerText = "Close -"; } else { o.classList.remove('active'); menuBtn.innerText = "Menu +"; } }
-
-let targetProgress = 0;
-let currentProgress = 0;
-
-// Gestione mouse (sempre necessaria per il blob)
-document.addEventListener('mousemove', (e) => {
-    const target = document.querySelector('.content-section');
-    const posX = (e.clientX / window.innerWidth) * 100;
-    const posY = (e.clientY / window.innerHeight) * 100;
-    target.style.setProperty('--mouse-x', posX + '%');
-    target.style.setProperty('--mouse-y', posY + '%');
-});
-
-// Ascolta lo scroll reale
-window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const vh = window.innerHeight;
-    // Calcoliamo il raggio (0 a 150)
-    targetProgress = Math.min(150, (scrollY / vh) * 150);
-}, { passive: true });
-
-let targetScale = 0;
-let currentScale = 0;
-let currentRotation = 0;
-
-function updateLoop() {
-    // Inerzia fluida (Lerp)
-    currentScale += (targetScale - currentScale) * 0.08;
-    // Aggiungiamo una rotazione lenta mentre la macchia cresce
-    currentRotation += currentScale * 0.05;
-
-    const target = document.querySelector('.content-section');
-    const hero = document.querySelector('.hero-container');
-    const blobPath = document.getElementById('blob-path');
-
-    // Trasformiamo l'intero clipPath basandoci sulla posizione del mouse
-    // e sulla scala calcolata dallo scroll
-    const posX = target.style.getPropertyValue('--mouse-x') || '50%';
-    const posY = target.style.getPropertyValue('--mouse-y') || '50%';
-
-    // Applichiamo la scala e la posizione tramite transform
-    // Nota: usiamo scale massicce (es. 20) per coprire tutto lo schermo partendo dal centro
-    target.style.transform = `scale(${currentScale * 0.15})`; 
-    target.style.transformOrigin = `${posX} ${posY}`;
-
-    // Effetti UI (Loghi/Hero)
-    if (currentScale > 30) {
-        hLog.classList.add('fade-out');
-        nLog.classList.add('slide-in');
-        labelName.classList.add('scrolled');
-        hero.style.opacity = Math.max(0, 1 - (currentScale - 30) / 40);
-        document.getElementById('headline').classList.add('reveal');
-    } else {
-        hLog.classList.remove('fade-out');
-        nLog.classList.remove('slide-in');
-        labelName.classList.remove('scrolled');
-        hero.style.opacity = 1;
-    }
-
-    requestAnimationFrame(updateLoop);
-}
-
-// Aggiorna la scala target basandoti sullo scroll
-window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const vh = window.innerHeight;
-    // La scala cresce con lo scroll
-    targetScale = (scrollY / vh) * 150; 
-}, { passive: true });
-
-updateLoop();
-
-        if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
-        update(); triggerBlink();
-        setInterval(() => { wIdx = (wIdx+1)%words.length; decode(words[wIdx]); }, 4000);
-        const mySkills = [
-    // STRATEGY
-    { name: "Art Direction", cat: "strategy" },
-    { name: "Creative Leadership", cat: "strategy" },
-    { name: "Brand Strategy", cat: "strategy" },
-    { name: "Creative Strategy", cat: "strategy" },
-    { name: "Brainstorming", cat: "strategy" },
-    { name: "Pitch & Speech", cat: "strategy" },
-    { name: "Coordinamento Team", cat: "strategy" },
-    { name: "Coordinamento Fornitori", cat: "strategy" },
-    { name: "Project Management", cat: "strategy" },
-    
-    // CREATIVE & PRODUCTION
-    { name: "Video Production", cat: "creative" },
-    { name: "Montaggio Video", cat: "creative" },
-    { name: "Motion Graphics", cat: "creative" },
-    { name: "Brand Identity", cat: "creative" },
-    { name: "Graphic Design", cat: "creative" },
-    { name: "Social Media Design", cat: "creative" },
-    { name: "Coordinamento Shooting", cat: "creative" },
-    { name: "Fotoritocco", cat: "creative" },
-    { name: "Amazon A+ & Shop in Shop", cat: "creative" },
-    { name: "Eventi & Concorsi", cat: "creative" },
-    
-    // TECH & ADV
-    { name: "Banner HTML5", cat: "tech" },
-    { name: "AI Workflows", cat: "tech" },
-    { name: "AI Generativa", cat: "tech" },
-    { name: "Landing Pages", cat: "tech" },
-    { name: "Web Design", cat: "tech" },
-    { name: "Meta Ads", cat: "tech" },
-    { name: "Display Ads", cat: "tech" },
-    { name: "Newsletter & DEM", cat: "tech" },
-    { name: "UI/UX", cat: "tech" },
-    
-    // TOOLS
-    { name: "Figma", cat: "tools" },
-    { name: "Photoshop", cat: "tools" },
-    { name: "After Effects", cat: "tools" },
-    { name: "Premiere", cat: "tools" },
-    { name: "Illustrator", cat: "tools" },
-    { name: "InDesign", cat: "tools" },
-    { name: "Canva", cat: "tools" },
-    { name: "Capcut", cat: "tools" },
-    { name: "HTML5/CSS", cat: "tools" }
-];
-
-function renderSkills(filter = 'all') {
-    const grid = document.getElementById('skills-grid');
-    grid.innerHTML = '';
-    mySkills.forEach(skill => {
-        if (filter === 'all' || skill.cat === filter) {
-            const pill = document.createElement('span');
-            // Ora tutte hanno la stessa classe base, 
-            // ma manteniamo il riferimento alla categoria se volessi usarlo in futuro
-            pill.className = `skill-pill`; 
-            pill.innerText = skill.name;
-            grid.appendChild(pill);
-        }
-    });
-}
-
-// Inizializza i filtri
-document.getElementById('skills-filters').addEventListener('click', (e) => {
-    if (e.target.classList.contains('filter-btn')) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
-        renderSkills(e.target.dataset.filter);
-    }
-});
-
-// Chiama renderSkills() all'avvio per mostrare "All"
-renderSkills();
+        // Supporto Mobile Tap & Tilt (Icona aggiuntiva come da istruzioni)
+        window.addEventListener('deviceorientation', (e) => {
+            // Qui andrà la logica tilt se necessaria su mobile
+        });
     </script>
 </body>
 </html>
