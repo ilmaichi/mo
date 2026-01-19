@@ -257,22 +257,23 @@
             pointer-events: none;
         }
         .content-section {
-            position: fixed; /* La blocchiamo sopra la hero */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
             z-index: 10;
             background-color: var(--dark-blue);
-            overflow-y: auto; /* Permette di scrollare i contenuti interni */
-            pointer-events: none; /* Inizialmente "trasparente" ai click */
-            opacity: 0;
+            overflow-y: auto;
             
-            /* Il segreto del Blob: un cerchio che diventa irregolare */
+            /* RIMUOVI la transition su clip-path per evitare scatti */
+            transition: opacity 0.5s ease; 
+            
+            /* Forza il browser a usare la scheda video per il clip-path */
+            will-change: clip-path;
+            transform: translateZ(0); 
+            
             clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
-            
-            /* Transizione morbidissima per seguire lo scroll senza scatti */
-            transition: clip-path 0.2s linear, opacity 0.5s ease;
         }
         
         .content-section.is-visible {
@@ -605,63 +606,50 @@
 
         function toggleMenu() { isMenuOpen = !isMenuOpen; const o = document.getElementById('menu-overlay'); if (isMenuOpen) { o.classList.add('active'); menuBtn.innerText = "Close -"; } else { o.classList.remove('active'); menuBtn.innerText = "Menu +"; } }
 
-let currentProgress = 0; // 0 = Hero, 100 = Petrolio pieno
+let targetProgress = 0;
+let currentProgress = 0;
 
-window.addEventListener('wheel', (e) => {
-    // Calcoliamo la direzione e incrementiamo il progresso
-    const delta = e.deltaY * 0.1; // Sensibilità
-    currentProgress = Math.max(0, Math.min(150, currentProgress + delta));
+// 1. Intercettiamo lo scroll ma non lo applichiamo subito
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const vh = window.innerHeight;
+    // Calcoliamo dove "dovrebbe" arrivare la macchia (0 a 150)
+    targetProgress = Math.min(150, (scrollY / vh) * 150);
+}, { passive: true });
 
-    updateOrganicTransition();
-}, { passive: false });
+// 2. Motore di fluidità (Smooth transition loop)
+function smoothUpdate() {
+    // Il segreto della fluidità: la "distanza" si accorcia del 10% ad ogni frame
+    const lerpFactor = 0.1; 
+    currentProgress += (targetProgress - currentProgress) * lerpFactor;
 
-// Supporto Mobile
-let touchStart = 0;
-window.addEventListener('touchstart', (e) => { touchStart = e.touches[0].clientY; });
-window.addEventListener('touchmove', (e) => {
-    let touchEnd = e.touches[0].clientY;
-    currentProgress = Math.max(0, Math.min(150, currentProgress + (touchStart - touchEnd) * 0.5));
-    touchStart = touchEnd;
-    updateOrganicTransition();
-});
-
-function updateOrganicTransition() {
     const target = document.querySelector('.content-section');
-    
-    // Mostra/Nascondi la sezione
-    if (currentProgress > 1) {
-        target.classList.add('is-visible');
-    } else {
-        target.classList.remove('is-visible');
-    }
+    const hero = document.querySelector('.hero-container');
 
-    // Effetto Blob dinamico: aggiungiamo un po' di "vibrazione" basata sul progresso
-    const blobSize = currentProgress;
-    // Creiamo una forma leggermente irregolare che cambia mentre cresce
-    const wobble = Math.sin(currentProgress * 0.1) * 5; 
-    
-    target.style.clipPath = `circle(${blobSize + wobble}% at var(--mouse-x, 50%) var(--mouse-y, 50%))`;
+    // Applichiamo il raggio basato sul progresso fluido
+    // Aggiungiamo un leggero "wobble" (oscillazione) per l'effetto blob
+    const wobble = Math.sin(Date.now() * 0.002) * (currentProgress > 0 ? 2 : 0);
+    target.style.clipPath = `circle(${currentProgress + wobble}% at var(--mouse-x, 50%) var(--mouse-y, 50%))`;
 
-    // Gestione Loghi basata sul progresso
-    if (currentProgress > 50) {
+    // Gestione UI (Loghi/Hero) basata sul progresso fluido
+    if (currentProgress > 60) {
         hLog.classList.add('fade-out');
+        hero.classList.add('fade-out');
         nLog.classList.add('slide-in');
         labelName.classList.add('scrolled');
         document.getElementById('headline').classList.add('reveal');
-    } else {
+    } else if (currentProgress < 30) {
         hLog.classList.remove('fade-out');
+        hero.classList.remove('fade-out');
         nLog.classList.remove('slide-in');
         labelName.classList.remove('scrolled');
     }
+
+    requestAnimationFrame(smoothUpdate);
 }
 
-// Coordinate mouse costanti per il blob (già nel codice buono)
-document.addEventListener('mousemove', (e) => {
-    const posX = (e.clientX / window.innerWidth) * 100;
-    const posY = (e.clientY / window.innerHeight) * 100;
-    document.querySelector('.content-section').style.setProperty('--mouse-x', posX + '%');
-    document.querySelector('.content-section').style.setProperty('--mouse-y', posY + '%');
-});
+// Avviamo il loop
+smoothUpdate();
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
