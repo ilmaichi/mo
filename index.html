@@ -237,47 +237,39 @@
         .menu-link:hover { color: var(--accent-coral); }
 
         /* --- SECTIONS --- */
+        /* Contenitore principale che permette lo scroll */
+        .main-wrapper {
+            perspective: 1000px;
+        }
+        
         .hero-container {
-            position: fixed;
+            position: sticky; /* Resta bloccata mentre scrolli */
             top: 0;
-            left: 0;
-            width: 100%;
             height: 100vh;
-            z-index: 1; /* Sta sotto */
+            width: 100%;
+            z-index: 1;
             background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.8s ease, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.8s ease, opacity 0.8s ease;
         }
         
-        .hero-container.fade-out {
-            opacity: 0.3; /* Leggermente più trasparente per dare focus al petrolio */
-            transform: scale(0.95); /* Un leggero zoom-out per dare profondità */
-            pointer-events: none;
-        }
+        /* La sezione 2 "scorre" sopra la Hero */
         .content-section {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
+            position: relative;
             z-index: 10;
+            margin-top: -100vh; /* La tira sopra la Hero */
+            min-height: 200vh; /* Spazio per lo scroll */
             background-color: var(--dark-blue);
-            overflow-y: auto;
             
-            /* RIMUOVI la transition su clip-path per evitare scatti */
-            transition: opacity 0.5s ease; 
-            
-            /* Forza il browser a usare la scheda video per il clip-path */
-            will-change: clip-path;
-            transform: translateZ(0); 
-            
+            /* Il Blob */
             clip-path: circle(0% at var(--mouse-x, 50%) var(--mouse-y, 50%));
+            /* Rimuoviamo la transition per gestirla via JS in modo fluido */
+            will-change: clip-path;
         }
         
-        .content-section.is-visible {
-            opacity: 1;
+        .content-section.is-active {
             pointer-events: auto;
         }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
@@ -609,47 +601,52 @@
 let targetProgress = 0;
 let currentProgress = 0;
 
-// 1. Intercettiamo lo scroll ma non lo applichiamo subito
+// Gestione mouse (sempre necessaria per il blob)
+document.addEventListener('mousemove', (e) => {
+    const target = document.querySelector('.content-section');
+    const posX = (e.clientX / window.innerWidth) * 100;
+    const posY = (e.clientY / window.innerHeight) * 100;
+    target.style.setProperty('--mouse-x', posX + '%');
+    target.style.setProperty('--mouse-y', posY + '%');
+});
+
+// Ascolta lo scroll reale
 window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     const vh = window.innerHeight;
-    // Calcoliamo dove "dovrebbe" arrivare la macchia (0 a 150)
+    // Calcoliamo il raggio (0 a 150)
     targetProgress = Math.min(150, (scrollY / vh) * 150);
 }, { passive: true });
 
-// 2. Motore di fluidità (Smooth transition loop)
-function smoothUpdate() {
-    // Il segreto della fluidità: la "distanza" si accorcia del 10% ad ogni frame
-    const lerpFactor = 0.1; 
-    currentProgress += (targetProgress - currentProgress) * lerpFactor;
+function updateLoop() {
+    // Inerzia (Lerp)
+    currentProgress += (targetProgress - currentProgress) * 0.1;
 
     const target = document.querySelector('.content-section');
     const hero = document.querySelector('.hero-container');
 
-    // Applichiamo il raggio basato sul progresso fluido
-    // Aggiungiamo un leggero "wobble" (oscillazione) per l'effetto blob
-    const wobble = Math.sin(Date.now() * 0.002) * (currentProgress > 0 ? 2 : 0);
-    target.style.clipPath = `circle(${currentProgress + wobble}% at var(--mouse-x, 50%) var(--mouse-y, 50%))`;
+    // Applichiamo il raggio
+    target.style.clipPath = `circle(${currentProgress}% at var(--mouse-x, 50%) var(--mouse-y, 50%))`;
 
-    // Gestione UI (Loghi/Hero) basata sul progresso fluido
-    if (currentProgress > 60) {
+    // Effetti sui loghi e Hero
+    if (currentProgress > 40) {
         hLog.classList.add('fade-out');
-        hero.classList.add('fade-out');
         nLog.classList.add('slide-in');
         labelName.classList.add('scrolled');
+        hero.style.opacity = Math.max(0, 1 - (currentProgress - 40) / 60);
         document.getElementById('headline').classList.add('reveal');
-    } else if (currentProgress < 30) {
+    } else {
         hLog.classList.remove('fade-out');
-        hero.classList.remove('fade-out');
         nLog.classList.remove('slide-in');
         labelName.classList.remove('scrolled');
+        hero.style.opacity = 1;
     }
 
-    requestAnimationFrame(smoothUpdate);
+    requestAnimationFrame(updateLoop);
 }
 
-// Avviamo il loop
-smoothUpdate();
+// Avvia il loop di animazione
+updateLoop();
 
         if (!isDesktop) { document.body.addEventListener('touchstart', requestGyroPermission, { once: true }); }
         update(); triggerBlink();
