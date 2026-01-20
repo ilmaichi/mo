@@ -295,7 +295,6 @@
             }
         }
         .skills-container { margin-top: 80px; opacity: 0; transform: translateY(30px); transition: 1s all ease 0.9s; }
-        #skills-search { width: 100%; max-width: 450px; background: transparent; border: none; border-bottom: 1px solid rgba(247,247,242,0.2); color: var(--accent-gold); font-family: 'JetBrains Mono'; padding: 12px 0; outline: none; margin-bottom: 40px; }
         .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
         /* --- SKILLS PILLS (Uniformi con Hover pieno) --- */
         .skill-pill { 
@@ -303,14 +302,13 @@
             border-radius: 50px; 
             background: var(--text-light); /* Fondo chiaro di base */
             border: 1.5px solid var(--text-light); 
-            color: var(--dark-text); 
+            color: var(--dark-text); /* Testo scuro leggibile */
             font-family: 'JetBrains Mono'; 
             font-size: 11px; 
-            font-weight: 700; /* Leggermente più bold per leggibilità */
+            font-weight: 500;
             text-transform: uppercase; 
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Transizione morbida */
+            transition: 0.3s;
             animation: fadeIn 0.4s ease forwards;
-            cursor: default;
         }
         
         /* Effetto riempimento Ocra */
@@ -359,22 +357,7 @@
             font-weight: 700; 
         }
         
-        /* --- SKILLS PILLS (Uniformi) --- */
-        .skill-pill { 
-            padding: 10px 22px; 
-            border-radius: 50px; 
-            background: var(--text-light); /* Fondo chiaro di base */
-            border: 1.5px solid var(--text-light); 
-            color: var(--dark-text); /* Testo scuro leggibile */
-            font-family: 'JetBrains Mono'; 
-            font-size: 11px; 
-            font-weight: 500;
-            text-transform: uppercase; 
-            transition: 0.3s;
-            animation: fadeIn 0.4s ease forwards;
-        }
-        
-        /* Accento Ocra al passaggio o per evidenziare */
+        /* Accento oro al passaggio o per evidenziare */
         .skill-pill:hover {
             border-color: var(--accent-gold);
             transform: translateY(-2px);
@@ -770,17 +753,6 @@
                     if (entry.isIntersecting) {
                         // Aggiunge la classe active per far apparire l'elemento (CSS)
                         entry.target.classList.add('active');
-        
-                        // Se l'elemento è la headline di BEYOND, avvia il ciclo delle parole
-                        if (entry.target.id === 'beyond-headline') {
-                            startWordCycle(); // La funzione che avevamo nel codice buono
-                        }
-                        
-                        // Se l'elemento è il toggle ME/MO, avvia quel ciclo
-                        if (entry.target.querySelector('#me-mo-toggle')) {
-                            initMeMoToggle();
-                        }
-        
                         // Smette di osservare una volta attivato
                         observer.unobserve(entry.target);
                     }
