@@ -390,7 +390,8 @@
         #about-section {
             background-color: var(--accent-gold);
             color: var(--accent-coral);
-            padding: 120px 10%;
+            /* Usiamo lo stesso padding laterale della sezione superiore */
+            padding: 120px 40px; 
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -400,23 +401,16 @@
         
         .about-container {
             display: grid;
-            /* La prima colonna (testo) deve allinearsi al margine sinistro del sito */
+            /* Rimuoviamo il max-width enorme o lo impostiamo uguale a quello di Beyond */
             grid-template-columns: 1.2fr 0.8fr; 
-            gap: 80px;
+            gap: 60px;
             width: 100%;
-            max-width: 1400px;
-            margin: 0; /* Rimuovi il margin: auto se la sezione sopra è allineata a sinistra */
-            padding: 0;
+            margin: 0; /* Rimuove il centraggio automatico che crea i margini ampi */
+            max-width: none; /* Lasciamo che sia il padding di #about-section a decidere i margini */
         }
-
-        #about-section {
-            /* Assicurati che il padding laterale sia identico a quello della sezione Beyond */
-            padding: 120px 10%; 
-            background-color: var(--accent-gold);
-            color: var(--accent-coral);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
+        .about-content-left {
+            /* Assicuriamoci che non ci sia padding interno che sposta il testo */
+            padding: 0;
         }
                 
         /* Titolo: ABOUT (Inter) e ME/MÔ (MoFont) */
@@ -426,6 +420,8 @@
             font-family: 'Inter', sans-serif; /* Default per il titolo */
             text-shadow: none;
             line-height: 0.9;
+            margin-left: -4px; /* Compensazione ottica per l'allineamento della 'A' */
+            margin-top: 0;
         }
         
         /* Regola specifica per ME/MÔ in MoFont */
@@ -468,7 +464,7 @@
                 gap: 40px;
             }
             #about-section {
-                padding: 80px 5%;
+                padding: 80px 20px;
             }
         }
         
