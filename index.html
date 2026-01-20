@@ -237,23 +237,26 @@
         .menu-link:hover { color: var(--accent-coral); }
 
         /* --- SECTIONS --- */
-        /* Stato base per tutto ciò che deve apparire */
+        /* Stato base per TUTTI gli elementi che devono apparire */
         .reveal { 
             opacity: 0; 
             transform: translateY(30px); 
             transition: all 1s ease; 
         }
         
-        /* Quando l'elemento diventa attivo */
+        /* Quando l'elemento entra a schermo (aggiunto via JS) */
         .reveal.active { 
             opacity: 1; 
             transform: translateY(0); 
         }
         
-        /* Delay specifici per creare la sequenza (Stagger) */
-        .delay-1 { transition-delay: 0.2s; }
-        .delay-2 { transition-delay: 0.4s; }
-        .delay-3 { transition-delay: 0.6s; }
+        /* Delay per la prima sezione (Beyond) */
+        .beyond-description.reveal.active { transition-delay: 0.3s; }
+        .skills-container.reveal.active { transition-delay: 0.6s; }
+        
+        /* Delay per la seconda sezione (About) */
+        .about-delay-1 { transition-delay: 0.3s; }
+        .about-delay-2 { transition-delay: 0.5s; }
         
         /* Mantieni questa solo per la griglia delle skills che ha un delay lungo */
         .skills-container.reveal.active {
@@ -546,14 +549,14 @@
     </section>
 
     <section class="content-section">
-        <h1 class="headline" id="headline">
+        <h1 class="headline reveal" id="headline">
             <span class="no-wrap">BEYO&#770;ND</span><br> <span id="dynamic-word">ART DIRECTION</span>
         </h1>
-        <div class="beyond-description">
+        <div class="beyond-description reveal">
             Essere <span class="highlight-text">beyond</span> significa non limitarsi alla definizione di una singola disciplina. Sono un Art Director ibrido e fluido, con una visione trasversale e strutturata che unisce competenze creative, tecniche, organizzative e di relazione. Grazie a <span class="highlight-text">oltre 15 anni di esperienza in agenzie creative</span> ho imparato a governare la complessità di progetti integrati, dal brief all'execution, trasformando visioni ambiziose in realtà concrete e coerenti.
         </div>
 
-        <div class="skills-container">
+        <div class="skills-container reveal">
             <div class="skills-filters" id="skills-filters">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="strategy">Vision & Strategy</button>
@@ -668,16 +671,34 @@
             setTimeout(triggerBlink, Math.random() * 4000 + 2500);
         }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, { threshold: 0.1 });
-
-// Applica l'osservatore a TUTTI gli elementi .reveal
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = { threshold: 0.15 };
+        
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Aggiunge la classe active per far apparire l'elemento (CSS)
+                        entry.target.classList.add('active');
+        
+                        // Se l'elemento è la headline di BEYOND, avvia il ciclo delle parole
+                        if (entry.target.id === 'beyond-headline') {
+                            startWordCycle(); // La funzione che avevamo nel codice buono
+                        }
+                        
+                        // Se l'elemento è il toggle ME/MO, avvia quel ciclo
+                        if (entry.target.querySelector('#me-mo-toggle')) {
+                            initMeMoToggle();
+                        }
+        
+                        // Smette di osservare una volta attivato
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+        
+            // Osserva tutti gli elementi .reveal
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
 
         const words = [
             "ART DIRECTION",
