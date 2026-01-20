@@ -483,13 +483,32 @@
             align-items: center;
         }
         
-        #photo-container {
+        .photo-container {
             width: 100%;
-            max-width: 450px;
-            aspect-ratio: 4/5;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px; /* Limita la grandezza massima della foto */
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
+            z-index: 1;
+        }
+        
+        .blob-mask {
+            width: 100%;
+            height: auto;
+            /* Applichiamo un filtro per rendere i bordi della maschera più morbidi se vuoi */
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1));
+        }
+        
+        #blob-path {
+            /* Animazione organica fluida */
+            animation: blob-breath 12s ease-in-out infinite;
+            transform-origin: center;
+        }
+        
+        @keyframes blob-breath {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(3deg); }
         }
         
         /* Responsive */
@@ -635,8 +654,19 @@
                 </div>
             </div>    
             <div class="about-content-right">
-                <div id="photo-container" class="reveal about-delay-2">
-                    </div>
+                <div class="photo-container reveal about-delay-2">
+                    <svg viewBox="0 0 500 500" class="blob-mask">
+                        <defs>
+                            <clipPath id="blob-clip">
+                                <path id="blob-path" d="M440.5,320.5C407,388,318,431,235.5,423.5C153,416,77,358,54.5,282C32,206,63,112,133,67C203,22,312,26,380.5,77C449,128,474,253,440.5,320.5Z" />
+                            </clipPath>
+                        </defs>
+                        <image x="0" y="0" width="100%" height="100%" 
+                               preserveAspectRatio="xMidYMid slice" 
+                               xlink:href="https://raw.githubusercontent.com/ilmaichi/mo/refs/heads/main/foto-cv.jpg" 
+                               clip-path="url(#blob-clip)" />
+                    </svg>
+                </div>
             </div>
         </div>
     </section>
