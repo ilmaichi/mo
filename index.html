@@ -384,8 +384,8 @@
         .about-container {
             display: grid;
             /* Rimuoviamo il max-width enorme o lo impostiamo uguale a quello di Beyond */
-            grid-template-columns: 1.2fr 0.8fr; 
-            gap: 60px;
+            grid-template-columns: 0.8fr 1.2fr; 
+            gap: 40px;
             width: 100%;
             margin: 0; /* Rimuove il centraggio automatico che crea i margini ampi */
             max-width: none; /* Lasciamo che sia il padding di #about-section a decidere i margini */
@@ -460,17 +460,14 @@
         
         /* Colonna destra per la foto */
         .about-content-right {
-            flex: 1.2; /* Più grande */
-            display: flex;
-            justify-content: flex-end; /* Spinge la foto verso destra */
+            display: grid;
+            justify-items: end; /* Spinge il contenuto (la foto) verso la fine della cella */
         }
         
         .photo-container {
             width: 100%;
-            max-width: 550px;
+            max-width: 800px;
             margin: 0 auto;
-            display: flex;
-            justify-content: center;
         }
         
         .blob-mask {
