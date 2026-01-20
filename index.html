@@ -550,8 +550,36 @@
         const words = ["ART DIRECTION", "MOTION DESIGN", "BRAND STRATEGY", "LEADERSHIP", "EXECUTION"];
         let wIdx = 0;
         function decode(txt) {
-            const dw = document.getElementById('dynamic-word'); let it = 0; clearInterval(dw.int);
-            dw.int = setInterval(() => { dw.innerText = txt.split("").map((l, i) => i < it ? txt[i] : "ABCDEFGHIJKLMNOPQRSTUVWXYZ!£$%&/_=?123456789^@"[Math.floor(Math.random()*46)]).join(""); if (it >= txt.length) clearInterval(dw.int); it += 1/3; }, 35);
+            const dw = document.getElementById('dynamic-word');
+            let it = 0;
+            clearInterval(dw.int);
+        
+            dw.int = setInterval(() => {
+                // Calcoliamo quanti caratteri mostrare in totale in questo frame
+                // Partiamo da 3 caratteri e aumentiamo man mano che 'it' cresce
+                let currentVisibleLen = Math.floor(3 + it); 
+                if (currentVisibleLen > txt.length) currentVisibleLen = txt.length;
+        
+                let result = "";
+                for (let i = 0; i < currentVisibleLen; i++) {
+                    if (i < it) {
+                        // Carattere definitivo
+                        result += txt[i];
+                    } else {
+                        // Carattere in fase di glitch
+                        result += "ABCDEFGHIJKLMNOPQRSTUVWXYZ!£$%&/_=?123456789^@"[Math.floor(Math.random() * 46)];
+                    }
+                }
+        
+                dw.innerText = result;
+        
+                if (it >= txt.length) {
+                    clearInterval(dw.int);
+                }
+                
+                // Regola la velocità di apparizione (più piccolo = più lento)
+                it += 0.25; 
+            }, 30);
         }
 
         function toggleMenu() { isMenuOpen = !isMenuOpen; const o = document.getElementById('menu-overlay'); if (isMenuOpen) { o.classList.add('active'); menuBtn.innerText = "Close -"; } else { o.classList.remove('active'); menuBtn.innerText = "Menu +"; } }
