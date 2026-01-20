@@ -237,10 +237,31 @@
         .menu-link:hover { color: var(--accent-coral); }
 
         /* --- SECTIONS --- */
+        /* Stato base per tutto ciò che deve apparire */
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: all 1s ease; 
+        }
+        
+        /* Quando l'elemento diventa attivo */
+        .reveal.active { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        
+        /* Delay specifici per creare la sequenza (Stagger) */
+        .delay-1 { transition-delay: 0.2s; }
+        .delay-2 { transition-delay: 0.4s; }
+        .delay-3 { transition-delay: 0.6s; }
+        
+        /* Mantieni questa solo per la griglia delle skills che ha un delay lungo */
+        .skills-container.reveal.active {
+            transition-delay: 0.9s;
+        }
         .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
         .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 120vh; position: relative; z-index: 5; }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
-        .headline.reveal { opacity: 1; transform: translateY(0); }
         .no-wrap { white-space: nowrap; display: inline-block; }
         /* 1. Ingrandiamo leggermente Beyond per compensare il disegno del font */
         .headline .no-wrap {
@@ -271,9 +292,7 @@
                 font-size: 1rem;
             }
         }
-        .headline.reveal + .beyond-description { opacity: 1; transform: translateY(0); }
         .skills-container { margin-top: 80px; opacity: 0; transform: translateY(30px); transition: 1s all ease 0.9s; }
-        .headline.reveal ~ .skills-container { opacity: 1; transform: translateY(0); }
         #skills-search { width: 100%; max-width: 450px; background: transparent; border: none; border-bottom: 1px solid rgba(247,247,242,0.2); color: var(--accent-gold); font-family: 'JetBrains Mono'; padding: 12px 0; outline: none; margin-bottom: 40px; }
         .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
         /* --- SKILLS PILLS (Uniformi con Hover pieno) --- */
@@ -300,10 +319,10 @@
             transform: translateY(-3px) scale(1.02); /* Leggera elevazione */
             box-shadow: 0 5px 15px rgba(255, 200, 87, 0.2); /* Glow delicato color ocra */
         }
-                .skill-pill.core { border-color: var(--accent-coral); color: var(--accent-coral); }
-                .skill-pill.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
+        .skill-pill.core { border-color: var(--accent-coral); color: var(--accent-coral); }
+        .skill-pill.gold { border-color: var(--accent-gold); color: var(--accent-gold); }
                 
-                /* --- SKILLS FILTERS --- */
+        /* --- SKILLS FILTERS --- */
         .skills-filters { 
             display: flex; 
             flex-wrap: wrap; 
@@ -551,18 +570,18 @@
     <section id="about-section">
         <div class="about-container">
             <div class="about-content-left">
-                <h2 class="headline">
+                <h2 class="headline reveal">
                     ABOUT<br>
                     <span id="me-mo-toggle" class="mofont-style">ME</span>
                 </h2>
                 
-                <div class="beyond-description">
-                    Mi muovo tra le agenzie creative da oltre 15 anni, ma il mio approccio resta quello di un eterno curioso. Amo la contaminazione tra i generi e credo che la miglior strategia sia quella che non dimentica mai l'emozione visiva.
+                <div class="beyond-description reveal delay-1">
+                    Mi muovo tra le agenzie creative da oltre 15 anni...
                 </div>
             </div>
             
             <div class="about-content-right">
-                <div id="photo-container"></div>
+                <div id="photo-container" class="reveal delay-2"></div>
             </div>
         </div>
     </section>
@@ -648,6 +667,17 @@
             setTimeout(() => { eyes.forEach(e => e.classList.remove('blinking')); brows.forEach(b => b.classList.remove('brow-down')); }, 120);
             setTimeout(triggerBlink, Math.random() * 4000 + 2500);
         }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+// Applica l'osservatore a TUTTI gli elementi .reveal
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
         const words = [
             "ART DIRECTION",
