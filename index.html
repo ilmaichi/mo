@@ -260,7 +260,19 @@
         }
 
         /* --- SKILLS --- */
-        .beyond-description { max-width: 650px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
+        .highlight-text {
+            color: #fff; /* O il colore accento che preferisci */
+            font-weight: 600;
+            /* Opzionale: un leggero sottofondo o bordo se vuoi enfatizzare molto */
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+        .beyond-description { max-width: 800px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
+        @media (max-width: 768px) {
+            .beyond-description {
+                max-width: 100%;
+                font-size: 1rem;
+            }
+        }
         .headline.reveal + .beyond-description { opacity: 1; transform: translateY(0); }
         .skills-container { margin-top: 80px; opacity: 0; transform: translateY(30px); transition: 1s all ease 0.9s; }
         .headline.reveal ~ .skills-container { opacity: 1; transform: translateY(0); }
