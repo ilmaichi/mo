@@ -430,6 +430,10 @@
             text-transform: uppercase;
             display: inline-block;
             font-size: 1.15em; /* Regola di bilanciamento proporzioni */
+            line-height: 1;
+            /* SPOSTAMENTO BASELINE */
+            transform: translateY(0.05em);
+            vertical-align: middle;
         }
         
         /* Descrizione */
@@ -582,8 +586,7 @@
         <div class="about-container">
             <div class="about-content-left">
                 <h2 class="headline reveal">
-                    ABOUT<br>
-                    <span id="me-mo-toggle" class="mofont-style">ME</span>
+                    ABOUT<span id="me-mo-toggle" class="mofont-style">ME</span>
                 </h2>
                 <div class="beyond-description reveal about-delay-1">
                     Mi muovo tra le agenzie creative da oltre 15 anni, ma il mio approccio resta quello di un eterno curioso. 
