@@ -400,13 +400,25 @@
         
         .about-container {
             display: grid;
+            /* La prima colonna (testo) deve allinearsi al margine sinistro del sito */
             grid-template-columns: 1.2fr 0.8fr; 
             gap: 80px;
             width: 100%;
             max-width: 1400px;
-            margin: 0 auto;
+            margin: 0; /* Rimuovi il margin: auto se la sezione sopra è allineata a sinistra */
+            padding: 0;
         }
-        
+
+        #about-section {
+            /* Assicurati che il padding laterale sia identico a quello della sezione Beyond */
+            padding: 120px 10%; 
+            background-color: var(--accent-gold);
+            color: var(--accent-coral);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+                
         /* Titolo: ABOUT (Inter) e ME/MÔ (MoFont) */
         #about-section .headline {
             color: #ffffff;
@@ -571,23 +583,14 @@
     </section>
 
     <section id="about-section">
-        <div class="about-container">
-            <div class="about-content-left">
-                <h2 class="headline reveal">
-                    ABOUT<br>
-                    <span id="me-mo-toggle" class="mofont-style">ME</span>
-                </h2>
-                
-                <div class="beyond-description reveal delay-1">
-                    Mi muovo tra le agenzie creative da oltre 15 anni...
-                </div>
-            </div>
-            
-            <div class="about-content-right">
-                <div id="photo-container" class="reveal delay-2"></div>
-            </div>
+    <div class="about-container">
+        <div class="about-content-left"> 
+            <h2 class="headline reveal">...</h2>
+            <div class="beyond-description reveal delay-1">...</div>
         </div>
-    </section>
+        <div class="about-content-right">...</div>
+    </div>
+</section>
     <svg style="visibility: hidden; position: absolute;" width="0" height="0">
         <defs>
             <filter id="gooey-filter">
