@@ -366,49 +366,52 @@
 
         /* --- SECTION ABOUT --- */
         #about-section {
-            background-color: var(--accent-gold);
-            color: var(--accent-coral);
+            background-color: var(--coral);
+            color: #ffffff;
             padding: 120px 10%;
             min-height: 100vh;
             display: flex;
             align-items: center;
             position: relative;
-            overflow: hidden;
             z-index: 1;
         }
         
         .about-container {
             display: grid;
-            /* Grid a due colonne: bio a sinistra, foto a destra */
             grid-template-columns: 1.2fr 0.8fr; 
             gap: 80px;
             width: 100%;
-            max-width: 1400px; /* Un po' più largo per ospitare la foto a lato */
+            max-width: 1400px;
             margin: 0 auto;
         }
         
-        /* Titolo: eredita lo stile della sezione BEYOND */
+        /* Titolo: ABOUT (Inter) e ME/MÔ (MoFont) */
         #about-section .headline {
+            color: #ffffff;
             margin-bottom: 30px;
+            font-family: 'Inter', sans-serif; /* Default per il titolo */
+            text-shadow: none;
+            line-height: 0.9;
         }
         
-        /* La parola ME/MÔ in MoFont */
+        /* Regola specifica per ME/MÔ in MoFont */
         .mofont-style {
             font-family: 'Mofont', sans-serif;
             text-transform: uppercase;
             display: inline-block;
+            font-size: 1.15em; /* Regola di bilanciamento proporzioni */
         }
         
-        /* Descrizione: ereditiamo le spaziature della beyond-description */
+        /* Descrizione */
         #about-section .beyond-description {
             color: #ffffff;
-            max-width: 550px; /* Leggermente più stretta per la colonna sinistra */
+            max-width: 550px;
             margin-top: 20px;
             line-height: 1.6;
             font-size: 1.1rem;
         }
         
-        /* Placeholder per la foto che si comporrà */
+        /* Colonna destra per la foto */
         .about-content-right {
             display: flex;
             justify-content: center;
@@ -419,30 +422,19 @@
             width: 100%;
             max-width: 450px;
             aspect-ratio: 4/5;
-            background: rgba(255, 255, 255, 0.1); /* Effetto vetro opaco in attesa della foto */
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
-            transition: transform 0.3s ease;
         }
         
         /* Responsive */
         @media (max-width: 1024px) {
             .about-container {
-                grid-template-columns: 1fr; /* Colonna singola su tablet/mobile */
+                grid-template-columns: 1fr;
                 gap: 40px;
             }
-        
             #about-section {
                 padding: 80px 5%;
-            }
-        
-            #about-section .beyond-description {
-                max-width: 100%;
-            }
-            
-            #photo-container {
-                max-width: 100%;
-                height: 400px;
             }
         }
         
@@ -559,8 +551,8 @@
     <section id="about-section">
         <div class="about-container">
             <div class="about-content-left">
-                <h2 class="headline reveal" id="about-headline">
-                    <span class="no-wrap">ABOUT</span><br>
+                <h2 class="headline">
+                    ABOUT<br>
                     <span id="me-mo-toggle" class="mofont-style">ME</span>
                 </h2>
                 
