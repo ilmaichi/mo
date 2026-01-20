@@ -691,78 +691,94 @@
         update(); triggerBlink();
         setInterval(() => { wIdx = (wIdx+1)%words.length; decode(words[wIdx]); }, 4000);
         const mySkills = [
-    // STRATEGY
-    { name: "Art Direction", cat: "strategy" },
-    { name: "Creative Leadership", cat: "strategy" },
-    { name: "Brand Strategy", cat: "strategy" },
-    { name: "Creative Strategy", cat: "strategy" },
-    { name: "Brainstorming", cat: "strategy" },
-    { name: "Pitch & Speech", cat: "strategy" },
-    { name: "Coordinamento Team", cat: "strategy" },
-    { name: "Coordinamento Fornitori", cat: "strategy" },
-    { name: "Project Management", cat: "strategy" },
-    
-    // CREATIVE & PRODUCTION
-    { name: "Video Production", cat: "creative" },
-    { name: "Montaggio Video", cat: "creative" },
-    { name: "Motion Graphics", cat: "creative" },
-    { name: "Brand Identity", cat: "creative" },
-    { name: "Graphic Design", cat: "creative" },
-    { name: "Social Media Design", cat: "creative" },
-    { name: "Coordinamento Shooting", cat: "creative" },
-    { name: "Fotoritocco", cat: "creative" },
-    { name: "Amazon A+ & Shop in Shop", cat: "creative" },
-    { name: "Eventi & Concorsi", cat: "creative" },
-    
-    // TECH & ADV
-    { name: "Banner HTML5", cat: "tech" },
-    { name: "AI Workflows", cat: "tech" },
-    { name: "AI Generativa", cat: "tech" },
-    { name: "Landing Pages", cat: "tech" },
-    { name: "Web Design", cat: "tech" },
-    { name: "Meta Ads", cat: "tech" },
-    { name: "Display Ads", cat: "tech" },
-    { name: "Newsletter & DEM", cat: "tech" },
-    { name: "UI/UX", cat: "tech" },
-    
-    // TOOLS
-    { name: "Figma", cat: "tools" },
-    { name: "Photoshop", cat: "tools" },
-    { name: "After Effects", cat: "tools" },
-    { name: "Premiere", cat: "tools" },
-    { name: "Illustrator", cat: "tools" },
-    { name: "InDesign", cat: "tools" },
-    { name: "Canva", cat: "tools" },
-    { name: "Capcut", cat: "tools" },
-    { name: "HTML5/CSS", cat: "tools" }
-];
-
-function renderSkills(filter = 'all') {
-    const grid = document.getElementById('skills-grid');
-    grid.innerHTML = '';
-    mySkills.forEach(skill => {
-        if (filter === 'all' || skill.cat === filter) {
-            const pill = document.createElement('span');
-            // Ora tutte hanno la stessa classe base, 
-            // ma manteniamo il riferimento alla categoria se volessi usarlo in futuro
-            pill.className = `skill-pill`; 
-            pill.innerText = skill.name;
-            grid.appendChild(pill);
+            // STRATEGY
+            { name: "Art Direction", cat: "strategy" },
+            { name: "Creative Leadership", cat: "strategy" },
+            { name: "Brand Strategy", cat: "strategy" },
+            { name: "Creative Strategy", cat: "strategy" },
+            { name: "Brainstorming", cat: "strategy" },
+            { name: "Pitch & Speech", cat: "strategy" },
+            { name: "Coordinamento Team", cat: "strategy" },
+            { name: "Coordinamento Fornitori", cat: "strategy" },
+            { name: "Project Management", cat: "strategy" },
+            
+            // CREATIVE & PRODUCTION
+            { name: "Video Production", cat: "creative" },
+            { name: "Montaggio Video", cat: "creative" },
+            { name: "Motion Graphics", cat: "creative" },
+            { name: "Brand Identity", cat: "creative" },
+            { name: "Graphic Design", cat: "creative" },
+            { name: "Social Media Design", cat: "creative" },
+            { name: "Coordinamento Shooting", cat: "creative" },
+            { name: "Fotoritocco", cat: "creative" },
+            { name: "Amazon A+ & Shop in Shop", cat: "creative" },
+            { name: "Eventi & Concorsi", cat: "creative" },
+            
+            // TECH & ADV
+            { name: "Banner HTML5", cat: "tech" },
+            { name: "AI Workflows", cat: "tech" },
+            { name: "AI Generativa", cat: "tech" },
+            { name: "Landing Pages", cat: "tech" },
+            { name: "Web Design", cat: "tech" },
+            { name: "Meta Ads", cat: "tech" },
+            { name: "Display Ads", cat: "tech" },
+            { name: "Newsletter & DEM", cat: "tech" },
+            { name: "UI/UX", cat: "tech" },
+            
+            // TOOLS
+            { name: "Figma", cat: "tools" },
+            { name: "Photoshop", cat: "tools" },
+            { name: "After Effects", cat: "tools" },
+            { name: "Premiere", cat: "tools" },
+            { name: "Illustrator", cat: "tools" },
+            { name: "InDesign", cat: "tools" },
+            { name: "Canva", cat: "tools" },
+            { name: "Capcut", cat: "tools" },
+            { name: "HTML5/CSS", cat: "tools" }
+        ];
+        
+        function renderSkills(filter = 'all') {
+            const grid = document.getElementById('skills-grid');
+            grid.innerHTML = '';
+            mySkills.forEach(skill => {
+                if (filter === 'all' || skill.cat === filter) {
+                    const pill = document.createElement('span');
+                    // Ora tutte hanno la stessa classe base, 
+                    // ma manteniamo il riferimento alla categoria se volessi usarlo in futuro
+                    pill.className = `skill-pill`; 
+                    pill.innerText = skill.name;
+                    grid.appendChild(pill);
+                }
+            });
         }
-    });
-}
+        
+        // Inizializza i filtri
+        document.getElementById('skills-filters').addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                renderSkills(e.target.dataset.filter);
+            }
+        });
+        
+        // Chiama renderSkills() all'avvio per mostrare "All"
+        renderSkills();
 
-// Inizializza i filtri
-document.getElementById('skills-filters').addEventListener('click', (e) => {
-    if (e.target.classList.contains('filter-btn')) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
-        renderSkills(e.target.dataset.filter);
-    }
-});
-
-// Chiama renderSkills() all'avvio per mostrare "All"
-renderSkills();
+        // Toggle testo sezione About
+        function initAboutToggle() {
+            const meToggle = document.getElementById('me-toggle');
+            const states = ["ME", "MÔ"];
+            let stateIdx = 0;
+        
+            setInterval(() => {
+                stateIdx = (stateIdx + 1) % states.length;
+                // Se vuoi un effetto glitch anche qui, possiamo usare la funzione decode
+                meToggle.innerText = states[stateIdx];
+            }, 3000); // Cambia ogni 3 secondi
+        }
+        
+        // Chiama la funzione all'avvio
+        initAboutToggle();
     </script>
 </body>
 </html>
