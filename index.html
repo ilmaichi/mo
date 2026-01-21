@@ -910,6 +910,33 @@
         }
         
         initMeMoToggle();
+
+        // Gestione click sui link del menù
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                // 1. Chiudiamo il menù
+                if (isMenuOpen) {
+                    toggleMenu();
+                }
+        
+                // 2. Opzionale: Scroll fluido (se non già gestito dal CSS)
+                const targetId = link.getAttribute('href');
+                if (targetId.startsWith('#')) {
+                    e.preventDefault();
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        // Calcoliamo un piccolo offset se necessario (es. per il nome fisso in alto)
+                        const offset = 80; 
+                        const targetPosition = targetSection.offsetTop - offset;
+        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
