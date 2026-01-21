@@ -262,22 +262,22 @@
             /* Dimensioni (rimangono simili a quelle che hai impostato) */
             .s1 { width: 250px; height: 300px; }
             .s2 { width: 350px; height: 280px; }
-            .s3 { width: 320px; height: 280px; }
+            .s3 { width: 350px; height: 300px; }
         
             /* 2. Stato ACTIVE: Crescono e si spostano verso la metà destra dello schermo */
             #menu-overlay.active .spot.s1 { 
                 /* Si sposta leggermente a sinistra e in basso rispetto all'origine */
-                transform: scale(3) translate(0px, -100px);
+                transform: scale(3.5) translate(-40px, -10px);
             }
             #menu-overlay.active .spot.s2 { 
                 /* Si sposta un po' di più verso il centro */
-                transform: scale(3) translate(-20px, 40px);
+                transform: scale(2.5) translate(-65px, 40px);
                 transition-delay: 0.1s;
             }
             #menu-overlay.active .spot.s3 { 
                 /* Rimane più vicina al bordo destro ma scende */
-                transform: scale(3) translate(-10px, 70px);
-                transition-delay: 0.05s;
+                transform: scale(2.2) translate(-80px, 150px);
+                transition-delay: 0.08s;
             }
 
         
