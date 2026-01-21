@@ -239,8 +239,8 @@
             .s1, .s2, .s3 { 
                 left: auto; 
                 bottom: auto;
-                top: 1%;     /* Partono dall'alto */
-                right: 1%;   /* Partono da destra */
+                top: 0%;     /* Partono dall'alto */
+                right: 0%;   /* Partono da destra */
                 transform: scale(0); /* Nascono invisibili */
             }
         
@@ -252,24 +252,21 @@
             /* 2. Stato ACTIVE: Crescono e si spostano verso la metà destra dello schermo */
             /* Usiamo translate per spostarle verso il centro-destra */
             #menu-overlay.active .spot { 
-                transform: scale(1); 
+                transform: scale(1.5); 
             }
         
             #menu-overlay.active .spot.s1 { 
                 /* Si sposta leggermente a sinistra e in basso rispetto all'origine */
-                /*transform: scale(1) translate(-5vw, 15vh); */
-                transform: scale(1);
+                /*transform: scale(1) translate(0px, -100px); */
             }
             #menu-overlay.active .spot.s2 { 
                 /* Si sposta un po' di più verso il centro */
-                /*transform: scale(1) translate(-15vw, 25vh);*/
-                transform: scale(1);
+                transform: scale(1) translate(-100px, 0px);
                 transition-delay: 0.1s;
             }
             #menu-overlay.active .spot.s3 { 
                 /* Rimane più vicina al bordo destro ma scende */
-                /*transform: scale(1) translate(-2vw, 35vh); */
-                transform: scale(1);
+                transform: scale(1) translate(-80px, 10px);
                 transition-delay: 0.05s;
             }
         
