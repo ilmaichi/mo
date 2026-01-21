@@ -225,30 +225,29 @@
         /* --- MENU OVERLAY --- */
         /* Applichiamo i cambiamenti solo sopra i 1024px */
         @media (min-width: 1024px) {
-            /* 1. Riduciamo i cerchi per non coprire tutto lo schermo */
-            .s1 { width: 250px; height: 210px; }
-            .s2 { width: 220px; height: 200px; left: auto; top: auto; transition-delay: 0.1s; }
-            .s3 { width: 250px; height: 230px; right: auto; bottom: auto; transition-delay: 0.2s; }
+            /* 1. Dimensioni ridotte: circa la metà di prima */
+            .s1 { width: 320px; height: 300px; }
+            .s2 { width: 280px; height: 260px; left: auto; top: auto; transition-delay: 0.1s; }
+            .s3 { width: 300px; height: 280px; right: auto; bottom: auto; transition-delay: 0.2s; }
         
-            /* 2. Reset delle posizioni iniziali: tutti al centro ma leggermente sfalsati */
             .spot { 
                 position: absolute; 
                 background: var(--dark-text); 
                 border-radius: 50%; 
-                transform: scale(0) translate(0, 0); /* Partono piccoli al centro */
-                transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1), opacity 0.5s; 
+                /* Partono piccoli e centrati */
+                transform: scale(0) translate(0, 0); 
+                transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1); 
             }
         
-            /* 3. Quando attivo, creano il blob centrale */
-            /* Usiamo translate per farli scontrare e fondere */
+            /* 2. Offset minimi per farli fondere in una forma stretta */
             #menu-overlay.active .spot.s1 { 
-                transform: scale(1) translate(-40px, -20px); 
+                transform: scale(1) translate(-25px, -15px); 
             }
             #menu-overlay.active .spot.s2 { 
-                transform: scale(1) translate(50px, -10px); 
+                transform: scale(1) translate(30px, -5px); 
             }
             #menu-overlay.active .spot.s3 { 
-                transform: scale(1) translate(-10px, 40px); 
+                transform: scale(1) translate(-5px, 25px); 
             }
         
             /* 4. Opzionale: scuriamo leggermente lo sfondo dietro il blob */
