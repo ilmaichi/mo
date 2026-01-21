@@ -346,10 +346,6 @@
 
         @media (max-width: 767px) {
             /* Ingrandiamo il titolo principale */
-            .about-container {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
             .headline {
                 font-size: 10vw; /* Regola questa dimensione a piacimento */
                 line-height: 1.1;
@@ -602,6 +598,10 @@
         }
         
         @media (max-width: 767px) {
+            .about-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
             .about-headline {
                 display: flex;
                 flex-direction: column; /* ME/MO va sotto ABOUT */
@@ -939,13 +939,13 @@
         });
 
         const words = [
-            "ART <br>DIRECTION",
+            "ART |DIRECTION",
             "STRATEGY",
             "DESIGN",
             "CREATIVITY",
-            "VIDEO<br>&MOTION",
+            "VIDEO|&MOTION",
             "DIGITAL",
-            "PRINT<br>&CRAFT",
+            "PRINT|&CRAFT",
             "LEADERSHIP"
         ];
         let wIdx = 0;
@@ -955,29 +955,35 @@
             clearInterval(dw.int);
         
             dw.int = setInterval(() => {
-                // Calcoliamo quanti caratteri mostrare in totale in questo frame
-                // Partiamo da 3 caratteri e aumentiamo man mano che 'it' cresce
                 let currentVisibleLen = Math.floor(3 + it); 
                 if (currentVisibleLen > txt.length) currentVisibleLen = txt.length;
         
                 let result = "";
                 for (let i = 0; i < currentVisibleLen; i++) {
                     if (i < it) {
-                        // Carattere definitivo
-                        result += txt[i];
+                        // Se il carattere è la nostra pipe, mettiamo un BR invece di glitcharlo
+                        if (txt[i] === '|') {
+                            result += "<br>";
+                        } else {
+                            result += txt[i];
+                        }
                     } else {
-                        // Carattere in fase di glitch
-                        result += "ABCDEFGHIJKLMNOPQRSTUVWXYZ!£$%&/_=?123456789^@"[Math.floor(Math.random() * 46)];
+                        // Non glitchiamo la pipe, manteniamola invisibile o saltiamola
+                        if (txt[i] === '|') {
+                            result += ""; // Salta il glitch per il separatore
+                        } else {
+                            result += "ABCDEFGHIJKLMNOPQRSTUVWXYZ!£$%&/_=?123456789^@"[Math.floor(Math.random() * 46)];
+                        }
                     }
                 }
         
-                dw.innerText = result;
+                // USIAMO innerHTML per interpretare il <br>
+                dw.innerHTML = result;
         
                 if (it >= txt.length) {
                     clearInterval(dw.int);
                 }
-                
-                // Regola la velocità di apparizione (più piccolo = più lento)
+        
                 it += 0.25; 
             }, 30);
         }
