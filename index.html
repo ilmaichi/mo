@@ -239,8 +239,8 @@
             .s1, .s2, .s3 { 
                 left: auto; 
                 bottom: auto;
-                top: 0%;     /* Partono dall'alto */
-                right: 0%;   /* Partono da destra */
+                top: -100px;     /* Partono dall'alto */
+                right: -100px;   /* Partono da destra */
                 transform: scale(0); /* Nascono invisibili */
             }
         
@@ -260,6 +260,16 @@
                 /*transform: scale(1) translate(0px, -100px); */
             }
 
+            #menu-overlay.active .spot.s2 { 
+                /* Si sposta un po' di più verso il centro */
+                transform: scale(1) translate(-100px, 0px);
+                transition-delay: 0.1s;
+            }
+            #menu-overlay.active .spot.s3 { 
+                /* Rimane più vicina al bordo destro ma scende */
+                transform: scale(1) translate(-80px, 10px);
+                transition-delay: 0.05s;
+            }
         
             /* 3. Posizionamento del contenuto Menu */
             /* Se vuoi che anche il testo segua il blob a destra */
