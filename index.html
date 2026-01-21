@@ -740,35 +740,39 @@
         let idleTimer; // Gestirà l'intervallo del movimento automatico a mousefermo
 
         document.addEventListener('mousemove', (e) => {
-    if (gyroActive) return;
+            if (gyroActive) return;
+        
+            // Ferma l'occhio che vaga da solo
+            clearInterval(idleTimer);
+        
+            mX = e.clientX; 
+            mY = e.clientY;
 
-    // Ferma l'occhio che vaga da solo
-    clearInterval(idleTimer);
-
-    mX = e.clientX; 
-    mY = e.clientY; 
-    // Qui il cursore comanda gli occhi
-    tPX = e.clientX; 
-    tPY = e.clientY; 
-
-    const btnRect = menuBtn.getBoundingClientRect();
-    const dist = Math.hypot(mX - (btnRect.left + btnRect.width/2), mY - (btnRect.top + btnRect.height/2));
-    
-    if (dist < 60 && !document.body.classList.contains('use-standard-cursor')) { 
-        isSticky = true; 
-        cursor.classList.add('expanding'); 
-        menuBtn.classList.add('sticky-active'); 
-        mX = btnRect.left + btnRect.width/2; 
-        mY = btnRect.top + btnRect.height/2; 
-    } else { 
-        isSticky = false; 
-        cursor.classList.remove('expanding'); 
-        menuBtn.classList.remove('sticky-active'); 
-    }
-
-    // Fai ripartire il timer: se smetti di muovere ora, tra 2.5s inizierà a vagare
-    startIdleMovement();
-});
+            // Coordinate REALI per il cursore (non vengono mai toccate dall'idle)
+            window.realMX = e.clientX;
+            window.realMY = e.clientY;
+            // Qui il cursore comanda gli occhi
+            tPX = e.clientX; 
+            tPY = e.clientY; 
+        
+            const btnRect = menuBtn.getBoundingClientRect();
+            const dist = Math.hypot(mX - (btnRect.left + btnRect.width/2), mY - (btnRect.top + btnRect.height/2));
+            
+            if (dist < 60 && !document.body.classList.contains('use-standard-cursor')) { 
+                isSticky = true; 
+                cursor.classList.add('expanding'); 
+                menuBtn.classList.add('sticky-active'); 
+                mX = btnRect.left + btnRect.width/2; 
+                mY = btnRect.top + btnRect.height/2; 
+            } else { 
+                isSticky = false; 
+                cursor.classList.remove('expanding'); 
+                menuBtn.classList.remove('sticky-active'); 
+            }
+        
+            // Fai ripartire il timer: se smetti di muovere ora, tra 2.5s inizierà a vagare
+            startIdleMovement();
+        });
 
         function lerpAngle(s, e, a) { const d = ((e - s + 180) % 360 + 360) % 360 - 180; return s + d * a; }
 
@@ -794,9 +798,10 @@
         function requestGyroPermission() { if (typeof DeviceOrientationEvent?.requestPermission === 'function') DeviceOrientationEvent.requestPermission().then(r => {if(r==='granted')setupGyro();}); else setupGyro(); }
 
         function update() {
-            // 1. Gestione Cursore Organic (Solo Desktop)
+            // Gestione Cursore Organic (solo Desktop)
             if (isDesktop && !document.body.classList.contains('use-standard-cursor')) {
-                const dx = mX - cX, dy = mY - cY; 
+                // USA realMX e realMY invece di mX e mY per il cursore
+                const dx = (window.realMX || mX) - cX, dy = (window.realMY || mY) - cY; 
                 cX += dx * (isSticky ? 0.3 : 0.15); 
                 cY += dy * (isSticky ? 0.3 : 0.15);
                 
