@@ -238,8 +238,8 @@
             /* Resettiamo i valori vmax e le posizioni angolari */
             .s1, .s2, .s3 { 
                 left: auto; 
-                right: 0; 
-                top: 0; 
+                right: auto; 
+                top: auto; 
                 bottom: auto; 
             }
         
@@ -254,9 +254,7 @@
             }
         
             /* Movimenti millimetrici per farli fondere al centro */
-            #menu-overlay.active .spot.s1 { transform: scale(1) translate(-60px, -40px); }
-            #menu-overlay.active .spot.s2 { transform: scale(1) translate(40px, 0px); }
-            #menu-overlay.active .spot.s3 { transform: scale(1) translate(-10px, 30px); }
+            
         }
         
         #menu-content { position: relative; z-index: 2001; text-align: center; opacity: 0; transform: translateY(30px); transition: 0.5s; }
