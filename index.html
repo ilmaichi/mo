@@ -223,6 +223,40 @@
         .brow-down { transform: translateY(20px) !important; }
 
         /* --- MENU OVERLAY --- */
+        /* Applichiamo i cambiamenti solo sopra i 1024px */
+        @media (min-width: 1024px) {
+            /* 1. Riduciamo i cerchi per non coprire tutto lo schermo */
+            .s1 { width: 500px; height: 480px; }
+            .s2 { width: 420px; height: 400px; left: auto; top: auto; transition-delay: 0.1s; }
+            .s3 { width: 450px; height: 430px; right: auto; bottom: auto; transition-delay: 0.2s; }
+        
+            /* 2. Reset delle posizioni iniziali: tutti al centro ma leggermente sfalsati */
+            .spot { 
+                position: absolute; 
+                background: var(--dark-text); 
+                border-radius: 50%; 
+                transform: scale(0) translate(0, 0); /* Partono piccoli al centro */
+                transition: transform 1.2s cubic-bezier(0.6, 0, 0.4, 1), opacity 0.5s; 
+            }
+        
+            /* 3. Quando attivo, creano il blob centrale */
+            /* Usiamo translate per farli scontrare e fondere */
+            #menu-overlay.active .spot.s1 { 
+                transform: scale(1) translate(-40px, -20px); 
+            }
+            #menu-overlay.active .spot.s2 { 
+                transform: scale(1) translate(50px, -10px); 
+            }
+            #menu-overlay.active .spot.s3 { 
+                transform: scale(1) translate(-10px, 40px); 
+            }
+        
+            /* 4. Opzionale: scuriamo leggermente lo sfondo dietro il blob */
+            #menu-overlay.active {
+                background: rgba(240, 235, 227, 0.4); /* Un velo crema per staccare dal resto */
+                backdrop-filter: blur(5px); /* Opzionale: sfoca leggermente quello che c'è dietro */
+            }
+        }
         #menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2000; }
         #menu-overlay.active { pointer-events: all; }
         .ink-container { position: absolute; width: 100%; height: 100%; filter: url('#gooey-filter'); display: flex; align-items: center; justify-content: center; }
