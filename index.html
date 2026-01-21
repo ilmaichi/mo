@@ -233,7 +233,7 @@
         .s1 { width: 85vmax; height: 85vmax; }
         .s2 { width: 65vmax; height: 65vmax; left: -5%; top: -5%; transition-delay: 0.1s; }
         .s3 { width: 75vmax; height: 75vmax; right: -5%; bottom: -5%; transition-delay: 0.05s; }
-        /* --- SPECIFICHE DESKTOP PER NON RIEMPIRE TUTTO --- */
+        /* --- SPECIFICHE DESKTOP PER ESPANDERSI DA IN ALTO A SINISTRA MA SENZA RIEMPIRE TUTTO --- */
         @media (min-width: 1024px) {
             /* Resettiamo i valori vmax e le posizioni angolari */
             .s1, .s2, .s3 { 
@@ -244,9 +244,9 @@
             }
         
             /* Dimensioni ridotte per Desktop */
-            .s1 { width: 500px; height: 480px; }
-            .s2 { width: 450px; height: 430px; }
-            .s3 { width: 480px; height: 460px; }
+            .s1 { width: 800px; height: 580px; }
+            .s2 { width: 650px; height: 730px; }
+            .s3 { width: 680px; height: 560px; }
         
             /* Forza lo scale a 1 (invece di 1.6) per avere più controllo sui pixel */
             #menu-overlay.active .spot { 
@@ -254,7 +254,7 @@
             }
         
             /* Movimenti millimetrici per farli fondere al centro */
-            #menu-overlay.active .spot.s1 { transform: scale(1) translate(-30px, -20px); }
+            #menu-overlay.active .spot.s1 { transform: scale(1) translate(-60px, -40px); }
             #menu-overlay.active .spot.s2 { transform: scale(1) translate(40px, 0px); }
             #menu-overlay.active .spot.s3 { transform: scale(1) translate(-10px, 30px); }
         }
