@@ -340,15 +340,22 @@
             font-weight: 900; /* Per farlo matchare con la pesantezza di BEYOND */
             letter-spacing: -0.02em; 
         }
+        #dynamic-word br {
+            display: none; 
+        }
 
         @media (max-width: 767px) {
             /* Ingrandiamo il titolo principale */
+            .about-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
             .headline {
                 font-size: 10vw; /* Regola questa dimensione a piacimento */
                 line-height: 1.1;
             }
             .headline .no-wrap {
-            font-size: 1.4em; /* Aumenta del 15% rispetto alla dimensione base */
+            font-size: 1.15em; /* Aumenta del 15% rispetto alla dimensione base */
             display: inline-block;
             vertical-align: middle;
             }
@@ -359,10 +366,16 @@
                 min-height: 2.3em;   /* Riserva lo spazio per 2 righe di testo */
                 font-size: 1.2em;    /* Lo rende più grande come richiesto */
                 margin-top: 0.2em;   /* Distanza dal "Beyond" */
-                
+                line-height: 1.1;
+                text-align: left;
                 /* Aiuta a gestire parole molto lunghe senza rompere tutto */
                 word-wrap: break-word; 
                 overflow-wrap: break-word;
+            }
+            #dynamic-word br {
+                display: block;
+                content: "";
+                margin-top: 0;
             }
         
             /* Rimuoviamo l'effetto del <br> se necessario o lo gestiamo tramite il block */
@@ -693,7 +706,7 @@
     </section>
     <section id="beyond-section" class="content-section">
         <h1 class="headline reveal" id="headline">
-            <span class="no-wrap">BEYO&#770;ND</span><br> <span id="dynamic-word">ART DIRECTION</span>
+            <span class="no-wrap">BEYO&#770;ND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
         </h1>
         <div class="beyond-description reveal">
             Essere <span class="highlight-text">beyond</span> significa non limitarsi alla definizione di una singola disciplina. Sono un Art Director ibrido e fluido, con una visione trasversale e strutturata che unisce competenze creative, tecniche, organizzative e di relazione. Grazie a <span class="highlight-text">oltre 15 anni di esperienza in agenzie creative</span> ho imparato a governare la complessità di progetti integrati, dal brief all'execution, trasformando visioni ambiziose in realtà concrete e coerenti.
@@ -926,15 +939,14 @@
         });
 
         const words = [
-            "ART DIRECTION",
+            "ART <br>DIRECTION",
             "STRATEGY",
             "DESIGN",
             "CREATIVITY",
-            "VIDEO&MOTION",
+            "VIDEO<br>&MOTION",
             "DIGITAL",
-            "PRINT&CRAFT",
-            "LEADERSHIP",
-            "RELATIONSHIP"
+            "PRINT<br>&CRAFT",
+            "LEADERSHIP"
         ];
         let wIdx = 0;
         function decode(txt) {
