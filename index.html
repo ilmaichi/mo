@@ -342,18 +342,32 @@
         }
 
         @media (max-width: 767px) {
-            /* Ingrandiamo il font del titolo che contiene il decode */
-            #beyond-section h2 { 
-                font-size: 12vw; 
+            /* Ingrandiamo il titolo principale */
+            .headline {
+                font-size: 10vw; /* Regola questa dimensione a piacimento */
                 line-height: 1.1;
             }
+            .headline .no-wrap {
+            font-size: 1.4em; /* Aumenta del 15% rispetto alla dimensione base */
+            display: inline-block;
+            vertical-align: middle;
+            }
         
-            /* Lo span del decode diventa un blocco separato con altezza fissa */
+            /* Gestione dello span che fa il decode */
             #dynamic-word {
-                display: block;
-                min-height: 2.2em; /* Spazio per circa 2 righe */
-                font-size: 11vw;   /* Leggermente più piccolo del "Beyond" per equilibrio */
-                color: #your-color; 
+                display: block;      /* Forza l'andata a capo pulita */
+                min-height: 2.3em;   /* Riserva lo spazio per 2 righe di testo */
+                font-size: 1.2em;    /* Lo rende più grande come richiesto */
+                margin-top: 0.2em;   /* Distanza dal "Beyond" */
+                
+                /* Aiuta a gestire parole molto lunghe senza rompere tutto */
+                word-wrap: break-word; 
+                overflow-wrap: break-word;
+            }
+        
+            /* Rimuoviamo l'effetto del <br> se necessario o lo gestiamo tramite il block */
+            .headline br {
+                display: none; 
             }
         }
 
@@ -574,22 +588,19 @@
             }
         }
         
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .about-container {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-            #about-section h2 {
-                font-size: 14vw;
+        @media (max-width: 767px) {
+            .about-headline {
                 display: flex;
-                flex-direction: column; /* Manda ME/MO sotto */
-                align-items: flex-start; /* Allinea a sinistra */
-                gap: 10px;
+                flex-direction: column; /* ME/MO va sotto ABOUT */
+                align-items: flex-start;
+                font-size: 14vw !important; /* Forza la dimensione del titolo */
+                line-height: 1;
             }
-            #me-mo-toggle { 
-                font-size: 18vw; 
+            #me-mo-toggle {
                 display: block;
+                width: 60vw;      /* ME/MO occupa il 60% della larghezza schermo */
+                max-width: 300px;
+                margin-top: 10px;
             }
         }
         
