@@ -932,6 +932,7 @@
                             // Calcoliamo la posizione con un piccolo offset per non appiccicare il titolo al bordo
                             // const offset = 60; 
                             // const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                            const targetPosition = targetSection.offsetTop;
         
                             window.scrollTo({
                                 top: targetPosition,
