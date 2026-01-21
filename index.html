@@ -732,7 +732,11 @@
         const menuBtn = document.getElementById('nav-text-menu'), labelName = document.getElementById('label-name');
 
         let mX = window.innerWidth/2, mY = window.innerHeight/2, cX = mX, cY = mY;
-        let tPX = mX, tPY = mY, cPX = mX, cPY = mY; 
+        let tPX = mX, tPY = mY, cPX = mX, cPY = mY;
+        // Aggiungiamo variabili specifiche per il logo Nav (solo Mouse/Idle)
+        let navPX = mX, navPY = mY;
+        let cNavPX = mX, cNavPY = mY;
+        
         let currentRotation = 0, currentStretchX = 1, currentStretchY = 1, breathTime = 0;
         let isMenuOpen = false, isSticky = false, gyroActive = false;
         let zeroBeta = 0, zeroGamma = 0;
@@ -803,10 +807,21 @@
                 cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
                 if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
             }
-            cPX += (tPX - cPX) * 0.1; cPY += (tPY - cPY) * 0.1;
+            cPX += (tPX - cPX) * 0.1;
+            cPY += (tPY - cPY) * 0.1;
+            // Inseguimento fluido specifico per logo Nav (sempre basato su mX/mY o idle)
+            // Se il mouse è fermo o siamo su mobile, mX/mY saranno gestiti dal timer o dal tocco
+            cNavPX += (mX - cNavPX) * 0.1;
+            cNavPY += (mY - cNavPY) * 0.1;
             const solve = (eye, r) => { const rect = eye.getBoundingClientRect(); const dx = cPX - (rect.left + rect.width/2), dy = cPY - (rect.top + rect.height/2); const a = Math.atan2(dy, dx), d = Math.min(Math.hypot(dx, dy)/400, 1); return { x: Math.cos(a)*r*d, y: Math.sin(a)*r*d }; };
-            hp.pup.style.transform = `translate(${solve(hp.eye, 50).x}px, ${solve(hp.eye, 50).y}px)`;
-            np.pup.style.transform = `translate(${solve(np.eye, 30).x}px, ${solve(np.eye, 30).y}px)`;
+            //hp.pup.style.transform = `translate(${solve(hp.eye, 50).x}px, ${solve(hp.eye, 50).y}px)`;
+            //np.pup.style.transform = `translate(${solve(np.eye, 30).x}px, ${solve(np.eye, 30).y}px)`;
+            //requestAnimationFrame(update);
+            // Il logo Hero usa cPX/cPY (influenzati dal giroscopio)
+            hp.pup.style.transform = `translate(${solve(hp.eye, 50, cPX, cPY).x}px, ${solve(hp.eye, 50, cPX, cPY).y}px)`;
+            // Il logo Nav usa cNavPX/cNavPY (NON influenzati dal giroscopio)
+            np.pup.style.transform = `translate(${solve(np.eye, 30, cNavPX, cNavPY).x}px, ${solve(np.eye, 30, cNavPX, cNavPY).y}px)`;
+        
             requestAnimationFrame(update);
         }
 
