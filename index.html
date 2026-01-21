@@ -236,40 +236,50 @@
         /* --- SPECIFICHE DESKTOP PER ESPANDERSI DA IN ALTO A SINISTRA MA SENZA RIEMPIRE TUTTO --- */
         @media (min-width: 1024px) {
             /* 1. Stato INIZIALE: Le macchie sono piccole e vicine all'angolo alto-destra */
-            .s1, .s2, .s3 { 
+
+            .s1 {
                 left: auto; 
                 bottom: auto;
-                top: 200px;     /* Partono dall'alto */
-                right: 200px;   /* Partono da destra */
-                transform: scale(0); /* Nascono invisibili */
+                top: -40px;     /* Partono dall'alto */
+                right: -40px;   /* Partono da destra */
+                transform: scale(0);
+            }
+            .s2 {
+                left: auto; 
+                bottom: auto;
+                top: -10px;     /* Partono dall'alto */
+                right: -10px;   /* Partono da destra */
+                transform: scale(0);
+            }
+            .s3 {
+                left: auto; 
+                bottom: auto;
+                top: 0px;     /* Partono dall'alto */
+                right: 5px;   /* Partono da destra */
+                transform: scale(0);
             }
         
             /* Dimensioni (rimangono simili a quelle che hai impostato) */
-            .s1 { width: 300px; height: 200px; }
+            .s1 { width: 250px; height: 300px; }
             .s2 { width: 350px; height: 280px; }
             .s3 { width: 320px; height: 280px; }
         
             /* 2. Stato ACTIVE: Crescono e si spostano verso la metà destra dello schermo */
-            /* Usiamo translate per spostarle verso il centro-destra */
-            #menu-overlay.active .spot { 
-                transform: scale(1.5); 
-            }
-        
             #menu-overlay.active .spot.s1 { 
                 /* Si sposta leggermente a sinistra e in basso rispetto all'origine */
-                /*transform: scale(1) translate(0px, -100px); */
+                transform: scale(3) translate(0px, -100px);
             }
-
             #menu-overlay.active .spot.s2 { 
                 /* Si sposta un po' di più verso il centro */
-                transform: scale(1) translate(-100px, 0px);
+                transform: scale(3) translate(-20px, 40px);
                 transition-delay: 0.1s;
             }
             #menu-overlay.active .spot.s3 { 
                 /* Rimane più vicina al bordo destro ma scende */
-                transform: scale(1) translate(-80px, 10px);
+                transform: scale(3) translate(-10px, 70px);
                 transition-delay: 0.05s;
             }
+
         
             /* 3. Posizionamento del contenuto Menu */
             /* Se vuoi che anche il testo segua il blob a destra */
