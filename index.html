@@ -793,39 +793,67 @@
         function requestGyroPermission() { if (typeof DeviceOrientationEvent?.requestPermission === 'function') DeviceOrientationEvent.requestPermission().then(r => {if(r==='granted')setupGyro();}); else setupGyro(); }
 
         function update() {
-            if (isDesktop && !document.body.classList.contains('use-standard-cursor')) {
-                const dx = mX - cX, dy = mY - cY; cX += dx * (isSticky ? 0.3 : 0.15); cY += dy * (isSticky ? 0.3 : 0.15);
-                const speed = Math.hypot(dx, dy), angle = Math.atan2(dy, dx) * (180/Math.PI);
-                let tRot, tSX, tSY, lF = 0.1;
-                if (speed < 1 || isSticky) { breathTime += 0.05; tSX = 1 + Math.sin(breathTime)*0.1; tSY = 1 + Math.cos(breathTime*0.8)*0.12; tRot = isSticky ? 0 : Math.sin(breathTime*0.5)*5; }
-                else { const s = Math.min(speed/400,0.6); tSX = 1+s; tSY = 1-s; tRot = angle; lF = Math.min(speed/50, 1); }
-                currentRotation = lerpAngle(currentRotation, tRot, lF);
-                currentStretchX += (tSX - currentStretchX) * 0.15; currentStretchY += (tSY - currentStretchY) * 0.15;
-                cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
-                if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
-            }
-            cPX += (tPX - cPX) * 0.1;
-            cPY += (tPY - cPY) * 0.1;
-            // Inseguimento fluido specifico per logo Nav (sempre basato su mX/mY o idle)
-            // Se il mouse è fermo o siamo su mobile, mX/mY saranno gestiti dal timer o dal tocco
-            cNavPX += (mX - cNavPX) * 0.1;
-            cNavPY += (mY - cNavPY) * 0.1;
-            const solve = (eye, r) => { const rect = eye.getBoundingClientRect(); const dx = cPX - (rect.left + rect.width/2), dy = cPY - (rect.top + rect.height/2); const a = Math.atan2(dy, dx), d = Math.min(Math.hypot(dx, dy)/400, 1); return { x: Math.cos(a)*r*d, y: Math.sin(a)*r*d }; };
-            //hp.pup.style.transform = `translate(${solve(hp.eye, 50).x}px, ${solve(hp.eye, 50).y}px)`;
-            //np.pup.style.transform = `translate(${solve(np.eye, 30).x}px, ${solve(np.eye, 30).y}px)`;
-            //requestAnimationFrame(update);
-            // 2. LOGO HERO: segue cPX/cPY (Giroscopio se attivo, altrimenti mouse/idle)
-            hp.pup.style.transform = `translate(${solve(hp.eye, 50, cPX, cPY).x}px, ${solve(hp.eye, 50, cPX, cPY).y}px)`;
+    // Gestione Cursore Organic (solo Desktop)
+    if (isDesktop && !document.body.classList.contains('use-standard-cursor')) {
+        const dx = mX - cX, dy = mY - cY; 
+        cX += dx * (isSticky ? 0.3 : 0.15); 
+        cY += dy * (isSticky ? 0.3 : 0.15);
         
-            // 3. LOGO NAV: Se il giroscopio è attivo, usa mX/mY (idle), altrimenti usa cPX/cPY (mouse)
-            // Questo lo rende immune al giroscopio ma lo mantiene fluido
-            const navTargetX = gyroActive ? mX : cPX;
-            const navTargetY = gyroActive ? mY : cPY;
+        const speed = Math.hypot(dx, dy), angle = Math.atan2(dy, dx) * (180/Math.PI);
+        let tRot, tSX, tSY, lF = 0.1;
         
-            np.pup.style.transform = `translate(${solve(np.eye, 30, navTargetX, navTargetY).x}px, ${solve(np.eye, 30, navTargetX, navTargetY).y}px)`;
-        
-            requestAnimationFrame(update);
+        if (speed < 1 || isSticky) { 
+            breathTime += 0.05; 
+            tSX = 1 + Math.sin(breathTime)*0.1; 
+            tSY = 1 + Math.cos(breathTime*0.8)*0.12; 
+            tRot = isSticky ? 0 : Math.sin(breathTime*0.5)*5; 
+        } else { 
+            const s = Math.min(speed/400, 0.6); 
+            tSX = 1+s; tSY = 1-s; tRot = angle; 
+            lF = Math.min(speed/50, 1); 
         }
+        
+        currentRotation = lerpAngle(currentRotation, tRot, lF);
+        currentStretchX += (tSX - currentStretchX) * 0.15; 
+        currentStretchY += (tSY - currentStretchY) * 0.15;
+        
+        cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
+        if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
+    }
+
+    // --- LOGICA OCCHI ---
+
+    // Inseguimento fluido per il puntamento principale (Hero + Desktop Nav)
+    cPX += (tPX - cPX) * 0.1; 
+    cPY += (tPY - cPY) * 0.1;
+
+    // Se il giroscopio è attivo, il logo nav ignora tPX (giroscopio) e segue mX (idle/mouse)
+    // Usiamo navX/navY per dare fluidità anche al movimento idle del logo nav
+    if (!window.navX) { window.navX = mX; window.navY = mY; } // Inizializzazione una tantum
+    
+    const targetNavX = gyroActive ? mX : tPX;
+    const targetNavY = gyroActive ? mY : tPY;
+    
+    window.navX += (targetNavX - window.navX) * 0.1;
+    window.navY += (targetNavY - window.navY) * 0.1;
+
+    const solve = (eye, r, x, y) => { 
+        const rect = eye.getBoundingClientRect(); 
+        const dx = x - (rect.left + rect.width/2), 
+              dy = y - (rect.top + rect.height/2); 
+        const a = Math.atan2(dy, dx), 
+              d = Math.min(Math.hypot(dx, dy)/400, 1); 
+        return { x: Math.cos(a)*r*d, y: Math.sin(a)*r*d }; 
+    };
+
+    // Il logo Hero usa cPX/cPY (che includono il giroscopio se attivo)
+    hp.pup.style.transform = `translate(${solve(hp.eye, 50, cPX, cPY).x}px, ${solve(hp.eye, 50, cPX, cPY).y}px)`;
+    
+    // Il logo Nav usa navX/navY (che filtrano il giroscopio e restano su mX/idle)
+    np.pup.style.transform = `translate(${solve(np.eye, 30, window.navX, window.navY).x}px, ${solve(np.eye, 30, window.navX, window.navY).y}px)`;
+
+    requestAnimationFrame(update);
+}
 
         function triggerBlink() {
             const eyes = [hp.eye, np.eye], brows = [hp.brow, np.brow];
