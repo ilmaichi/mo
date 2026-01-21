@@ -911,29 +911,34 @@
         
         initMeMoToggle();
 
-        // Gestione click sui link del menù
+        // Gestione click sui link del menù con delay
         document.querySelectorAll('.menu-link').forEach(link => {
             link.addEventListener('click', (e) => {
-                // 1. Chiudiamo il menù
-                if (isMenuOpen) {
-                    toggleMenu();
-                }
-        
-                // 2. Opzionale: Scroll fluido (se non già gestito dal CSS)
                 const targetId = link.getAttribute('href');
+                
+                // Se il link è un'ancora (inizia con #)
                 if (targetId.startsWith('#')) {
-                    e.preventDefault();
-                    const targetSection = document.querySelector(targetId);
-                    if (targetSection) {
-                        // Calcoliamo un piccolo offset se necessario (es. per il nome fisso in alto)
-                        // const offset = 80; 
-                        // const targetPosition = targetSection.offsetTop - offset;
+                    e.preventDefault(); // Blocchiamo il salto immediato
         
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
+                    // 1. Avviamo la chiusura del menù
+                    if (isMenuOpen) {
+                        toggleMenu();
                     }
+        
+                    // 2. Aspettiamo un attimo prima di scrollare
+                    setTimeout(() => {
+                        const targetSection = document.querySelector(targetId);
+                        if (targetSection) {
+                            // Calcoliamo la posizione con un piccolo offset per non appiccicare il titolo al bordo
+                            // const offset = 60; 
+                            // const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
+        
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 350); // Il delay: 350ms è il "sweet spot" tra fluidità e reattività
                 }
             });
         });
