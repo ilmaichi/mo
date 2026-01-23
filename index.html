@@ -489,7 +489,113 @@
         .skill-pill.core { 
             border-color: var(--accent-gold); 
         }  
-
+        /* --- SECTION WORKS --- */
+        #works-container {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            background-color: #f4f4f4; /* text-light */
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+        }
+        .works-wrapper {
+            display: flex;
+            position: relative;
+            height: 100vh;
+            width: max-content;
+            align-items: center; /* Questo centra il TESTO, ma non deve influenzare i blob */
+        }
+        
+        .big-works-link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            text-decoration: none;
+            z-index: 10;
+        }
+        
+        /* Stile Inter: Pulito, Bold, Geometrico */
+        .text-inter {
+            font-family: 'Inter', sans-serif;
+            font-size: 22vh;
+            font-weight: 900;
+            color: #000;
+            letter-spacing: -0.05em;
+            padding-right: 30px;
+            color: var(--accent-gold);
+        }
+        
+        /* Stile Mofont: Espressivo e Caratteristico */
+        .text-mofont {
+            font-family: 'Mofont', sans-serif; /* Assicurati che il nome coincida col tuo @font-face */
+            font-size: 25vh; /* Mofont spesso ha bisogno di essere un po' più grande per bilanciare */
+            color: #000;
+            padding-right: 60px;
+            color: var(--accent-coral);
+        }
+        
+        /* --- I BLOB --- */
+        .blob-gallery {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; /* Si estende per tutto il wrapper */
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        
+        .blob-item {
+            position: absolute;
+            overflow: hidden;
+            background: #333;
+            /* Forme blob fisse (border-radius diversi per ognuno) */
+        }
+        
+        /* Distribuzione lungo lo scroll */
+        .b1 { 
+            width: 350px; height: 350px; 
+            top: 5%; left: 10%; /* Inizio dello scroll */
+            border-radius: 52% 48% 37% 63% / 41% 46% 54% 59%; 
+        }
+        
+        .b2 { 
+            width: 370px; height: 300px; 
+            top: 40%; left: 45%; /* Un po' più avanti */
+            border-radius: 52% 48% 37% 63% / 65% 33% 67% 35%; 
+        }
+        
+        .b3 { 
+            width: 260px; height: 300px; 
+            top: 25%; left: 60%; /* Metà percorso */
+            border-radius: 52% 48% 30% 70% / 52% 33% 67% 48%; 
+        }
+        
+        .b4 { 
+            width: 360px; height: 400px; 
+            top: 30%; left: 80%; /* Verso la fine */
+            border-radius: 57% 43% 69% 31% / 52% 49% 51% 48%; 
+        }
+        
+        .blob-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .blob-item:hover img { filter: grayscale(0%); }
+        
+        /* Keyframes per rendere i blob "vivi" */
+        @keyframes morphing {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            100% { border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%; }
+        }
         /* --- SECTION ABOUT --- */
         #about-section {
             background-color: var(--dark-blue);
@@ -766,7 +872,23 @@
                 </div>
         </div>
     </section>
+    <section id="works-container">
+        <div class="works-wrapper">
+            <a href="portfolio.html" class="big-works-link">
+                <span class="text-inter">SCOPRI I MIEI</span>
+                <span class="text-mofont">LAVO&#770;RI</span>
+                <span class="text-inter">— SCOPRI I MIEI</span>
+                <span class="text-mofont">LAVO&#770;RI</span>
+            </a>
     
+            <div class="blob-gallery">
+                <div class="blob-item b1"><img src="https://images.pexels.com/photos/10891067/pexels-photo-10891067.jpeg" alt=""></div>
+                <div class="blob-item b2"><img src="https://images.pexels.com/photos/20899205/pexels-photo-20899205.jpeg" alt=""></div>
+                <div class="blob-item b3"><img src="https://images.pexels.com/photos/19525139/pexels-photo-19525139.jpeg" alt=""></div>
+                <div class="blob-item b4"><img src="https://images.pexels.com/photos/11256558/pexels-photo-11256558.jpeg" alt=""></div>
+            </div>
+        </div>
+    </section>
     <section id="about-section">
         <div class="about-container">
             <div class="about-content-left">
@@ -1210,34 +1332,78 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    gsap.registerPlugin(MorphSVGPlugin);
-    gsap.registerPlugin(ScrollTrigger)
+    // 1. Registrazione Plugin
+    gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger);
 
-    const tl = gsap.timeline({
+    // 2. Animazione Occhio (Morphing Infinito)
+    const eyeTl = gsap.timeline({
         repeat: -1,
         yoyo: true,
         repeatDelay: 3
     });
 
-    tl.to("#main-morph-path", {
+    eyeTl.to("#main-morph-path", {
         duration: 1.5,
         morphSVG: "#path-mo-target",
         ease: "expo.inOut"
     });
-});
-gsap.to("#ink-path", {
-    scrollTrigger: {
-        trigger: ".hero-container",
-        start: "top top",
-        end: "bottom top",
-        scrub: 1.5,
-    },
-    attr: { 
-        // Nota: partiamo da -20 e arriviamo a 120 per la larghezza
-        // Le curve scendono fino a 130 per coprire bene il fondo
-        d: "M-20,0 L120,0 L120,105 C80,130 70,90 50,120 C30,140 15,90 -20,105 Z" 
-    },
-    ease: "none"
+
+    // 3. Animazione Macchia Inchiostro (Hero)
+    gsap.to("#ink-path", {
+        scrollTrigger: {
+            trigger: ".hero-container",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.5,
+        },
+        attr: { 
+            d: "M-20,0 L120,0 L120,105 C80,130 70,90 50,120 C30,140 15,90 -20,105 Z" 
+        },
+        ease: "none"
+    });
+
+    // 4. Scroll Orizzontale (Works) + Parallasse Blob
+    const wrapper = document.querySelector('.works-wrapper');
+    const blobs = document.querySelectorAll('.blob-item');
+
+    if (wrapper) {
+        // Timeline principale per lo scroll orizzontale
+        let worksTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: "#works-container",
+                start: "top top",
+                end: () => "+=" + wrapper.scrollWidth,
+                pin: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+                // markers: true // Decommenta questo se vuoi vedere i punti di inizio/fine
+            }
+        });
+
+        // Muove tutto il wrapper (Testo + Blob)
+        worksTl.to(wrapper, {
+            x: () => -(wrapper.scrollWidth - window.innerWidth),
+            ease: "none"
+        });
+
+        // Effetto Parallasse sui Blob
+        // Li facciamo muovere leggermente in controtendenza o più lentamente
+        blobs.forEach((blob, i) => {
+            // Velocità differenziate per creare profondità
+            const speeds = [0.2, 0.5, 0.3, 0.6, 0.4]; 
+            
+            gsap.to(blob, {
+                x: () => -(wrapper.scrollWidth * 0.15 * speeds[i]), 
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#works-container",
+                    start: "top top",
+                    end: () => "+=" + wrapper.scrollWidth,
+                    scrub: 1 // Scrub leggero per fluidità
+                }
+            });
+        });
+    }
 });
 </script>
 </body>
