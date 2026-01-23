@@ -318,11 +318,37 @@
         
         /* Mantieni questa solo per la griglia delle skills che ha un delay lungo */
         .skills-container.reveal.active {
-            transition-delay: 0.9s;
+            transition-delay: 0.5s;
         }
         .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
         .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 120vh; position: relative; z-index: 5; }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
+        .ink-transition-container {
+            position: fixed;      /* Resta incollato allo schermo mentre scendi */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;        /* Altezza intero schermo */
+            pointer-events: none; /* Fondamentale: permette di cliccare ciò che sta sotto */
+            z-index: 5;           /* Deve stare SOPRA la hero ma SOTTO i testi della sezione beyond */
+            overflow: hidden;
+        }
+        
+        .ink-transition-container svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        #ink-path {
+            fill: var(--dark-text); 
+        }
+        
+        /* Assicurati che la sezione Beyond abbia un z-index superiore per stare sopra la macchia alla fine */
+        #beyond-section {
+            position: relative;
+            z-index: 10; 
+            background-color: transparent; /* Importante: così vediamo la macchia sotto */
+        }
         .no-wrap { white-space: nowrap; display: inline-block; }
         /* 1. Ingrandiamo leggermente Beyond per compensare il disegno del font */
         .headline .no-wrap {
@@ -467,7 +493,7 @@
 
         /* --- SECTION ABOUT --- */
         #about-section {
-            background-color: var(--dark-text);
+            background-color: var(--dark-blue);
             color: var(--accent-coral);
             /* Usiamo lo stesso padding laterale della sezione superiore */
             padding: 160px 40px; 
@@ -475,7 +501,7 @@
             display: flex;
             align-items: center;
             position: relative;
-            z-index: 1;
+            z-index: 10;
         }
         
         .about-container {
@@ -715,6 +741,11 @@
             <div class="phone-icon"></div><span>Tap & Tilt</span>
         </div>
     </section>
+    <div class="ink-transition-container">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path id="ink-path" d="M0,0 L100,0 L100,0 C75,0 75,0 50,0 C25,0 25,0 0,0 Z"></path>
+        </svg>
+    </div>
     <section id="beyond-section" class="content-section">
         <h1 class="headline reveal" id="headline">
             <span class="no-wrap">BEYO&#770;ND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
@@ -1166,13 +1197,12 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/MorphSVGPlugin.min.js"></script>
-    <script>   
-        <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/MorphSVGPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     gsap.registerPlugin(MorphSVGPlugin);
+    gsap.registerPlugin(ScrollTrigger)
 
     const tl = gsap.timeline({
         repeat: -1,
@@ -1186,7 +1216,20 @@ document.addEventListener("DOMContentLoaded", () => {
         ease: "expo.inOut"
     });
 });
+gsap.to("#ink-path", {
+    scrollTrigger: {
+        trigger: ".hero-container",
+        start: "top top",
+        end: "bottom top",
+        scrub: 1.5,
+    },
+    attr: { 
+        // Nota: partiamo da -20 e arriviamo a 120 per la larghezza
+        // Le curve scendono fino a 130 per coprire bene il fondo
+        d: "M-20,0 L120,0 L120,105 C80,130 70,90 50,120 C30,140 15,90 -20,105 Z" 
+    },
+    ease: "none"
+});
 </script>
-    </script> 
 </body>
 </html>
