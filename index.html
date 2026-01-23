@@ -515,26 +515,48 @@
             white-space: nowrap;
             text-decoration: none;
             z-index: 10;
+            color: var(--dark-text);
+        }
+        .big-works-link span {
+            position: relative;
+            display: inline-block;
+            padding: 0 0px; /* Spazio per far "respirare" l'evidenziatore */
+            z-index: 1;
+            /* Prepariamo lo sfondo (l'evidenziatore) */
+            background-image: linear-gradient(var(--dark-text), var(--dark-text));
+            background-repeat: no-repeat;
+            background-size: 0% 100%; /* Parte da 0 larghezza e 80% altezza */
+            background-position: 0 100%; /* Posizionato verso il basso della lettera */
+            transition: background-size 0.4s cubic-bezier(0.23, 1, 0.32, 1), color 0.3s;
+            
+            /* Ripristiniamo il cursore normale come richiesto */
+            cursor: default !important;
+            pointer-events: auto;
+        }
+        /* All'hover sul link genitore, espandiamo l'evidenziatore negli span */
+        .big-works-link:hover .text-inter,
+        .big-works-link:hover .text-mofont {
+            background-size: 100% 100%;
+            color: var(--accent-coral) !important;
+        }
+        .big-works-link:hover .text-mofont {
+            color: transparent !important;
+            -webkit-text-stroke: 1px var(--accent-coral);
         }
         
         /* Stile Inter: Pulito, Bold, Geometrico */
         .text-inter {
             font-family: 'Inter', sans-serif;
-            font-size: 22vh;
+            font-size: 33vh;
             font-weight: 900;
-            color: #000;
-            letter-spacing: -0.05em;
             padding-right: 30px;
-            color: var(--dark-text);
         }
         
         /* Stile Mofont: Espressivo e Caratteristico */
         .text-mofont {
             font-family: 'Mofont', sans-serif; /* Assicurati che il nome coincida col tuo @font-face */
-            font-size: 25vh; /* Mofont spesso ha bisogno di essere un po' più grande per bilanciare */
-            color: #000;
+            font-size: 36vh; /* Mofont spesso ha bisogno di essere un po' più grande per bilanciare */
             padding-right: 60px;
-            color: var(--dark-text);
         }
         
         /* --- I BLOB --- */
@@ -550,7 +572,6 @@
         
         
         .blob-item {
-            pointer-events: auto;
             position: absolute;
             overflow: hidden;
             background: #fff;
@@ -561,37 +582,29 @@
         .b1 { 
             width: 350px; height: 350px; 
             top: 5%; left: 10%; /* Inizio dello scroll */
-            border-radius: 52% 48% 37% 63% / 41% 46% 54% 59%; 
+            border-radius: 52% 48% 37% 63% / 41% 46% 54% 59%;
+            background: var(--accent-gold);
         }
         
         .b2 { 
             width: 370px; height: 300px; 
             top: 40%; left: 45%; /* Un po' più avanti */
-            border-radius: 52% 48% 37% 63% / 65% 33% 67% 35%; 
+            border-radius: 52% 48% 37% 63% / 65% 33% 67% 35%;
+            background: var(--dark-blue);
         }
         
         .b3 { 
             width: 260px; height: 300px; 
             top: 25%; left: 60%; /* Metà percorso */
-            border-radius: 52% 48% 30% 70% / 52% 33% 67% 48%; 
+            border-radius: 52% 48% 30% 70% / 52% 33% 67% 48%;
+            background: var(--accent-coral);
         }
         
         .b4 { 
             width: 360px; height: 400px; 
             top: 30%; left: 80%; /* Verso la fine */
             border-radius: 57% 43% 69% 31% / 52% 49% 51% 48%; 
-        }
-        
-        .blob-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            webkit-filter: blur(5px) opacity(0.3);
-            filter: blur(5px) opacity(0.3);
-        }
-        .blob-item img:hover {
-          -webkit-filter: none !important; 
-          filter: none !important;
+            background: var(--accent-gold);
         }
         
         /* Keyframes per rendere i blob "vivi" */
@@ -887,10 +900,10 @@
             </a>
     
             <div class="blob-gallery">
-                <div class="blob-item b1"><img src="https://github.com/ilmaichi/mo/blob/main/img/cover-blob-home-omino-bianco-perfect-match.jpg?raw=true" alt=""></div>
-                <div class="blob-item b2"><img src="https://github.com/ilmaichi/mo/blob/main/img/cover-blob-home-ricola-social.jpg?raw=true" alt=""></div>
-                <div class="blob-item b3"><img src="https://images.pexels.com/photos/19525139/pexels-photo-19525139.jpeg" alt=""></div>
-                <div class="blob-item b4"><img src="https://images.pexels.com/photos/11256558/pexels-photo-11256558.jpeg" alt=""></div>
+                <div class="blob-item b1"></div>
+                <div class="blob-item b2"></div>
+                <div class="blob-item b3"></div>
+                <div class="blob-item b4"></div>
             </div>
         </div>
     </section>
