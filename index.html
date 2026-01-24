@@ -1364,26 +1364,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Registrazione Plugin
     gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger);
 
-    // 2. Animazione Occhio (Morphing Infinito)
+    // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
     const eyeTl = gsap.timeline({
         repeat: -1,
         yoyo: true,
         repeatDelay: 3
     });
-
     eyeTl.to("#main-morph-path", {
         duration: 1.5,
         morphSVG: "#path-mo-target",
         ease: "expo.inOut"
     });
 
-    // 3. Animazione Macchia Inchiostro (Hero)
+    // 3. Animazione Macchia Inchiostro (Hero) - Aggiunto ricalcolo
     gsap.to("#ink-path", {
         scrollTrigger: {
             trigger: ".hero-container",
             start: "top top",
             end: "bottom top",
             scrub: 1.5,
+            invalidateOnRefresh: true // Importante per la fluidità post-resize
         },
         attr: { 
             d: "M-20,0 L120,0 L120,105 C80,130 70,90 50,120 C30,140 15,90 -20,105 Z" 
@@ -1401,11 +1401,11 @@ document.addEventListener("DOMContentLoaded", () => {
             scrollTrigger: {
                 trigger: "#works-container",
                 start: "top top",
-                end: () => "+=" + wrapper.scrollWidth,
+                // Calcola dinamicamente la fine in base alla larghezza reale
+                end: () => "+=" + (wrapper.scrollWidth - window.innerWidth),
                 pin: true,
                 scrub: 1,
-                invalidateOnRefresh: true,
-                // markers: true // Decommenta questo se vuoi vedere i punti di inizio/fine
+                invalidateOnRefresh: true, // Fondamentale: resetta i calcoli al resize
             }
         });
 
@@ -1413,31 +1413,24 @@ document.addEventListener("DOMContentLoaded", () => {
         worksTl.to(wrapper, {
             x: () => -(wrapper.scrollWidth - window.innerWidth),
             ease: "none"
-        });
+        }, 0); // L'indice 0 lo fa partire subito
 
-        // Effetto Parallasse sui Blob
-        // Li facciamo muovere leggermente in controtendenza o più lentamente
+        // Effetto Parallasse sui Blob (integrati nella stessa timeline per stabilità)
         blobs.forEach((blob, i) => {
-            // Velocità differenziate per creare profondità
-            const speeds = [0.2, 0.5, 0.3, 0.6, 0.4]; 
+            const speeds = [0.5, 0.75, 0.65, 0.9, 0.8]; // Velocità leggermente ridotte per eleganza
             
-            gsap.to(blob, {
-                x: () => -(wrapper.scrollWidth * 0.15 * speeds[i]), 
-                ease: "none",
-                scrollTrigger: {
-                    trigger: "#works-container",
-                    start: "top top",
-                    end: () => "+=" + wrapper.scrollWidth,
-                    scrub: 1 // Scrub leggero per fluidità
-                }
-            });
+            // Inseriamo il parallasse nella timeline principale
+            // Invece di creare mille ScrollTrigger separati (che pesano al resize)
+            worksTl.to(blob, {
+                x: () => -(wrapper.scrollWidth * 0.1 * speeds[i]), 
+                ease: "none"
+            }, 0); // Partono tutti insieme allo scroll del wrapper
         });
     }
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            ScrollTrigger.refresh();
-        }, 250); // Aspetta che l'utente si fermi per 250ms
+
+    // Refresh globale di sicurezza al termine del caricamento immagini
+    window.addEventListener('load', () => {
+        ScrollTrigger.refresh();
     });
 });
 </script>
