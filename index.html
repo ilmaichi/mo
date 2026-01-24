@@ -1433,6 +1433,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            ScrollTrigger.refresh();
+        }, 250); // Aspetta che l'utente si fermi per 250ms
+    });
 });
 </script>
 </body>
