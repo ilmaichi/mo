@@ -14,6 +14,8 @@
             --accent-gold: #ffc857;
             --text-light: #f7f7f2;
             --dark-text: #2d2926; 
+            --light-blue: #6ccff6;
+            --violet: #53599a;
         }
 
         * { box-sizing: border-box; }
@@ -51,7 +53,7 @@
         }
         #custom-cursor.expanding { width: 75px; }
         .drop { position: absolute; width: 12px; fill: var(--accent-coral); opacity: 0.6; pointer-events: none; }
-
+        
         /* Ripristino Cursore Standard via Toggle */
         body.use-standard-cursor, body.use-standard-cursor a, body.use-standard-cursor button { cursor: auto !important; }
         body.use-standard-cursor a, body.use-standard-cursor button, body.use-standard-cursor #nav-text-menu { cursor: pointer !important; }
@@ -67,7 +69,7 @@
         #label-name { top: 45px; left: 40px; letter-spacing: 0.2em; }
         #label-name.scrolled { transform: translateY(55px) translateX(-5px); }
         #nav-text-menu { top: 45px; right: 40px; padding: 0; cursor: pointer; letter-spacing: 0.1em; }
-        #nav-text-menu.sticky-active { color: #f7f7f2; mix-blend-mode: normal; }
+        #nav-text-menu.sticky-active { color: var(--text-light); mix-blend-mode: normal; }
 
         /* Estensione della label per coprire l'intera pillola */
         .full-clickable-label {
@@ -520,27 +522,20 @@
         .big-works-link span {
             position: relative;
             display: inline-block;
-            padding: 0 0px; /* Spazio per far "respirare" l'evidenziatore */
             z-index: 1;
-            /* Prepariamo lo sfondo (l'evidenziatore) */
-            background-image: linear-gradient(var(--dark-text), var(--dark-text));
-            background-repeat: no-repeat;
-            background-size: 0% 100%; /* Parte da 0 larghezza e 80% altezza */
-            background-position: 0 100%; /* Posizionato verso il basso della lettera */
-            transition: background-size 0.4s cubic-bezier(0.23, 1, 0.32, 1), color 0.3s;
-            padding-right: 0.15em; 
-            padding-left: 0.15em;
-            
             /* Ripristiniamo il cursore normale come richiesto */
-            cursor: default !important;
+            cursor: pointer !important;
             pointer-events: auto;
         }
-        /* All'hover sul link genitore, espandiamo l'evidenziatore negli span */
         .big-works-link:hover .text-inter,
         .big-works-link:hover .text-mofont {
-            background-size: 100% 110%;
-            color: var(--accent-coral) !important;
+            text-decoration: underline;
         }
+      
+      /* Il colore lo cambiamo sempre sul path */
+      body:has(.big-works-link:hover) #custom-cursor svg path {
+          fill: var(--accent-gold);
+      }
         
         /* Stile Inter: Pulito, Bold, Geometrico */
         .text-inter {
@@ -571,47 +566,49 @@
         
         .blob-item {
             position: absolute;
+            width: 400px;  /* Dimensione standard per tutti */
+            height: 400px; /* Dimensione standard per tutti */
             overflow: hidden;
-            background: #fff;
-            /* Forme blob fisse (border-radius diversi per ognuno) */
+            will-change: transform;
+            transition: clip-path 0.4s ease;
         }
         
         /* Distribuzione lungo lo scroll */
-        .b1 { 
-            width: 350px; height: 350px; 
-            top: 5%; left: 10%; /* Inizio dello scroll */
-            border-radius: 52% 48% 37% 63% / 41% 46% 54% 59%;
-            background: var(--accent-gold);
+        .b1 {
+            top: 5%; left: 10%; 
+            background-color: var(--accent-gold);
+            clip-path: url(#shape1);
+            -webkit-clip-path: url(#shape1);
         }
         
         .b2 { 
-            width: 370px; height: 300px; 
-            top: 40%; left: 45%; /* Un po' più avanti */
-            border-radius: 52% 48% 37% 63% / 65% 33% 67% 35%;
-            background: var(--dark-blue);
+            top: 45%; left: 35%; 
+            background-color: var(--dark-blue);
+            clip-path: url(#shape2);
+            -webkit-clip-path: url(#shape2);
         }
         
         .b3 { 
-            width: 260px; height: 300px; 
-            top: 25%; left: 60%; /* Metà percorso */
-            border-radius: 52% 48% 30% 70% / 52% 33% 67% 48%;
-            background: var(--accent-coral);
+            top: 8%; left: 51%; 
+            background-color: var(--accent-coral);
+            clip-path: url(#shape3);
+            -webkit-clip-path: url(#shape3);
         }
         
         .b4 { 
-            width: 360px; height: 400px; 
-            top: 30%; left: 80%; /* Verso la fine */
-            border-radius: 57% 43% 69% 31% / 52% 49% 51% 48%; 
-            background: var(--accent-gold);
+            top: 35%; left: 73%; 
+            background-color: var(--light-blue);
+            clip-path: url(#shape1);
+            transform: rotate(90deg); 
         }
         
-        /* Keyframes per rendere i blob "vivi" */
-        @keyframes morphing {
-            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
-            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
-            100% { border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%; }
+        .b5 { 
+            top: 0%; left: 90%; 
+            background-color: var(--violet);
+            clip-path: url(#shape2);
+            transform: rotate(-45deg);
         }
+        
         /* --- SECTION ABOUT --- */
         #about-section {
             background-color: var(--dark-blue);
@@ -893,7 +890,7 @@
             <a href="portfolio.html" class="big-works-link">
                 <span class="text-inter">SCOPRI I MIEI</span>
                 <span class="text-mofont">LAVO&#770;RI</span>
-                <span class="text-inter">— SCOPRI I MIEI</span>
+                <span class="text-inter">SCOPRI I MIEI</span>
                 <span class="text-mofont">LAVO&#770;RI</span>
             </a>
     
@@ -902,6 +899,7 @@
                 <div class="blob-item b2"></div>
                 <div class="blob-item b3"></div>
                 <div class="blob-item b4"></div>
+                <div class="blob-item b5"></div>
             </div>
         </div>
     </section>
@@ -954,6 +952,21 @@
                 <feComposite in="SourceGraphic" in2="goo" operator="atop" />
             </filter>
         </defs>
+    </svg>
+    <svg style="width:0; height:0; position:absolute;" aria-hidden="true">
+      <defs>
+        <clipPath id="shape1" clipPathUnits="objectBoundingBox">
+          <path d="M0.698,0.311 C0.778,0.383,0.880,0.442,0.904,0.525 C0.929,0.608,0.877,0.716,0.797,0.772 C0.716,0.828,0.608,0.831,0.499,0.833 C0.389,0.835,0.277,0.835,0.230,0.779 C0.182,0.723,0.199,0.612,0.214,0.516 C0.230,0.420,0.245,0.341,0.293,0.269 C0.341,0.196,0.420,0.132,0.490,0.143 C0.559,0.153,0.618,0.239,0.698,0.311 Z"></path>
+        </clipPath>
+    
+        <clipPath id="shape2" clipPathUnits="objectBoundingBox">
+          <path d="M0.701,0.28 C0.752,0.35,0.778,0.425,0.77,0.492 C0.761,0.558,0.718,0.616,0.667,0.659 C0.616,0.701,0.558,0.727,0.487,0.741 C0.415,0.754,0.331,0.754,0.276,0.712 C0.221,0.67,0.196,0.585,0.185,0.489 C0.174,0.394,0.177,0.287,0.232,0.217 C0.287,0.147,0.394,0.113,0.484,0.129 C0.575,0.145,0.65,0.21,0.701,0.28 Z"></path>
+        </clipPath>
+    
+        <clipPath id="shape3" clipPathUnits="objectBoundingBox">
+          <path d="M0.714,0.299 C0.791,0.363,0.875,0.431,0.895,0.52 C0.914,0.608,0.868,0.715,0.792,0.794 C0.715,0.874,0.608,0.925,0.507,0.918 C0.407,0.911,0.313,0.846,0.251,0.767 C0.188,0.687,0.157,0.594,0.16,0.504 C0.164,0.414,0.202,0.327,0.265,0.264 C0.327,0.2,0.414,0.16,0.491,0.169 C0.569,0.178,0.638,0.236,0.714,0.299 Z"></path>
+        </clipPath>
+      </defs>
     </svg>
 
     <script>
