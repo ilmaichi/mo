@@ -1401,11 +1401,11 @@ document.addEventListener("DOMContentLoaded", () => {
             scrollTrigger: {
                 trigger: "#works-container",
                 start: "top top",
-                // Calcola dinamicamente la fine in base alla larghezza reale
+                // Calcoliamo la fine sottraendo la larghezza della finestra per uno scroll perfetto
                 end: () => "+=" + (wrapper.scrollWidth - window.innerWidth),
                 pin: true,
                 scrub: 1,
-                invalidateOnRefresh: true, // Fondamentale: resetta i calcoli al resize
+                invalidateOnRefresh: true, // Questo resetta i calcoli interni ogni volta che ridimensioni
             }
         });
 
@@ -1413,7 +1413,7 @@ document.addEventListener("DOMContentLoaded", () => {
         worksTl.to(wrapper, {
             x: () => -(wrapper.scrollWidth - window.innerWidth),
             ease: "none"
-        }, 0); // L'indice 0 lo fa partire subito
+        }, 0);
 
         // Effetto Parallasse sui Blob (integrati nella stessa timeline per stabilità)
         blobs.forEach((blob, i) => {
