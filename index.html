@@ -68,7 +68,19 @@
         }
         #label-name { top: 45px; left: 40px; letter-spacing: 0.2em; }
         #label-name.scrolled { transform: translateY(55px) translateX(-5px); }
-        #nav-text-menu { top: 45px; right: 40px; padding: 0; cursor: pointer; letter-spacing: 0.1em; }
+        #nav-text-menu {
+            top: 45px;
+            right: 40px;
+            padding: 30px;          /* Espande l'area sensibile in ogni direzione */
+            margin: -30px;          /* Annulla lo spostamento visivo causato dal padding */
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            
+            /* Aggiungi queste due righe per sicurezza */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         #nav-text-menu.sticky-active { color: var(--text-light); mix-blend-mode: normal; }
 
         /* Estensione della label per coprire l'intera pillola */
