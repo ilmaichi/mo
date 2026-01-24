@@ -737,26 +737,7 @@
         }
         
         .morph-path {
-            /* Tempo ridotto e timing-function più elastica */
-            animation: fast-liquid 8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
             transform-origin: center;
-        }
-        
-        @keyframes fast-liquid {
-            0% {
-                d: path("M440.5,320.5C407,388,318,431,235.5,423.5C153,416,77,358,54.5,282C32,206,63,112,133,67C203,22,312,26,380.5,77C449,128,474,253,440.5,320.5Z");
-                transform: rotate(0deg) scale(1);
-            }
-            50% {
-                /* Path molto più deformato verso gli angoli */
-                d: path("M400,380C300,450,200,480,120,400C40,320,20,200,80,120C140,40,300,20,420,80C520,160,500,300,400,380Z");
-                transform: rotate(10deg) scale(1.05);
-            }
-            100% {
-                /* Path schiacciato orizzontalmente */
-                d: path("M480,250C460,350,350,450,250,460C150,470,40,380,20,250C0,120,120,30,250,20C380,10,500,120,480,250Z");
-                transform: rotate(-8deg) scale(0.95);
-            }
         }
         
         @media (max-width: 767px) {
@@ -1439,6 +1420,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 ease: "none"
             }, 0); // Partono tutti insieme allo scroll del wrapper
         });
+        
+        //movimento blob Foto
+        // Selezioniamo il path della foto
+        const photoBlob = document.querySelector(".morph-path");
+        
+        if (photoBlob) {
+            // Creiamo una timeline infinita
+            const photoTl = gsap.timeline({
+                repeat: -1, // Loop infinito
+                defaults: { 
+                    duration: 4,      // Durata di ogni transizione
+                    ease: "sine.inOut" // Movimento liquido e morbido
+                }
+            });
+        
+            photoTl
+                // 1. Vai verso lo stato "Deformato" (quello che era al 50% nel CSS)
+                .to(photoBlob, {
+                    morphSVG: "M400,380C300,450,200,480,120,400C40,320,20,200,80,120C140,40,300,20,420,80C520,160,500,300,400,380Z",
+                    rotate: 10,
+                    scale: 1.05
+                })
+                // 2. Vai verso lo stato "Schiacciato" (quello che era al 100% nel CSS)
+                .to(photoBlob, {
+                    morphSVG: "M480,250C460,350,350,450,250,460C150,470,40,380,20,250C0,120,120,30,250,20C380,10,500,120,480,250Z",
+                    rotate: -8,
+                    scale: 0.95
+                })
+                // 3. Torna allo stato ORIGINALE per chiudere il loop perfettamente
+                .to(photoBlob, {
+                    morphSVG: "M440.5,320.5C407,388,318,431,235.5,423.5C153,416,77,358,54.5,282C32,206,63,112,133,67C203,22,312,26,380.5,77C449,128,474,253,440.5,320.5Z",
+                    rotate: 0,
+                    scale: 1
+                });
+        }
     }
 
     // Refresh globale di sicurezza al termine del caricamento immagini
