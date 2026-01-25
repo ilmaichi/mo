@@ -52,7 +52,7 @@
             will-change: transform; transition: width 0.3s ease, height 0.3s ease;
         }
         #custom-cursor.expanding { width: 75px; }
-        .drop { position: absolute; width: 12px; fill: var(--accent-coral); opacity: 1; pointer-events: none; }
+        .drop { position: absolute; width: 12px; fill: var(--accent-coral); opacity: 0.6; pointer-events: none; }
         
         /* Ripristino Cursore Standard via Toggle */
         body.use-standard-cursor, body.use-standard-cursor a, body.use-standard-cursor button { cursor: auto !important; }
@@ -717,6 +717,14 @@
             font-size: 1.1rem;
         }
         
+        .about-description { max-width: 800px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
+        @media (max-width: 768px) {
+            .about-description {
+                max-width: 100%;
+                font-size: 1rem;
+            }
+        }
+        
         /* Colonna destra per la foto */
         .about-content-right {
             display: grid;
@@ -914,7 +922,7 @@
                         </svg>
                     </div>
                 </h2>
-                <div class="beyond-description reveal about-delay-1">
+                <div class="about-description reveal about-delay-1">
                     Mi muovo tra le agenzie creative da oltre 15 anni, ma il mio approccio resta quello di un eterno curioso. 
                     Amo la contaminazione tra i generi e credo che la miglior strategia sia quella che non dimentica 
                     mai l'emozione visiva. Oltre la tecnica, cerco sempre il fattore umano che rende ogni progetto 
