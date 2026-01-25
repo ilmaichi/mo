@@ -709,7 +709,7 @@
 }
         
         /* Descrizione */
-        #about-section .beyond-description {
+        #about-section .about-description {
             color: var(--text-light);
             max-width: 550px;
             margin-top: 20px;
@@ -722,6 +722,81 @@
             .about-description {
                 max-width: 100%;
                 font-size: 1rem;
+            }
+        }
+        
+        /* Intro e Outro */
+        .about-intro-text, .about-outro-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .amo-pin-section {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh; /* Occupa tutta la vista durante il blocco */
+            width: 100%;
+        }
+        
+        /* Container del rullino */
+        .amo-scroller {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            /* Font Inter */
+            font-family: 'Inter', sans-serif; 
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em; /* Tipico del look Inter Bold */
+            
+            height: 12rem; /* Leggermente più basso per compattare */
+            overflow: visible;
+            margin: 0.5rem 0 1.5rem 0; /* Margine superiore quasi azzerato */
+            vertical-align: middle;
+            position: relative;
+            
+            /* La maschera ora deve essere più ampia per permettere di vedere 
+               le parole sopra e sotto che sfumano */
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
+            mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
+        }
+        
+        .amo-fixed {
+            color: var(--text-color, #fff);
+        }
+        
+        .amo-wrapper {
+            height: 4.5rem;
+        }
+        
+        .amo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .amo-list li {
+            height: 4.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--accent-coral);
+            white-space: nowrap;
+            opacity: 0.2; /* Parole spente di base */
+            transition: opacity 0.3s ease; /* Transizione morbida per l'accensione */
+            will-change: transform, opacity;
+        }
+        
+        /* Opzionale: aggiungi una classe "active" che definiremo nel JS */
+        .amo-list li.is-active {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .amo-scroller, .amo-list li, .amo-wrapper {
+                height: 3rem;
+                font-size: 2.2rem;
             }
         }
         
@@ -923,10 +998,30 @@
                     </div>
                 </h2>
                 <div class="about-description reveal about-delay-1">
-                    Mi muovo tra le agenzie creative da oltre 15 anni, ma il mio approccio resta quello di un eterno curioso. 
-                    Amo la contaminazione tra i generi e credo che la miglior strategia sia quella che non dimentica 
-                    mai l'emozione visiva. Oltre la tecnica, cerco sempre il fattore umano che rende ogni progetto 
-                    davvero <span class="highlight-text">beyond</span>.
+                    <p class="about-intro-text">
+                        Radici in montagna, formazione in città.<br>
+                        Mi muovo tra le agenzie creative da oltre 15 anni con l’approccio di un eterno curioso.
+                    </p>
+                
+                    <div class="amo-scroller">
+                        <span class="amo-fixed">Amo</span>
+                        <div class="amo-wrapper">
+                            <ul class="amo-list">
+                                <li>l'outdoor.</li>
+                                <li>l'arrampicata.</li>
+                                <li>il legno.</li>
+                                <li>il mare.</li>
+                                <li>le cose belle.</li>
+                                <li>Marta.</li>
+                                <li>Gaia.</li>
+                                <li>l'Inter.</li>
+                            </ul>
+                        </div>
+                    </div>
+                
+                    <p class="about-outro-text">
+                        Cerco sempre il fattore umano che rende ogni progetto davvero unico.
+                    </p>
                 </div>
             </div>    
             <div class="about-content-right">
@@ -1463,6 +1558,50 @@ document.addEventListener("DOMContentLoaded", () => {
                     scale: 1
                 });
         }
+    }
+    // Aggiungi questo nel tuo DOMContentLoaded
+    const amoList = document.querySelector('.amo-list');
+    const amoItems = document.querySelectorAll('.amo-list li');
+    const aboutContainer = document.querySelector('.about-container');
+    
+    if (amoList && aboutContainer) {
+        const itemHeight = amoItems[0].offsetHeight;
+        const totalItems = amoItems.length;
+        const totalMove = itemHeight * (totalItems - 1);
+    
+        gsap.to(amoList, {
+            y: -totalMove,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#about-section",
+                start: "center center",
+                end: "+=250%", // Aumentato per rendere lo scroll più gestibile
+                pin: true,
+                scrub: true,
+                // SNAP: Questo crea l'effetto magnetico di Jhey
+                snap: {
+                    snapTo: 1 / (totalItems - 1),
+                    duration: { min: 0.2, max: 0.5 },
+                    delay: 0,
+                    ease: "power1.inOut"
+                },
+                onUpdate: (self) => {
+                    // Calcoliamo quale indice è attivo in base allo scroll
+                    const progress = self.progress;
+                    const activeIndex = Math.round(progress * (totalItems - 1));
+                    
+                    amoItems.forEach((item, index) => {
+                        if (index === activeIndex) {
+                            item.style.opacity = "1";
+                        } else {
+                            item.style.opacity = "0.2";
+                        }
+                    });
+                },
+                anticipatePin: 1,
+                invalidateOnRefresh: true
+            }
+        });
     }
 
     // Refresh globale di sicurezza al termine del caricamento immagini
