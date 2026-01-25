@@ -213,7 +213,7 @@
         /* --- LOGOS --- */
         #nav-logo-wrapper {
             position: fixed; top: 25px; left: 35px; width: 110px; z-index: 10001;
-            opacity: 0; transform: translateY(-150%);
+            transform: translateY(-150%);
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
         }
         #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; }
@@ -308,34 +308,9 @@
         .menu-link:hover { color: var(--accent-coral); }
         
         /* --- SECTIONS --- */
-        /* Stato base per TUTTI gli elementi che devono apparire */
-        .reveal { 
-            opacity: 0; 
-            transform: translateY(30px); 
-            transition: all 1s ease; 
-        }
-        
-        /* Quando l'elemento entra a schermo (aggiunto via JS) */
-        .reveal.active { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
-        
-        /* Delay per la prima sezione (Beyond) */
-        .beyond-description.reveal.active { transition-delay: 0.3s; }
-        .skills-container.reveal.active { transition-delay: 0.6s; }
-        
-        /* Delay per la seconda sezione (About) */
-        .about-delay-1 { transition-delay: 0.3s; }
-        .about-delay-2 { transition-delay: 0.5s; }
-        
-        /* Mantieni questa solo per la griglia delle skills che ha un delay lungo */
-        .skills-container.reveal.active {
-            transition-delay: 0.5s;
-        }
         .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
         .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 120vh; position: relative; z-index: 5; }
-        .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; opacity: 0; transform: translateY(40px); transition: 0.9s ease-out; }
+        .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; transform: translateY(40px); transition: 0.9s ease-out; }
         .ink-transition-container {
             position: fixed;      /* Resta incollato allo schermo mentre scendi */
             top: 0;
@@ -423,14 +398,14 @@
         .highlight-text {
             color: var(--accent-gold);
         }
-        .beyond-description { max-width: 800px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
+        .beyond-description { max-width: 800px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); transform: translateY(20px); transition: 1s all ease 0.6s; }
         @media (max-width: 768px) {
             .beyond-description {
                 max-width: 100%;
                 font-size: 1rem;
             }
         }
-        .skills-container { margin-top: 80px; opacity: 0; transform: translateY(30px); transition: 1s all ease 0.9s; }
+        .skills-container { margin-top: 80px; transform: translateY(30px); transition: 1s all ease 0.9s; }
         .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
         /* --- SKILLS PILLS (Uniformi con Hover pieno) --- */
         .skill-pill { 
@@ -717,7 +692,7 @@
             font-size: 1.1rem;
         }
         
-        .about-description { max-width: 800px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); opacity: 0; transform: translateY(20px); transition: 1s all ease 0.6s; }
+        .about-description { max-width: 800px; margin-top: 45px; font-family: 'JetBrains Mono'; font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; color: rgba(247, 247, 242, 0.8); transform: translateY(20px); transition: 1s all ease 0.6s; }
         @media (max-width: 768px) {
             .about-description {
                 max-width: 100%;
@@ -725,72 +700,11 @@
             }
         }
         
-        /* Intro e Outro */
-        .about-intro-text, .about-outro-text {
+        /* Intro */
+        .about-intro-text, {
             font-size: 1.2rem;
             line-height: 1.6;
             margin-bottom: 0.5rem;
-        }
-        
-        .amo-pin-section {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            height: 100vh; /* Occupa tutta la vista durante il blocco */
-            width: 100%;
-        }
-        
-        /* Container del rullino */
-        .amo-scroller {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            /* Font Inter */
-            font-family: 'Inter', sans-serif; 
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            font-weight: 800;
-            letter-spacing: -0.02em; /* Tipico del look Inter Bold */
-            overflow: visible;
-            margin: 0.5rem 0 1.5rem 0; /* Margine superiore quasi azzerato */
-            vertical-align: middle;
-            position: relative;
-        }
-        
-        .amo-fixed {
-            color: var(--text-light);
-        }
-        
-        .amo-wrapper {
-            height: 4.5rem;
-        }
-        
-        .amo-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .amo-list li {
-            height: 4.5rem;
-            display: flex;
-            align-items: center;
-            color: var(--accent-gold);
-            white-space: nowrap;
-            opacity: 0; /* Parole spente di base */
-            transition: opacity 0.3s ease; /* Transizione morbida per l'accensione */
-            will-change: transform, opacity;
-        }
-        
-        /* Opzionale: aggiungi una classe "active" che definiremo nel JS */
-        .amo-list li.is-active {
-            opacity: 1;
-        }
-        
-        @media (max-width: 768px) {
-            .amo-scroller, .amo-list li, .amo-wrapper {
-                height: 3rem;
-                font-size: 2.2rem;
-            }
         }
         
         /* Colonna destra per la foto */
@@ -934,14 +848,14 @@
         </svg>
     </div>
     <section id="beyond-section" class="content-section">
-        <h1 class="headline reveal" id="headline">
+        <h1 class="headline" id="headline">
             <span class="no-wrap">BEY&Ocirc;ND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
         </h1>
-        <div class="beyond-description reveal">
+        <div class="beyond-description">
             Essere <span class="highlight-text">beyond</span> significa non limitarsi alla definizione di una singola disciplina. Sono un Art Director ibrido e fluido, con una visione trasversale e strutturata che unisce competenze creative, tecniche, organizzative e di relazione. Grazie a <span class="highlight-text">oltre 15 anni di esperienza in agenzie creative</span> ho imparato a governare la complessità di progetti integrati, dal brief all'execution, trasformando visioni ambiziose in realtà concrete e coerenti.
         </div>
 
-        <div class="skills-container reveal">
+        <div class="skills-container">
             <div class="skills-filters" id="skills-filters">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="strategy">Vision & Strategy</button>
@@ -976,7 +890,7 @@
     <section id="about-section">
         <div class="about-container">
             <div class="about-content-left">
-                <h2 class="headline reveal about-headline">
+                <h2 class="headline about-headline">
                     <span class="about-label">ABOUT</span>
                     <div id="me-mo-toggle">
                         <svg viewBox="0 0 616.2 328.12">
@@ -990,35 +904,14 @@
                         </svg>
                     </div>
                 </h2>
-                <div class="about-description reveal about-delay-1">
+                <div class="about-description">
                     <p class="about-intro-text">
-                        Radici in montagna, formazione in città.<br>
-                        Mi muovo tra le agenzie creative da oltre 15 anni con l’approccio di un eterno curioso.
-                    </p>
-                
-                    <div class="amo-scroller">
-                        <span class="amo-fixed">Amo</span>
-                        <div class="amo-wrapper">
-                            <ul class="amo-list">
-                                <li>l'outdoor.</li>
-                                <li>l'arrampicata.</li>
-                                <li>il legno.</li>
-                                <li>il mare.</li>
-                                <li>le cose belle.</li>
-                                <li>Marta.</li>
-                                <li>Gaia.</li>
-                                <li>l'Inter.</li>
-                            </ul>
-                        </div>
-                    </div>
-                
-                    <p class="about-outro-text">
-                        Cerco sempre il fattore umano che rende ogni progetto davvero unico.
+                        Nato in montagna. Mille passioni. Storyteller nella vita. <br>
                     </p>
                 </div>
             </div>    
             <div class="about-content-right">
-                <div class="photo-container reveal">
+                <div class="photo-container">
                     <svg viewBox="0 0 500 500" class="blob-mask">
                         <defs>
                             <clipPath id="blob-clip">
@@ -1287,7 +1180,7 @@
         
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
-            if (y > 100) {nLog.classList.add('slide-in'); labelName.classList.add('scrolled'); document.getElementById('headline').classList.add('reveal'); }
+            if (y > 100) {nLog.classList.add('slide-in'); labelName.classList.add('scrolled'); }
             else {nLog.classList.remove('slide-in'); labelName.classList.remove('scrolled'); }
         });
 
@@ -1551,45 +1444,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     scale: 1
                 });
         }
-    }
-    // Aggiungi questo nel tuo DOMContentLoaded
-    const amoList = document.querySelector('.amo-list');
-    const amoItems = document.querySelectorAll('.amo-list li');
-    const aboutContainer = document.querySelector('.about-container');
-    
-    if (amoList && aboutContainer) {
-        const itemHeight = amoItems[0].offsetHeight;
-        const totalItems = amoItems.length;
-        const totalMove = itemHeight * (totalItems - 1);
-    
-        gsap.to(amoList, {
-            y: -totalMove,
-            ease: "none",
-            scrollTrigger: {
-                trigger: "#about-section",
-                start: "top top",
-                end: "+=250%", // Aumentato per rendere lo scroll più gestibile
-                pin: true,
-                scrub: true,
-                // SNAP: Questo crea l'effetto magnetico di Jhey
-                snap: 1/(totalItems-1),
-                onUpdate: (self) => {
-                    // Calcoliamo quale indice è attivo in base allo scroll
-                    const progress = self.progress;
-                    const activeIndex = Math.round(progress * (totalItems - 1));
-                    
-                    amoItems.forEach((item, index) => {
-                        if (index === activeIndex) {
-                            item.style.opacity = "1";
-                        } else {
-                            item.style.opacity = "0.2";
-                        }
-                    });
-                },
-                anticipatePin: 1,
-                invalidateOnRefresh: true
-            }
-        });
     }
 
     // Refresh globale di sicurezza al termine del caricamento immagini
