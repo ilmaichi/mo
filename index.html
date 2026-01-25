@@ -750,21 +750,14 @@
             font-size: clamp(2rem, 6vw, 3.5rem);
             font-weight: 800;
             letter-spacing: -0.02em; /* Tipico del look Inter Bold */
-            
-            height: 12rem; /* Leggermente più basso per compattare */
             overflow: visible;
             margin: 0.5rem 0 1.5rem 0; /* Margine superiore quasi azzerato */
             vertical-align: middle;
             position: relative;
-            
-            /* La maschera ora deve essere più ampia per permettere di vedere 
-               le parole sopra e sotto che sfumano */
-            -webkit-mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
-            mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
         }
         
         .amo-fixed {
-            color: var(--text-color, #fff);
+            color: var(--text-light);
         }
         
         .amo-wrapper {
@@ -781,9 +774,9 @@
             height: 4.5rem;
             display: flex;
             align-items: center;
-            color: var(--accent-coral);
+            color: var(--accent-gold);
             white-space: nowrap;
-            opacity: 0.2; /* Parole spente di base */
+            opacity: 0; /* Parole spente di base */
             transition: opacity 0.3s ease; /* Transizione morbida per l'accensione */
             will-change: transform, opacity;
         }
@@ -1574,17 +1567,12 @@ document.addEventListener("DOMContentLoaded", () => {
             ease: "none",
             scrollTrigger: {
                 trigger: "#about-section",
-                start: "center center",
+                start: "top top",
                 end: "+=250%", // Aumentato per rendere lo scroll più gestibile
                 pin: true,
                 scrub: true,
                 // SNAP: Questo crea l'effetto magnetico di Jhey
-                snap: {
-                    snapTo: 1 / (totalItems - 1),
-                    duration: { min: 0.2, max: 0.5 },
-                    delay: 0,
-                    ease: "power1.inOut"
-                },
+                snap: 1/(totalItems-1),
                 onUpdate: (self) => {
                     // Calcoliamo quale indice è attivo in base allo scroll
                     const progress = self.progress;
