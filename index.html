@@ -641,7 +641,80 @@
         }
         
         /* SEZIONE AMO */
+        /* --- SECTION AMO --- */
+        #amo-section {
+          background-color: var(--dark-blue);
+          min-height: 400vh; /* Mantiene lo spazio per lo scroll */
+          position: relative;
+          z-index: 10;
+        }
         
+        
+        .amo-container {
+          width: 100%;
+          max-width: 1400px; /* Evita che su schermi ultrawide i testi si allontanino troppo */
+          margin: 0 auto;
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 30px; /* Spazio ridotto tra AMO e le parole */
+          padding: 0 5%;
+        }
+        
+        .amo-fixed {
+          font-family: 'MoFont', sans-serif;
+          font-size: clamp(40px, 8vw, 110px);
+          font-weight: 900;
+          color: var(--accent-gold);
+          text-transform: uppercase;
+          line-height: 1;
+          flex-shrink: 0;
+        }
+        
+        .amo-words-track {
+          position: relative;
+          /* L'altezza del track deve essere uguale al font-size per centrarlo con AMO */
+          height: clamp(40px, 8vw, 110px);
+          flex-grow: 1;
+          max-width: 600px; 
+          overflow: hidden;
+          display: flex;
+          align-items: center; /* Centra la parola nel track */
+        }
+        
+        .amo-word {
+          font-family: 'Inter', sans-serif;
+          font-size: clamp(40px, 8vw, 110px);
+          font-weight: 900;
+          color: var(--text-light);
+          position: absolute;
+          white-space: nowrap;
+          opacity: 0;
+          position: absolute;
+          /* Togliamo bottom:0 o top:0 e usiamo la centratura del flex */
+          top: 50%;
+          left: 0;
+          transform: translateY(-50%); /* Centratura verticale perfetta rispetto al track */
+          line-height: 1;
+        }
+        
+        /* Responsive Mobile */
+        @media (max-width: 767px) {
+          .amo-container {
+            flex-direction: column;
+            gap: 30px;
+            justify-content: center;
+          }
+          
+          .amo-fixed {
+            font-size: 18vw;
+          }
+          
+          .amo-words-track {
+            text-align: center;
+          }
+        }
 
         /* Container principale del toggle */
 #me-mo-toggle {
@@ -930,8 +1003,21 @@
             </div>
         </div>
     </section>
-    <section class="amo-section">
-      
+    <!-- SEZIONE AMO -->
+    <section id="amo-section">
+      <div class="amo-container">
+        <div class="amo-fixed">AMO</div>
+        <div class="amo-words-track">
+          <div class="amo-word">l'arrampicata</div>
+          <div class="amo-word">il mare</div>
+          <div class="amo-word">la terra</div>
+          <div class="amo-word">costruire</div>
+          <div class="amo-word">imparare</div>
+          <div class="amo-word">appassionarmi</div>
+          <div class="amo-word">Marta</div>
+          <div class="amo-word">Gaia</div>
+        </div>
+      </div>
     </section>
   
     <section class="footer-hero">
@@ -1455,6 +1541,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
         }
     }
+    const amoWords = gsap.utils.toArray('.amo-word');
+
+if (amoWords.length > 0) {
+  // Rimuovi position: sticky dal CSS e usa il pin di GSAP
+  const amoTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: "#amo-section",
+      start: "top top",
+      end: "+=3000", // Durata dello scroll
+      scrub: 1,
+      pin: true,    // Fa il lavoro dello sticky in modo più preciso
+      snap: 1 / (amoWords.length - 1),
+      invalidateOnRefresh: true
+    }
+  });
+
+  amoWords.forEach((word, i) => {
+    // Creiamo una sequenza pulita
+    amoTl.fromTo(word, 
+      { opacity: 0, y: 40 }, 
+      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+    )
+    .to(word, 
+      { opacity: 0, y: -40, duration: 0.5, ease: "power2.in" }, 
+      "+=0.5" // Lascia la parola visibile per un breve intervallo
+    );
+  });
+}
 
     // Refresh globale di sicurezza al termine del caricamento immagini
     window.addEventListener('load', () => {
