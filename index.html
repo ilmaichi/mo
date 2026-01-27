@@ -663,19 +663,13 @@
         
         #amo-text {
             font-family: "Inter", sans-serif;
-            font-size: 2.5rem;
+            font-size: clamp(35px, 7vw, 110px);
             font-weight: 900;
             color: var(--text-light) !important;
             line-height: 1.2;
             margin: 0;
             /* Manteniamo l'allineamento del testo a sinistra o centro come preferisci */
             text-align: left; 
-        }
-        
-        .amofont{
-          font-family: 'Mofont', sans-serif !important;
-          display: inline-block;
-          font-size: 2.8rem;
         }
         
         /* Colore per le parole che si aggiungono */
@@ -975,7 +969,7 @@
     <!-- SEZIONE AMO -->
     <section id="amo-section">
         <div class="amo-container">
-            <p id="amo-text"><span class="amofont">Amo </span></p>
+            <p id="amo-text">Amo </p>
         </div>
     </section>
     <svg style="visibility: hidden; position: absolute;" width="0" height="0">
