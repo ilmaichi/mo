@@ -309,7 +309,7 @@
         
         /* --- SECTIONS --- */
         .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
-        .content-section { background-color: var(--dark-blue); color: var(--text-light); padding: 160px 40px; min-height: 120vh; position: relative; z-index: 5; }
+        #beyond-section { background-color: var(--dark-blue); color: var(--text-light); padding: 100px 40px; min-height: 120vh; position: relative; z-index: 5; }
         .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; transform: translateY(40px); transition: 0.9s ease-out; }
         .ink-transition-container {
             position: fixed;      /* Resta incollato allo schermo mentre scendi */
@@ -601,7 +601,7 @@
             background-color: var(--dark-blue);
             color: var(--accent-coral);
             /* Usiamo lo stesso padding laterale della sezione superiore */
-            padding: 160px 40px 0px 40px; 
+            padding: 100px 40px 0px 40px; 
             /*min-height: 100vh;*/
             display: flex;
             align-items: center;
@@ -886,7 +886,7 @@
             <path id="ink-path" d="M0,0 L100,0 L100,0 C75,0 75,0 50,0 C25,0 25,0 0,0 Z"></path>
         </svg>
     </div>
-    <section id="beyond-section" class="content-section">
+    <section id="beyond-section">
         <h1 class="headline" id="headline">
             <span class="no-wrap">BEY&Ocirc;ND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
         </h1>
