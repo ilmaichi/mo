@@ -672,57 +672,76 @@
             text-align: left; 
         }
         
-        /*CONTACT SECTION SEZIONE CONTATTI*/
-        #contact-section {
-            width: 100%;
-            padding: 60px 0; /* Altezza "bassa", gestita dai padding */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--text-light);
-            position: relative;
-            z-index: 99;
-        }
-
-          #contact-trigger {
-              text-decoration: none;
-              font-size: 5vw;
-              font-weight: bold;
-              text-transform: uppercase;
-              text-align: center;
-              display: block;
-              position: relative;
-          }
-          
-          .label-default{
-            font-family: "MoFont", sans-serif;
-            color: var(--text-dark);
-          }
-          .label-hover{
-            font-family: "JetBrains", sans-serif;
-            color: var(--accent-coral);
-          }
-          
-          /* Nascondiamo l'email di default */
-          #contact-trigger .label-hover {
-              display: none;
-              text-transform: none; /* L'email di solito è minuscola */
-          }
-          
-          /* Al rollover invertiamo la visibilità */
-          #contact-trigger:hover .label-default {
-              display: none;
-          }
-          
-          #contact-trigger:hover .label-hover {
-              display: block;
-          }
-        
         /* Colore per le parole che si aggiungono */
         .added-word {
             display: inline-block; /* Necessario per il transform */
             white-space: pre; /* Mantiene gli spazi corretti tra le parole */
             will-change: opacity, transform;
+        }
+        
+        /*CONTACT SECTION SEZIONE CONTATTI*/
+        #contact-section {
+            background-color: var(--text-light);
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centra il blocco "collaboriamo" */
+            align-items: center;
+            position: relative;
+            padding: 60px;
+            box-sizing: border-box;
+            z-index: 11;
+            color: var(--dark-text);
+        }
+        
+        .collab-title {
+            font-family: "MoFont", sans-serif;
+            font-size: 8vw;
+            text-transform: lowercase;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+        
+        .email-block {
+            text-align: center;
+            font-family: "JetBrains Mono", monospace;
+        }
+        
+        .text-small {
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+        
+        .email-link {
+            font-size: 4vw;
+            text-decoration: none;
+            color: inherit;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .email-link:hover {
+            opacity: 0.6;
+        }
+        
+        /* Footer della sezione (Link in basso) */
+        .contact-footer {
+            font-family: "JetBrains Mono", monospace;
+            position: absolute;
+            bottom: 40px;
+            width: calc(100% - 120px); /* Padding dinamico */
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        .insta-link {
+            text-decoration: none;
+            color: inherit;
         }
 
         /* Container principale del toggle */
@@ -1019,10 +1038,18 @@
         </div>
     </section>
     <section id="contact-section">
-        <a href="mailto:michele@company.com" id="contact-trigger" class="mofont">
-            <span class="label-default">CONTATTAMI</span>
-            <span class="label-hover">michele@company.com</span>
-        </a>
+        <div class="contact-main">
+            <h2 class="collab-title mofont">collaboriamo?</h2>
+            <div class="email-block">
+                <p class="jetbrains text-small">CONTATTAMI</p>
+                <a href="mailto:hello@test.it" class="jetbrains email-link">hello@test.it</a>
+            </div>
+        </div>
+    
+        <div class="contact-footer jetbrains">
+            <a href="https://instagram.com/tuo-profilo" target="_blank" class="insta-link">Instagram</a>
+            <p class="copyright">Michele Occhi - P. Iva 00111111111111</p>
+        </div>
     </section>
     <svg style="visibility: hidden; position: absolute;" width="0" height="0">
         <defs>
