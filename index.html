@@ -672,6 +672,52 @@
             text-align: left; 
         }
         
+        /*CONTACT SECTION SEZIONE CONTATTI*/
+        #contact-section {
+    width: 100%;
+    padding: 60px 0; /* Altezza "bassa", gestita dai padding */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent; /* Lasciamo che GSAP lo colori */
+    position: relative;
+    z-index: 99;
+}
+
+#contact-trigger {
+    text-decoration: none;
+    font-size: 5vw;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+    position: relative;
+}
+
+.label-default{
+  font-family: "MoFont", sans-serif;
+  color: var(--text-light);
+}
+.label-hover{
+  font-family: "JetBrains", sans-serif;
+  color: var(--accent-gold);
+}
+
+/* Nascondiamo l'email di default */
+#contact-trigger .label-hover {
+    display: none;
+    text-transform: none; /* L'email di solito è minuscola */
+}
+
+/* Al rollover invertiamo la visibilità */
+#contact-trigger:hover .label-default {
+    display: none;
+}
+
+#contact-trigger:hover .label-hover {
+    display: block;
+}
+        
         /* Colore per le parole che si aggiungono */
         .added-word {
             display: inline-block; /* Necessario per il transform */
@@ -680,47 +726,47 @@
         }
 
         /* Container principale del toggle */
-#me-mo-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    vertical-align: baseline;
-    
-    /* Usiamo em per mantenere le proporzioni con il font-size di ABOUT */
-    width: 2.2em; 
-    height: 1.1em; 
-    
-    margin-left: 0.2em;
-    position: relative;
-    cursor: pointer;
-    
-    /* Allineamento ottico sulla baseline */
-    transform: translateY(0.15em); 
-}
-
-/* L'SVG unico all'interno del toggle */
-#me-mo-toggle svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-    /* Il colore viene ereditato o definito qui */
-    fill: var(--accent-coral); 
-    /* Opzionale: aggiunge una transizione fluida anche per il colore se dovesse cambiare */
-    transition: fill 0.3s ease;
-}
-
-/* Manteniamo la label ABOUT pulita */
-.about-label {
-    font-family: 'Inter', sans-serif;
-    /* Assicurati che non abbia margini che spostano il toggle */
-    margin: 0;
-}
-
-/* Rimuoviamo le classi vecchie che non servono più */
-.toggle-svg-item, 
-.toggle-svg-item.active {
-    display: none; 
-}
+        #me-mo-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: baseline;
+            
+            /* Usiamo em per mantenere le proporzioni con il font-size di ABOUT */
+            width: 2.2em; 
+            height: 1.1em; 
+            
+            margin-left: 0.2em;
+            position: relative;
+            cursor: pointer;
+            
+            /* Allineamento ottico sulla baseline */
+            transform: translateY(0.15em); 
+        }
+        
+        /* L'SVG unico all'interno del toggle */
+        #me-mo-toggle svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            /* Il colore viene ereditato o definito qui */
+            fill: var(--accent-coral); 
+            /* Opzionale: aggiunge una transizione fluida anche per il colore se dovesse cambiare */
+            transition: fill 0.3s ease;
+        }
+        
+        /* Manteniamo la label ABOUT pulita */
+        .about-label {
+            font-family: 'Inter', sans-serif;
+            /* Assicurati che non abbia margini che spostano il toggle */
+            margin: 0;
+        }
+        
+        /* Rimuoviamo le classi vecchie che non servono più */
+        .toggle-svg-item, 
+        .toggle-svg-item.active {
+            display: none; 
+        }
         
         /* Descrizione */
         #about-section .about-description {
@@ -971,6 +1017,12 @@
         <div class="amo-container">
             <p id="amo-text">Amo </p>
         </div>
+    </section>
+    <section id="contact-section">
+        <a href="mailto:michele@company.com" id="contact-trigger" class="mofont">
+            <span class="label-default">CONTATTAMI</span>
+            <span class="label-hover">michele@company.com</span>
+        </a>
     </section>
     <svg style="visibility: hidden; position: absolute;" width="0" height="0">
         <defs>
