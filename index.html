@@ -1552,27 +1552,37 @@ document.addEventListener("DOMContentLoaded", () => {
     // 5. CAMBIO COLORE DINAMICO ALL'ENTRATA/USCITA DI WORKS
     ScrollTrigger.create({
         trigger: "#works-container", // O il selettore della tua sezione Works
-        start: "top bottom",        // Quando la testa di Works entra dal basso
+        start: "top top",        // Quando la testa di Works entra dal basso
         onEnter: () => {
-            // Scendo: diventa rosso
-            gsap.to("#ink-path", { fill: "#ff0000", duration: 0.3 });
+            // Scendo: diventa dark-blue
+            gsap.to("#ink-path", { fill: "#004f5e", duration: 0.3 });
         },
         onLeaveBack: () => {
-            // Torno su: riprende il colore dark-blue (o quello che avevi prima)
-            gsap.to("#ink-path", { fill: "#0a192f", duration: 0.3 });
+            // Torno su: riprende il colore dark-text (o quello che avevi prima)
+            gsap.to("#ink-path", { fill: "#2d2926", duration: 0.3 });
         }
     });
     
-    /*gsap.to("#ink-path", {
-        fill: "#2d2926", // Il nero/scuro che desideri
-        ease: "none",
+    const aboutTransition = gsap.timeline({
         scrollTrigger: {
             trigger: "#amo-section",
-            start: "top 160", // Stesso start dell'animazione scritte
-            end: "+=1000",   // Stesso end del pinning
+            start: "top 160",
+            end: "+=1000",
             scrub: 0.5,
         }
-    });*/
+    });
+    
+    aboutTransition
+        .to("#ink-path", { 
+            fill: "#2d2926", 
+            immediateRender: false, 
+            ease: "none" 
+        }, 0) // lo 0 indica che iniziano insieme
+        .to("#about-section", { 
+            backgroundColor: "#2d2926", // O il colore che preferisci per il bg
+            immediateRender: false, 
+            ease: "none" 
+        }, 0);
     
     
     // Refresh globale di sicurezza al termine del caricamento immagini
