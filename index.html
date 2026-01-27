@@ -674,49 +674,49 @@
         
         /*CONTACT SECTION SEZIONE CONTATTI*/
         #contact-section {
-    width: 100%;
-    padding: 60px 0; /* Altezza "bassa", gestita dai padding */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent; /* Lasciamo che GSAP lo colori */
-    position: relative;
-    z-index: 99;
-}
+            width: 100%;
+            padding: 60px 0; /* Altezza "bassa", gestita dai padding */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--text-light);
+            position: relative;
+            z-index: 99;
+        }
 
-#contact-trigger {
-    text-decoration: none;
-    font-size: 5vw;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center;
-    display: block;
-    position: relative;
-}
-
-.label-default{
-  font-family: "MoFont", sans-serif;
-  color: var(--text-light);
-}
-.label-hover{
-  font-family: "JetBrains", sans-serif;
-  color: var(--accent-gold);
-}
-
-/* Nascondiamo l'email di default */
-#contact-trigger .label-hover {
-    display: none;
-    text-transform: none; /* L'email di solito è minuscola */
-}
-
-/* Al rollover invertiamo la visibilità */
-#contact-trigger:hover .label-default {
-    display: none;
-}
-
-#contact-trigger:hover .label-hover {
-    display: block;
-}
+          #contact-trigger {
+              text-decoration: none;
+              font-size: 5vw;
+              font-weight: bold;
+              text-transform: uppercase;
+              text-align: center;
+              display: block;
+              position: relative;
+          }
+          
+          .label-default{
+            font-family: "MoFont", sans-serif;
+            color: var(--text-dark);
+          }
+          .label-hover{
+            font-family: "JetBrains", sans-serif;
+            color: var(--accent-coral);
+          }
+          
+          /* Nascondiamo l'email di default */
+          #contact-trigger .label-hover {
+              display: none;
+              text-transform: none; /* L'email di solito è minuscola */
+          }
+          
+          /* Al rollover invertiamo la visibilità */
+          #contact-trigger:hover .label-default {
+              display: none;
+          }
+          
+          #contact-trigger:hover .label-hover {
+              display: block;
+          }
         
         /* Colore per le parole che si aggiungono */
         .added-word {
