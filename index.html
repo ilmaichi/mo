@@ -542,15 +542,11 @@
             cursor: pointer !important;
             pointer-events: auto;
         }
-        .big-works-link:hover .text-inter {
-            text-decoration: underline;
-        }
+        
         .big-works-link:hover .text-mofont {
             text-decoration: none; /* Rimuoviamo l'underline se era ereditato */
             color: var(--dark-text); /* Svuota il corpo della lettera */
             -webkit-text-stroke: 10px var(--accent-gold); /* Crea il bordo (regola i px a piacere) */
-            /* Se vuoi un effetto più "morbido" aggiungi una transizione */
-            transition: all 0.2s ease;
         }
       
       /* Il colore lo cambiamo sempre sul path */
@@ -565,6 +561,7 @@
             font-weight: 900;
             line-height: 1;
             opacity: 1;
+            text-decoration: underline;
         }
         
         .text-mofont {
@@ -744,13 +741,24 @@
         
         .collab-title {
             font-family: "MoFont", sans-serif;
-            font-size: clamp(35px, 8.2vw, 110px);
+            font-size: clamp(50px, 10vw, 130px);
             text-transform: uppercase;
             margin:0;
             margin-bottom: 20px;
             line-height: 1;
             color: var(--accent-coral);
             text-align: center;
+        }
+        
+        .mail-link {
+            color: inherit;          /* Eredita il colore dal h2 */
+            text-decoration: none;   /* Toglie la sottolineatura standard */
+            transition: opacity 0.3s ease;
+            display: inline-block;
+        }
+        
+        .mail-link:hover {
+            color: var(--accent-coral);
         }
         
         .email-block {
@@ -1145,7 +1153,9 @@
                 Se hai dubbi su come posso aiutarti,
             </p>
     
-            <h2 class="collab-title">scrivimi!</h2>
+            <h2 class="collab-title">
+                <a href="mailto:michele.occhi@gmail.com" class="mail-link">scrivimi!</a>
+            </h2>
     
             <div class="email-block">
                 <div class="email-wrapper">
