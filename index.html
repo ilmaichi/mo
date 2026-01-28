@@ -541,9 +541,15 @@
             cursor: pointer !important;
             pointer-events: auto;
         }
-        .big-works-link:hover .text-inter,
-        .big-works-link:hover .text-mofont {
+        .big-works-link:hover .text-inter {
             text-decoration: underline;
+        }
+        .big-works-link:hover .text-mofont {
+            text-decoration: none; /* Rimuoviamo l'underline se era ereditato */
+            color: transparent; /* Svuota il corpo della lettera */
+            -webkit-text-stroke: 2px var(--dark-text); /* Crea il bordo (regola i px a piacere) */
+            /* Se vuoi un effetto più "morbido" aggiungi una transizione */
+            transition: all 0.2s ease;
         }
       
       /* Il colore lo cambiamo sempre sul path */
