@@ -228,6 +228,7 @@
             position: fixed; top: 25px; left: 35px; width: 110px; z-index: 10001;
             transform: translateY(-150%);
             transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+            cursor: pointer;
         }
         #nav-logo-wrapper.slide-in { transform: translateY(0); opacity: 1; }
         #hero-logo-wrapper {
@@ -1199,7 +1200,15 @@
         let isMenuOpen = false, isSticky = false, gyroActive = false;
         let zeroBeta = 0, zeroGamma = 0;
         let idleTimer; // Gestirà l'intervallo del movimento automatico a mousefermo
-
+        
+        //ATTIVO LINK DEL LOGO NAV
+        nLog.addEventListener('click', () => {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+        });
+        
         document.addEventListener('mousemove', (e) => {
             if (gyroActive) return;
         
@@ -1578,36 +1587,46 @@
 
         // Gestione click sui link del menù con delay
         document.querySelectorAll('.menu-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const targetId = link.getAttribute('href');
+    link.addEventListener('click', (e) => {
+        const targetId = link.getAttribute('href');
+        
+        // Se il link è un'ancora (inizia con #)
+        if (targetId && targetId.startsWith('#')) {
+            e.preventDefault();
+
+            // 1. Chiusura menù (se hai la funzione toggleMenu)
+            if (typeof isMenuOpen !== 'undefined' && isMenuOpen) {
+                toggleMenu();
+            }
+
+            // 2. Delay per permettere al menu di iniziare a chiudersi
+            setTimeout(() => {
+                const targetSection = document.querySelector(targetId);
                 
-                // Se il link è un'ancora (inizia con #)
-                if (targetId.startsWith('#')) {
-                    e.preventDefault(); // Blocchiamo il salto immediato
-        
-                    // 1. Avviamo la chiusura del menù
-                    if (isMenuOpen) {
-                        toggleMenu();
+                if (targetSection) {
+                    // Cerchiamo se GSAP ha un trigger associato a questa sezione
+                    const st = ScrollTrigger.getAll().find(s => s.trigger === targetSection);
+                    
+                    let targetPosition;
+
+                    if (st) {
+                        // Se è una sezione speciale (pinnata/orizzontale), usiamo il valore di GSAP
+                        targetPosition = st.start;
+                    } else {
+                        // Se è una sezione normale, usiamo il calcolo della posizione attuale
+                        targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset;
                     }
-        
-                    // 2. Aspettiamo un attimo prima di scrollare
-                    setTimeout(() => {
-                        const targetSection = document.querySelector(targetId);
-                        if (targetSection) {
-                            // Calcoliamo la posizione con un piccolo offset per non appiccicare il titolo al bordo
-                            // const offset = 60; 
-                            // const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - offset;
-                            const targetPosition = targetSection.offsetTop;
-        
-                            window.scrollTo({
-                                top: targetPosition,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }, 350); // Il delay: 350ms è il "sweet spot" tra fluidità e reattività
+
+                    // Eseguiamo lo scroll fluido nativo (quello che hai testato essere istantaneo)
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
                 }
-            });
-        });
+            }, 350);
+        }
+    });
+});
         
         //COPIA LA MAIL NEI CONTATTI
         function copyEmail() {
@@ -1667,12 +1686,13 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/MorphSVGPlugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollToPlugin.min.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Registrazione Plugin
-    gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger);
-
+    gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger, ScrollToPlugin);
+    
     // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
     const eyeTl = gsap.timeline({
         repeat: -1,
@@ -1853,6 +1873,11 @@ document.addEventListener("DOMContentLoaded", () => {
             ease: "none" 
         }, 0);
     
+    // Refresh globale di sicurezza al resize della finestra
+    window.addEventListener("resize", () => {
+        ScrollTrigger.refresh();
+        ScrollTrigger.getById("WORKS").refresh();
+    });
     
     // Refresh globale di sicurezza al termine del caricamento immagini
     window.addEventListener('load', () => {
