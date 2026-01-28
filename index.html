@@ -710,10 +710,20 @@
             color: var(--dark-text);
         }
         
+        .contact-intro {
+            font-family:"Jetbrains Mono", monospace;
+            text-align: center;
+            color: var(--dark-text);
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 600px;    /* Mantiene il testo compatto */
+        }
+        
         .collab-title {
             font-family: "MoFont", sans-serif;
-            font-size: 8vw;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
             text-transform: uppercase;
+            margin:0;
             margin-bottom: 20px;
             line-height: 1;
             color: var(--accent-coral);
@@ -1105,11 +1115,17 @@
     </section>
     <section id="contact-section">
         <div class="contact-main">
-            <h2 class="collab-title">collaboriamo?</h2>
+            <p class="contact-intro">
+                Che tu sia un’agenzia, un'azienda o un privato, se&nbsp;hai un'idea, le diamo forma. <br>
+                Se hai dubbi su come posso aiutarti,
+            </p>
+    
+            <h2 class="collab-title">parliamone!</h2>
+    
             <div class="email-block">
                 <p class="jetbrains text-small">CONTATTAMI</p>
                 <div class="email-wrapper">
-                    <a href="mailto:michele.occhi@gmail.com" class="jetbrains email-link">michele.occhi@gmail.com</a>
+                    <a href="mailto:hello@test.it" class="jetbrains email-link">hello@test.it</a>
                     <span class="material-icons-outlined copy-icon" onclick="copyEmail()">content_copy</span>
                 </div>
             </div>
