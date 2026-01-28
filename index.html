@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michele Occhi | Beyond Art Direction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;500;700&family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="cursor-container">
+        <div id="custom-cursor">
+            <svg viewBox="0 0 500 465.69"><path d="M440.18,416.13c-59.25,54.74-144.98,53.73-221.98,45.24-36.38-4.01-73.01-9.15-107.35-22.91-34.33-13.76-66.57-36.95-86.47-70.65C5.82,336.36-.83,297.79.08,260.31,2.95,142.22,85.02,31.92,189.74,5.44c44.07-11.14,95.41-4.61,143.77,14.51,60.76,24.02,111.92,71.39,141.42,134.54,8.1,17.33,14.52,35.57,18.9,54.6,16.91,73.35-.95,158.38-53.65,207.04Z"/></svg>
+        </div>
+    </div>
+
+    <div id="label-name" class="ui-label">Michele Occhi</div>
+    <div id="nav-text-menu" class="ui-label" onclick="toggleMenu()">Menu +</div>
+
+    <div id="cursor-ui-vertical">
+        <label class="full-clickable-label" for="cursor-toggle">
+            <span class="toggle-tag">Organic Cursor</span>
+            <div class="switch">
+                <input type="checkbox" id="cursor-toggle" checked onchange="toggleCursorMode()">
+                <div class="slider">
+                    <div class="circle">
+                        <svg class="cross" viewBox="0 0 365.696 365.696"><path fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path></svg>
+                        <svg class="checkmark" viewBox="0 0 24 24"><path fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </label>
+    </div>
+
+    <div id="nav-logo-wrapper">
+        <svg class="logo-svg" viewBox="0 0 485.55 328.12">
+            <defs>
+                <mask id="m-nav">
+                    <rect width="100%" height="100%" fill="white"/>
+                    <g class="p-mover">
+                        <path d="M417.01,243.77c-2.32,0-4.33.84-6.04,2.53-1.71,1.69-2.42,3.57-2.15,5.64.27,2.72,1.12,4.6,2.56,5.64,1.43,1.04,3.31,1.55,5.63,1.55s4.23-.65,5.73-1.94c1.5-1.29,2.25-3.05,2.25-5.25,0-2.07-.68-3.95-2.05-5.64-1.37-1.68-3.34-2.53-5.93-2.53Z" fill="black"/>
+                    </g>
+                </mask>
+            </defs>
+            <path class="st0" d="M328.12,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51C-.43,247.94-.14,229.43.29,211.67,1.59,149.02,5.67,82.37,38.82,28.06,48.52,12.75,63.53-1.31,82.29.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
+            <g class="intero-occhio" style="mask: url(#m-nav);">
+                <path class="st0" d="M420.08,181.34c8.18,0,15.38.94,21.59,2.82,6.2,1.88,11.63,4.38,16.27,7.49,4.64,3.11,8.52,6.65,11.66,10.6,3.14,3.96,5.73,8.01,7.78,12.16,4.77,9.72,7.5,20.68,8.18,32.87,0,9.21-.96,17.28-2.86,24.21-1.91,6.94-4.4,12.97-7.47,18.09-3.07,5.12-6.55,9.43-10.44,12.93-3.89,3.5-7.88,6.42-11.97,8.75-9.55,5.32-20.46,8.36-32.74,9.14-9.28,0-17.39-.94-24.35-2.82-6.96-1.88-13.03-4.34-18.21-7.39-5.19-3.05-9.55-6.55-13.1-10.5-3.55-3.95-6.48-8-8.8-12.16-5.46-9.59-8.53-20.55-9.21-32.87,0-10.11,1.06-18.87,3.17-26.26,2.11-7.39,4.91-13.78,8.39-19.16,3.48-5.38,7.4-9.79,11.77-13.23,4.36-3.43,8.87-6.19,13.5-8.27,10.77-4.79,23.05-6.93,36.83-6.42Z"/>
+            </g>
+            <g class="sopracciglio">
+                <path class="st2" d="M452.67,128.55c4.21.51,7.43,1.57,9.66,3.17,2.23,1.6,3.82,3.3,4.79,5.09,1.2,2.18,1.81,4.48,1.81,6.91.12,2.56-.24,4.99-1.08,7.29-.72,1.92-1.96,3.78-3.7,5.57-1.75,1.79-4.43,3.01-8.04,3.65-4.58.77-10,1.37-16.26,1.82-6.26.45-12.86.73-19.78.86-6.93.13-13.91.06-20.95-.19-7.05-.26-13.52-.64-19.42-1.15-4.22-.38-7.47-1.41-9.75-3.07-2.29-1.66-3.91-3.39-4.88-5.18-1.21-2.17-1.87-4.54-1.99-7.1-.24-2.81.24-5.37,1.44-7.68.96-2.05,2.62-4.03,4.97-5.95,2.35-1.92,5.93-3.26,10.75-4.03,8.67-1.28,17.31-1.98,25.92-2.11,8.61-.13,16.35-.06,23.21.19,8.07.38,15.83,1.03,23.3,1.92Z"/>
+            </g>
+        </svg>
+    </div>
+
+    <div id="menu-overlay">
+        <div class="ink-container"><div class="spot s1"></div><div class="spot s2"></div><div class="spot s3"></div></div>
+        <div id="menu-content">
+            <a href="#beyond-section" class="menu-link">SKILLS</a>
+            <a href="#about-section" class="menu-link">ABoUT</a>
+            <a href="#works-section" class="menu-link">WoRKS</a>
+            <a href="#contact-section" class="menu-link">CoNTACT</a>
+        </div>
+    </div>
+
+    <section class="hero-container">
+        <div id="hero-logo-wrapper">
+            <svg class="logo-svg" viewBox="0 0 485.55 328.12">
+                <defs>
+                    <mask id="m-hero">
+                        <rect width="100%" height="100%" fill="white"/>
+                        <g class="p-mover">
+                            <path d="M417.01,243.77c-2.32,0-4.33.84-6.04,2.53-1.71,1.69-2.42,3.57-2.15,5.64.27,2.72,1.12,4.6,2.56,5.64,1.43,1.04,3.31,1.55,5.63,1.55s4.23-.65,5.73-1.94c1.5-1.29,2.25-3.05,2.25-5.25,0-2.07-.68-3.95-2.05-5.64-1.37-1.68-3.34-2.53-5.93-2.53Z" fill="black"/>
+                        </g>
+                    </mask>
+                </defs>
+                <path class="st0" d="M328.12,220.62c-.32,27.92-1.89,56.41-14.39,80.55-12.2,22.93-38.52,34.24-60.85,21.85-8.31-4.44-14.96-10.99-20.71-18.4-5.03-6.62-8.15-14.42-11.77-21.86-3.89-8.5-9.3-14.39-17.53-7.12-13.93,13.27-29.8,31.39-50.65,24.65-9.47-2.64-17.26-8.95-25.87-13.48-11.79-6.59-19.04-1.13-25.47,9.39-4.96,7.76-9.97,16.1-17.34,21.74-15.18,12.04-36.98,12.75-53.17,2.31-18.41-11.6-25.43-33.05-28.39-54.51C-.43,247.94-.14,229.43.29,211.67,1.59,149.02,5.67,82.37,38.82,28.06,48.52,12.75,63.53-1.31,82.29.1c28.27,1.44,46.91,33.47,72.5,39.05,11.48,2.59,22.47-1.83,33.13-7.76,87.38-58.33,128.16,20.08,136.31,111.89,2.69,25.8,3.67,51.14,3.9,77.08v.27Z"/>
+                <g class="intero-occhio" style="mask: url(#m-hero);">
+                    <path class="st0" d="M420.08,181.34c8.18,0,15.38.94,21.59,2.82,6.2,1.88,11.63,4.38,16.27,7.49,4.64,3.11,8.52,6.65,11.66,10.6,3.14,3.96,5.73,8.01,7.78,12.16,4.77,9.72,7.5,20.68,8.18,32.87,0,9.21-.96,17.28-2.86,24.21-1.91,6.94-4.4,12.97-7.47,18.09-3.07,5.12-6.55,9.43-10.44,12.93-3.89,3.5-7.88,6.42-11.97,8.75-9.55,5.32-20.46,8.36-32.74,9.14-9.28,0-17.39-.94-24.35-2.82-6.96-1.88-13.03-4.34-18.21-7.39-5.19-3.05-9.55-6.55-13.1-10.5-3.55-3.95-6.48-8-8.8-12.16-5.46-9.59-8.53-20.55-9.21-32.87,0-10.11,1.06-18.87,3.17-26.26,2.11-7.39,4.91-13.78,8.39-19.16,3.48-5.38,7.4-9.79,11.77-13.23,4.36-3.43,8.87-6.19,13.5-8.27,10.77-4.79,23.05-6.93,36.83-6.42Z"/>
+                </g>
+                <g class="sopracciglio">
+                    <path class="st2" d="M452.67,128.55c4.21.51,7.43,1.57,9.66,3.17,2.23,1.6,3.82,3.3,4.79,5.09,1.2,2.18,1.81,4.48,1.81,6.91.12,2.56-.24,4.99-1.08,7.29-.72,1.92-1.96,3.78-3.7,5.57-1.75,1.79-4.43,3.01-8.04,3.65-4.58.77-10,1.37-16.26,1.82-6.26.45-12.86.73-19.78.86-6.93.13-13.91.06-20.95-.19-7.05-.26-13.52-.64-19.42-1.15-4.22-.38-7.47-1.41-9.75-3.07-2.29-1.66-3.91-3.39-4.88-5.18-1.21-2.17-1.87-4.54-1.99-7.1-.24-2.81.24-5.37,1.44-7.68.96-2.05,2.62-4.03,4.97-5.95,2.35-1.92,5.93-3.26,10.75-4.03,8.67-1.28,17.31-1.98,25.92-2.11,8.61-.13,16.35-.06,23.21.19,8.07.38,15.83,1.03,23.3,1.92Z"/>
+                </g>
+            </svg>
+        </div>
+        <div id="gyro-cta" onclick="requestGyroPermission()">
+            <div class="phone-icon"></div><span>Tap & Tilt</span>
+        </div>
+    </section>
+    <div class="ink-transition-container">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path id="ink-path" d="M0,0 L100,0 L100,0 C75,0 75,0 50,0 C25,0 25,0 0,0 Z"></path>
+        </svg>
+    </div>
+    <section id="beyond-section">
+        <h1 class="headline" id="headline">
+            <span class="no-wrap">BEY&Ocirc;ND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
+        </h1>
+        <div class="beyond-description">
+            Essere <span class="highlight-text">beyond</span> significa non limitarsi alla definizione di una singola disciplina. Sono un Art Director ibrido e fluido, con una visione trasversale e strutturata che unisce competenze creative, tecniche, organizzative e di relazione. Grazie a <span class="highlight-text">oltre 15 anni di esperienza in agenzie creative</span> ho imparato a governare la complessità di progetti integrati, dal brief all'execution, trasformando visioni ambiziose in realtà concrete e coerenti.
+        </div>
+
+        <div class="skills-container">
+            <div class="skills-filters" id="skills-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="strategy">Vision & Strategy</button>
+                <button class="filter-btn" data-filter="creative">Execution & Production</button>
+                <button class="filter-btn" data-filter="tech">Digital & Tech</button>
+                <button class="filter-btn" data-filter="tools">Tools</button>
+            </div>
+            
+            <div class="skills-grid" id="skills-grid">
+                </div>
+        </div>
+    </section>
+    <section id="works-section">
+        <div class="works-wrapper">
+            <a href="works" class="big-works-link">
+                <div class="works-ticker-container">
+                    <span class="text-inter">SCOPRI I MIEI LAVORI · SCOPRI I MIEI LAVORI · SCOPRI I MIEI LAVORI</span>
+                </div>
+                <div class="works-monumental-container">
+                    <span class="text-mofont">WoRKS WoRKS</span>
+                </div>
+            </a>
+            <div class="blob-gallery">
+                <div class="blob-item b1"></div>
+                <div class="blob-item b2"></div>
+                <div class="blob-item b3"></div>
+                <div class="blob-item b4"></div>
+                <div class="blob-item b5"></div>
+            </div>
+        </div>
+    </section>
+    <section id="about-section">
+        <div class="about-container">
+            <div class="about-content-left">
+                <h2 class="headline about-headline">
+                    <span class="about-label">ABOUT</span>
+                    <div id="me-mo-toggle">
+                        <svg viewBox="0 0 616.2 328.12">
+                            <path class="st0" d="M187.92,31.39c-10.66,5.93-21.65,10.35-33.13,7.76C129.2,33.57,110.56,1.54,82.29.1c-18.76-1.41-33.77,12.65-43.47,27.96C5.67,82.37,1.59,149.02.29,211.67c-.43,17.76-.72,36.27,1.69,54.07,2.96,21.46,9.98,42.91,28.39,54.51,16.19,10.44,37.99,9.73,53.17-2.31,7.37-5.64,12.38-13.98,17.34-21.74,6.43-10.52,13.68-15.98,25.47-9.39,8.61,4.53,16.4,10.84,25.87,13.48,20.85,6.74,36.72-11.38,50.65-24.65,8.23-7.27,13.64-1.38,17.53,7.12,3.62,7.44,6.74,15.24,11.77,21.86,5.75,7.41,12.4,13.96,20.71,18.4,22.33,12.39,48.65,1.08,60.85-21.85,12.5-24.14,14.07-52.63,14.39-80.55h.01v-.26c-.23-25.94-1.21-51.28-3.9-77.08-8.15-91.81-48.93-170.22-136.31-111.89h0Z" />
+                            
+                            <path id="main-morph-path" class="st0" d="M486.8,7.15c39.7,2.42,88.59,4.03,114.73,36.22h0c22.73,34.65-8.92,66.3-42.96,74.33-31.39,11.79-11.26,18.52,5.05,31.44,13.59,11.27,10.95,32.54-1.2,43.71-8.11,8.17-25.44,13.69-27.09,18.98-2.35,8.73,37.25,14.67,44.75,18.42,25.65,10.39,47.95,36.02,29.14,60.04-8.27,10.59-20.18,17.13-32.84,22.17-13.77,5.49-28.16,9.19-42.79,11.56-57.92,9.39-135.75,5.49-169.67-42.18h0c-25.36-45.72-16.66-115.79-13.38-170.55,3.6-82.9,61.02-106.26,135.47-104.16l.79.03h0Z" />
+                    
+                            <defs>
+                                <path id="path-mo-target" d="M365.06,153.31c.96,1.79,2.59,3.52,4.88,5.18,2.29,1.66,5.54,2.69,9.75,3.07,5.9.51,12.37.89,19.42,1.15,7.04.25,14.03.32,20.95.19s13.52-.42,19.78-.86c6.26-.45,11.68-1.06,16.26-1.82,3.61-.64,6.29-1.86,8.04-3.65,1.74-1.79,2.98-3.65,3.7-5.57.84-2.3,1.2-4.73,1.08-7.29,0-2.43-.6-4.73-1.81-6.91-.96-1.79-2.56-3.48-4.79-5.09-2.23-1.6-5.45-2.65-9.66-3.17-7.47-.89-15.24-1.54-23.3-1.92-6.86-.25-14.6-.32-23.21-.19s-17.25.83-25.92,2.11c-4.82.77-8.4,2.11-10.75,4.03s-4.01,3.9-4.97,5.95c-1.21,2.3-1.69,4.86-1.44,7.68.12,2.56.78,4.93,1.99,7.1h0ZM477.37,214.4c-2.05-4.15-4.64-8.2-7.78-12.16-3.14-3.95-7.03-7.49-11.66-10.6-4.64-3.11-10.06-5.61-16.27-7.49s-13.4-2.82-21.59-2.82c-13.78-.52-26.06,1.62-36.83,6.42-4.64,2.08-9.14,4.83-13.5,8.27-4.37,3.44-8.29,7.85-11.77,13.23-3.48,5.38-6.28,11.77-8.39,19.16-2.12,7.39-3.17,16.14-3.17,26.26.68,12.32,3.75,23.28,9.21,32.87,2.32,4.15,5.25,8.2,8.8,12.16s7.91,7.46,13.1,10.5c5.18,3.05,11.25,5.51,18.21,7.39s15.07,2.82,24.35,2.82c12.28-.78,23.19-3.82,32.74-9.14,4.09-2.33,8.08-5.25,11.97-8.75s7.37-7.81,10.44-12.93,5.56-11.15,7.47-18.09c1.91-6.93,2.86-15.01,2.86-24.21-.68-12.19-3.41-23.14-8.18-32.87v-.02ZM422.74,257.19c-1.5,1.3-3.41,1.94-5.73,1.94s-4.19-.52-5.63-1.55c-1.43-1.04-2.29-2.92-2.56-5.64-.28-2.07.44-3.95,2.15-5.64,1.7-1.68,3.71-2.53,6.04-2.53,2.59,0,4.57.84,5.93,2.53s2.05,3.57,2.05,5.64c0,2.21-.75,3.96-2.25,5.25h0Z" />
+                            </defs>
+                        </svg>
+                    </div>
+                </h2>
+                <div class="about-description">
+                    <p class="about-intro-text">
+                        Nato e cresciuto a Bormio, ora a Milano, domani chissà. Mille passioni. Mente creativa e mani che si sporcano. Chiacchierone. Vorrei una casa tutta mia in campagna.<br>
+                    </p>
+                </div>
+            </div>    
+            <div class="about-content-right">
+                <div class="photo-container">
+                    <svg viewBox="0 0 500 500" class="blob-mask">
+                        <defs>
+                            <clipPath id="blob-clip">
+                                <path class="morph-path" d="M440.5,320.5C407,388,318,431,235.5,423.5C153,416,77,358,54.5,282C32,206,63,112,133,67C203,22,312,26,380.5,77C449,128,474,253,440.5,320.5Z" />
+                            </clipPath>
+                        </defs>
+                        <image x="0" y="0" width="100%" height="100%" 
+                               preserveAspectRatio="xMidYMid slice" 
+                               xlink:href="https://github.com/ilmaichi/mo/blob/main/img/michele-occhi-portrait.webp?raw=true" 
+                               clip-path="url(#blob-clip)" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- SEZIONE AMO -->
+    <section id="amo-section">
+        <div class="amo-container">
+            <p id="amo-text">Amo </p>
+        </div>
+    </section>
+    <section id="contact-section">
+        <div class="contact-main">
+            <p class="contact-intro">
+                Che tu sia un’agenzia, un'azienda o un privato, se&nbsp;hai un'idea, le diamo forma. <br>
+                Se hai dubbi su come posso aiutarti,
+            </p>
+    
+            <h2 class="collab-title">
+                <a href="mailto:michele.occhi@gmail.com" class="mail-link">scrivimi!</a>
+            </h2>
+    
+            <div class="email-block">
+                <div class="email-wrapper">
+                    <a href="mailto:michele.occhi@gmail.com" class="jetbrains email-link">michele.occhi@gmail.com</a>
+                    <span class="material-icons-outlined copy-icon" onclick="copyEmail()">content_copy</span>
+                </div>
+            </div>
+        </div>
+    
+        <div class="contact-footer jetbrains">
+            <a href="" target="_blank" class="insta-link"></a>
+            <p class="copyright">Michele Occhi</p>
+        </div>
+    </section>
+    <svg style="visibility: hidden; position: absolute;" width="0" height="0">
+        <defs>
+            <filter id="gooey-filter">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -15" result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+        </defs>
+    </svg>
+    <svg style="width:0; height:0; position:absolute;" aria-hidden="true">
+      <defs>
+        <clipPath id="shape1" clipPathUnits="objectBoundingBox">
+          <path d="M0.698,0.311 C0.778,0.383,0.880,0.442,0.904,0.525 C0.929,0.608,0.877,0.716,0.797,0.772 C0.716,0.828,0.608,0.831,0.499,0.833 C0.389,0.835,0.277,0.835,0.230,0.779 C0.182,0.723,0.199,0.612,0.214,0.516 C0.230,0.420,0.245,0.341,0.293,0.269 C0.341,0.196,0.420,0.132,0.490,0.143 C0.559,0.153,0.618,0.239,0.698,0.311 Z"></path>
+        </clipPath>
+    
+        <clipPath id="shape2" clipPathUnits="objectBoundingBox">
+          <path d="M0.701,0.28 C0.752,0.35,0.778,0.425,0.77,0.492 C0.761,0.558,0.718,0.616,0.667,0.659 C0.616,0.701,0.558,0.727,0.487,0.741 C0.415,0.754,0.331,0.754,0.276,0.712 C0.221,0.67,0.196,0.585,0.185,0.489 C0.174,0.394,0.177,0.287,0.232,0.217 C0.287,0.147,0.394,0.113,0.484,0.129 C0.575,0.145,0.65,0.21,0.701,0.28 Z"></path>
+        </clipPath>
+    
+        <clipPath id="shape3" clipPathUnits="objectBoundingBox">
+          <path d="M0.714,0.299 C0.791,0.363,0.875,0.431,0.895,0.52 C0.914,0.608,0.868,0.715,0.792,0.794 C0.715,0.874,0.608,0.925,0.507,0.918 C0.407,0.911,0.313,0.846,0.251,0.767 C0.188,0.687,0.157,0.594,0.16,0.504 C0.164,0.414,0.202,0.327,0.265,0.264 C0.327,0.2,0.414,0.16,0.491,0.169 C0.569,0.178,0.638,0.236,0.714,0.299 Z"></path>
+        </clipPath>
+      </defs>
+    </svg>
+     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/MorphSVGPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollToPlugin.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
