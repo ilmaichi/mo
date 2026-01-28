@@ -49,13 +49,19 @@
             #cursor-container { display: block; }
         }
         #custom-cursor {
-            position: absolute; width: 30px; fill: var(--accent-coral);
+            position: absolute; width: 30px; fill: var(--accent-coral); pointer-events: none;
             will-change: transform; transition: width 0.3s ease, height 0.3s ease;
         }
+        
+        #custom-cursor svg{
+          overflow: visible !important;
+        }
+        
         #custom-cursor.is-hovering svg path {
             fill: transparent !important;
-            stroke-width: 20px; /* Valore alto perché il viewBox è 500 */
+            stroke-width: 50px; /* Valore alto perché il viewBox è 500 */
             stroke: var(--accent-coral);
+            transform: scale(1.2);
         }
         
         #custom-cursor.expanding { width: 75px; }
@@ -486,7 +492,7 @@
             border-color: var(--accent-gold); 
         }  
         /* --- SECTION WORKS --- */
-        #works-container {
+        #works-section {
             height: 100vh;
             width: 100%;
             overflow: hidden;
@@ -707,7 +713,7 @@
         .collab-title {
             font-family: "MoFont", sans-serif;
             font-size: 8vw;
-            text-transform: lowercase;
+            text-transform: uppercase;
             margin-bottom: 20px;
             line-height: 1;
             color: var(--accent-coral);
@@ -724,13 +730,44 @@
             justify-content: center;
             gap: 10px;
         }
+        .email-wrapper a{
+          cursor:pointer !important;
+        }
         
         .copy-icon {
             cursor: pointer;
+            position: relative;
             font-size: 20px; /* Regola la dimensione per matchare il testo */
-            opacity: 0.6;
+            opacity: 1;
             transition: all 0.2s ease;
             user-select: none; /* Impedisce di selezionare l'icona come testo */
+        }
+        
+        /* Creazione del Tooltip */
+        .copy-icon::after {
+            content: 'Copied!';
+            position: absolute;
+            bottom: 130%; /* Lo posiziona sopra l'icona */
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background-color: var(--accent-coral);
+            color: var(--dark-text);
+            padding: 4px 8px;
+            font-family: 'JetBrains Mono', monospace; /* Coerenza col tuo stile */
+            font-size: 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        /* Quando l'icona ha successo, mostra il tooltip */
+        .copy-icon.copy-success::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
         }
         
         .text-small {
@@ -1001,7 +1038,7 @@
                 </div>
         </div>
     </section>
-    <section id="works-container">
+    <section id="works-section">
         <div class="works-wrapper">
             <a href="portfolio.html" class="big-works-link">
                 <span class="text-mofont">LAV&Ocirc;RI</span>
@@ -1499,17 +1536,29 @@
             const email = "hello@test.it";
             const icon = document.querySelector('.copy-icon');
         
-            navigator.clipboard.writeText(email).then(() => {
-                // Cambia icona in 'check'
-                icon.textContent = 'check';
+            const textArea = document.createElement("textarea");
+            textArea.value = email;
+            document.body.appendChild(textArea);
+            textArea.select();
+        
+            try {
+                document.execCommand('copy');
+                
+                // Attiva icona 'check', e TOOLTIP
+                icon.innerText = 'check';
                 icon.classList.add('copy-success');
         
-                // Torna normale dopo 2 secondi
+                // Reset dopo 1.5 secondi (un po' più veloce per un effetto "snappy")
                 setTimeout(() => {
-                    icon.textContent = 'content_copy';
+                    icon.innerText = 'content_copy';
                     icon.classList.remove('copy-success');
-                }, 2000);
-            });
+                }, 1500);
+                
+            } catch (err) {
+                console.error('Errore copia:', err);
+            }
+        
+            document.body.removeChild(textArea);
         }
         
         //MODIFICA CURSORE SE HOVER SU LINK
@@ -1576,12 +1625,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. Scroll Orizzontale (Works) + Parallasse Blob
     const wrapper = document.querySelector('.works-wrapper');
     const blobs = document.querySelectorAll('.blob-item');
-
+  
     if (wrapper) {
         // Timeline principale per lo scroll orizzontale
         let worksTl = gsap.timeline({
             scrollTrigger: {
-                trigger: "#works-container",
+                trigger: "#works-section",
                 start: "top top",
                 // Calcoliamo la fine sottraendo la larghezza della finestra per uno scroll perfetto
                 end: () => "+=" + (wrapper.scrollWidth - window.innerWidth),
@@ -1696,10 +1745,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     
-    // 4. INKPATH CHE MI PORTO DIETRO DALL'colorInizio
+    // 4. INKPATH CHE MI PORTO DIETRO DALL'Inizio
     // 5. CAMBIO COLORE DINAMICO ALL'ENTRATA/USCITA DI WORKS
     ScrollTrigger.create({
-        trigger: "#works-container", // O il selettore della tua sezione Works
+        trigger: "#works-section", // O il selettore della tua sezione Works
         start: "top top",        // Quando la testa di Works entra dal basso
         onEnter: () => {
             // Scendo: diventa dark-blue
