@@ -1446,16 +1446,30 @@
         
         function renderSkills(filter = 'all') {
             const grid = document.getElementById('skills-grid');
-            grid.innerHTML = '';
+            if (!grid) return;
+        
+            const fragment = document.createDocumentFragment();
             mySkills.forEach(skill => {
                 if (filter === 'all' || skill.cat === filter) {
                     const pill = document.createElement('span');
-                    // Ora tutte hanno la stessa classe base, 
-                    // ma manteniamo il riferimento alla categoria se volessi usarlo in futuro
                     pill.className = `skill-pill`; 
                     pill.innerText = skill.name;
-                    grid.appendChild(pill);
+                    fragment.appendChild(pill);
                 }
+            });
+        
+            // Sostituiamo il contenuto
+            grid.replaceChildren(fragment);
+        
+            // Diamo tempo al browser di calcolare le nuove dimensioni (reflow)
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    // 'true' forza ScrollTrigger a resettare tutti i pin prima di ricalcolare.
+                    // Questo impedisce al marker di "incastrarsi" nel vecchio posizionamento.
+                    ScrollTrigger.refresh(true); 
+                    
+                    console.log("DOM aggiornato e ScrollTrigger rinfrescato");
+                }, 100); 
             });
         }
         
@@ -1648,6 +1662,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Timeline dedicata allo scroll
     let worksTl = gsap.timeline({
         scrollTrigger: {
+            id: "works-trigger",
             trigger: "#works-section",
             start: "top top",
             // Calcolo dinamico della fine
@@ -1656,6 +1671,7 @@ document.addEventListener("DOMContentLoaded", () => {
             pinSpacing: true,
             scrub: 1,
             invalidateOnRefresh: true,
+            markers: true,
         }
     });
 
