@@ -1043,7 +1043,7 @@
     </div>
     <section id="beyond-section">
         <h1 class="headline" id="headline">
-            <span class="no-wrap">BEYoND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
+            <span class="no-wrap">BEY&Ocirc;ND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
         </h1>
         <div class="beyond-description">
             Essere <span class="highlight-text">beyond</span> significa non limitarsi alla definizione di una singola disciplina. Sono un Art Director ibrido e fluido, con una visione trasversale e strutturata che unisce competenze creative, tecniche, organizzative e di relazione. Grazie a <span class="highlight-text">oltre 15 anni di esperienza in agenzie creative</span> ho imparato a governare la complessità di progetti integrati, dal brief all'execution, trasformando visioni ambiziose in realtà concrete e coerenti.
@@ -1460,23 +1460,40 @@
         // Funzione per generare i pill una sola volta
         function initSkills() {
             const grid = document.getElementById('skills-grid');
+            const filters = document.querySelectorAll('.filter-btn');
             if (!grid) return;
         
-            grid.innerHTML = ''; // Pulisce residui
+            // 1. Genera tutti i pill (nascosti o visibili lo decide il filtro dopo)
+            grid.innerHTML = ''; 
             mySkills.forEach(skill => {
                 const pill = document.createElement('span');
                 pill.className = 'skill-pill';
-                pill.dataset.cat = skill.cat; // Fondamentale per il filtro
+                pill.dataset.cat = skill.cat;
                 pill.innerText = skill.name;
                 grid.appendChild(pill);
             });
+        
+            // 2. Controllo Mobile (Sotto i 768px)
+            if (window.innerWidth <= 768) {
+                // Rimuovi active da "All" e mettilo su "Strategy"
+                filters.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.filter === 'strategy') {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Applica il filtro iniziale solo per mobile
+                filterSkills('strategy');
+            } else {
+                // Su Desktop, assicurati che "All" sia attivo e tutto visibile
+                filterSkills('all');
+            }
         }
         
-        // Funzione di filtraggio
         function filterSkills(category) {
             const pills = document.querySelectorAll('.skill-pill');
             
-            // 1. Applichiamo il filtro visivo
             pills.forEach(pill => {
                 if (category === 'all' || pill.dataset.cat === category) {
                     pill.style.display = "inline-flex";
@@ -1485,13 +1502,10 @@
                 }
             });
         
-            // 2. Refresh mirato
-            // Usiamo requestAnimationFrame per essere certi che il DOM si sia sistemato
+            // Refresh specifico del marker "WORKS" per evitare che schizzi in alto
             requestAnimationFrame(() => {
-                const worksST = ScrollTrigger.getById("WORKS");
-                if (worksST) {
-                    worksST.refresh();
-                }
+                const st = ScrollTrigger.getById("WORKS");
+                if (st) st.refresh();
             });
         }
         
