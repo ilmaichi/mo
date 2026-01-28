@@ -1642,74 +1642,68 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. Scroll Orizzontale (Works) + Parallasse Blob
     const wrapper = document.querySelector('.works-wrapper');
     const blobs = document.querySelectorAll('.blob-item');
-  
-    if (wrapper) {
-        // Timeline principale per lo scroll orizzontale
-        let worksTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: "#works-section",
-                start: "top top",
-                // Calcoliamo la fine sottraendo la larghezza della finestra per uno scroll perfetto
-                end: () => "+=" + (wrapper.scrollWidth - window.innerWidth),
-                pin: true,
-                scrub: 1,
-                invalidateOnRefresh: true, // Questo resetta i calcoli interni ogni volta che ridimensioni
-            }
-        });
 
-        // Muove tutto il wrapper (Testo + Blob)
-        worksTl.to(wrapper, {
-            x: () => -(wrapper.scrollWidth - window.innerWidth),
+    if (!wrapper) return;
+
+    // Timeline dedicata allo scroll
+    let worksTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#works-section",
+            start: "top top",
+            // Calcolo dinamico della fine
+            end: () => "+=" + (wrapper.scrollWidth - window.innerWidth),
+            pin: true,
+            pinSpacing: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+        }
+    });
+
+    // Animazione spostamento orizzontale
+    worksTl.to(wrapper, {
+        x: () => -(wrapper.scrollWidth - window.innerWidth),
+        ease: "none"
+    }, 0);
+
+    // Animazione parallasse blob
+    blobs.forEach((blob, i) => {
+        const speeds = [0.5, 0.75, 0.65, 0.9, 0.8];
+        worksTl.to(blob, {
+            x: () => -(wrapper.scrollWidth * 0.1 * speeds[i]), 
             ease: "none"
         }, 0);
+    });
+    
+    //morphing photo about
+    const photoBlob = document.querySelector(".morph-path");
+    
+    if (!photoBlob) return;
 
-        // Effetto Parallasse sui Blob (integrati nella stessa timeline per stabilità)
-        blobs.forEach((blob, i) => {
-            const speeds = [0.5, 0.75, 0.65, 0.9, 0.8]; // Velocità leggermente ridotte per eleganza
-            
-            // Inseriamo il parallasse nella timeline principale
-            // Invece di creare mille ScrollTrigger separati (che pesano al resize)
-            worksTl.to(blob, {
-                x: () => -(wrapper.scrollWidth * 0.1 * speeds[i]), 
-                ease: "none"
-            }, 0); // Partono tutti insieme allo scroll del wrapper
-        });
-        
-        //movimento blob Foto
-        // Selezioniamo il path della foto
-        const photoBlob = document.querySelector(".morph-path");
-        
-        if (photoBlob) {
-            // Creiamo una timeline infinita
-            const photoTl = gsap.timeline({
-                repeat: -1, // Loop infinito
-                defaults: { 
-                    duration: 4,      // Durata di ogni transizione
-                    ease: "sine.inOut" // Movimento liquido e morbido
-                }
-            });
-        
-            photoTl
-                // 1. Vai verso lo stato "Deformato" (quello che era al 50% nel CSS)
-                .to(photoBlob, {
-                    morphSVG: "M 400 380 C 300 450 200 480 120 400 C 40 320 20 200 80 120 C 140 40 300 20 420 90 C 520 160 500 300 400 380 Z",
-                    rotate: 10,
-                    scale: 1
-                })
-                // 2. Vai verso lo stato "Schiacciato" (quello che era al 100% nel CSS)
-                .to(photoBlob, {
-                    morphSVG: "M480,250C460,350,350,450,250,460C150,470,40,380,20,250C0,120,120,30,250,20C380,10,500,120,480,250Z",
-                    rotate: -8,
-                    scale: 0.95
-                })
-                // 3. Torna allo stato ORIGINALE per chiudere il loop perfettamente
-                .to(photoBlob, {
-                    morphSVG: "M440.5,320.5C407,388,318,431,235.5,423.5C153,416,77,358,54.5,282C32,206,63,112,133,67C203,22,312,26,380.5,77C449,128,474,253,440.5,320.5Z",
-                    rotate: 0,
-                    scale: 1
-                });
+    // Timeline infinita slegata dallo ScrollTrigger
+    const photoTl = gsap.timeline({
+        repeat: -1,
+        defaults: { 
+            duration: 4, 
+            ease: "sine.inOut" 
         }
-    }
+    });
+
+    photoTl
+        .to(photoBlob, {
+            morphSVG: "M 400 380 C 300 450 200 480 120 400 C 40 320 20 200 80 120 C 140 40 300 20 420 90 C 520 160 500 300 400 380 Z",
+            rotate: 10,
+            scale: 1
+        })
+        .to(photoBlob, {
+            morphSVG: "M480,250C460,350,350,450,250,460C150,470,40,380,20,250C0,120,120,30,250,20C380,10,500,120,480,250Z",
+            rotate: -8,
+            scale: 0.95
+        })
+        .to(photoBlob, {
+            morphSVG: "M440.5,320.5C407,388,318,431,235.5,423.5C153,416,77,358,54.5,282C32,206,63,112,133,67C203,22,312,26,380.5,77C449,128,474,253,440.5,320.5Z",
+            rotate: 0,
+            scale: 1
+        });
     
     //COMPARSA PAROLE AMO
     const amoTarget = document.getElementById('amo-text');
