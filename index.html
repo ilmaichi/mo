@@ -525,10 +525,12 @@
         .big-works-link {
             position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
             white-space: nowrap;
             text-decoration: none;
             z-index: 10;
+            padding-left: 10vw;
             color: var(--dark-text);
         }
         .big-works-link span {
@@ -549,19 +551,20 @@
           fill: var(--accent-gold);
       }
         
-        /* Stile Inter: Pulito, Bold, Geometrico */
+        /* Regoliamo le altezze per l'incastro perfetto */
         .text-inter {
             font-family: 'Inter', sans-serif;
-            font-size: 33vh;
-            font-weight: 900;
-            padding-right: 30px;
+            font-size: 10vh !important; /* Molto più piccolo, funge da ticker */
+            font-weight: 400;
+            line-height: 1;
+            opacity: 1;
         }
         
-        /* Stile Mofont: Espressivo e Caratteristico */
         .text-mofont {
-            font-family: 'Mofont', sans-serif; /* Assicurati che il nome coincida col tuo @font-face */
-            font-size: 33vh; /* Mofont spesso ha bisogno di essere un po' più grande per bilanciare */
-            padding-right: 60px;
+            font-family: 'Mofont', sans-serif;
+            font-size: 45vh !important; /* Monumentale */
+            line-height: 1;
+            display: block;
         }
         
         /* --- I BLOB --- */
@@ -1065,13 +1068,13 @@
     <section id="works-section">
         <div class="works-wrapper">
             <a href="portfolio.html" class="big-works-link">
-                <span class="text-mofont">LAV&Ocirc;RI</span>
-                <span class="text-inter">SCOPRI I MIEI</span>
-                <span class="text-mofont">LAV&Ocirc;RI</span>
-                <span class="text-inter">SCOPRI I MIEI</span>
-                <span class="text-mofont">LAV&Ocirc;RI</span>
+                <div class="works-ticker-container">
+                    <span class="text-inter">SCOPRI I MIEI SCOPRI I MIEI SCOPRI I MIEI SCOPRI I MIEI SCOPRI I MIEI</span>
+                </div>
+                <div class="works-monumental-container">
+                    <span class="text-mofont">LAV&Ocirc;RI LAV&Ocirc;RI LAV&Ocirc;RI</span>
+                </div>
             </a>
-    
             <div class="blob-gallery">
                 <div class="blob-item b1"></div>
                 <div class="blob-item b2"></div>
