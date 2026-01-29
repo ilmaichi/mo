@@ -559,46 +559,52 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // --- SEZIONE AMO (CON PINNED CONTAINER) ---
-        const amoTarget = document.getElementById('amo-text');
-        const spanCreati = amoTarget.querySelectorAll('.added-word');
+        // --- SEZIONE AMO (VERSIONE STABILE) ---
+const amoTarget = document.getElementById('amo-text');
+const spanCreati = amoTarget.querySelectorAll('.added-word');
 
-        // Testo che compare
-        gsap.to(spanCreati, {
-            opacity: 1,
-            duration: 1,
-            stagger: 1,
-            ease: "power1.out",
-            scrollTrigger: {
-                trigger: "#amo-section",
-                start: "top 160",
-                end: "+=1000",
-                pin: true,
-                scrub: 0.5,
-                pinnedContainer: "#works-section", // <--- IL FIX
-                invalidateOnRefresh: true
-            }
-        });
+// 1. Animazione delle parole: NON usiamo pin:true qui
+gsap.to(spanCreati, {
+    opacity: 1,
+    duration: 1,
+    stagger: 1,
+    ease: "power1.out",
+    scrollTrigger: {
+        trigger: "#amo-section",
+        start: "top 80%", // Inizia quando la sezione è quasi entrata
+        end: "top 20%",   // Finisce prima che esca
+        scrub: 0.5,
+        // Usiamo pinnedContainer solo per ricalcolare il punto di inizio
+        pinnedContainer: "#works-section", 
+        invalidateOnRefresh: true
+    }
+});
 
-        // Sfondo che cambia
-        gsap.to("#amo-section", {
-            backgroundColor: "#2d2926",
-            scrollTrigger: {
-                trigger: "#amo-section",
-                start: "top 160",
-                end: "+=1000",
-                scrub: 0.5,
-                pinnedContainer: "#works-section", // <--- IL FIX
-                invalidateOnRefresh: true
-            }
-        });
+// 2. Sfondo e Ink Path (uniamo le animazioni per pulizia)
+gsap.to(["#amo-section", "#about-section"], {
+    backgroundColor: "#2d2926",
+    scrollTrigger: {
+        trigger: "#amo-section",
+        start: "top 90%",
+        end: "top 10%",
+        scrub: 0.5,
+        pinnedContainer: "#works-section",
+        invalidateOnRefresh: true
+    }
+});
 
-        // Cambio colore Inchiostro all'entrata di Works
-        ScrollTrigger.create({
-            trigger: "#works-section",
-            start: "top top",
-            onEnter: () => gsap.to("#ink-path", { fill: "#004f5e", duration: 0.3 }),
-            onLeaveBack: () => gsap.to("#ink-path", { fill: "#2d2926", duration: 0.3 })
-        });
+// 3. Colore Inchiostro
+gsap.to("#ink-path", {
+    fill: "#2d2926",
+    scrollTrigger: {
+        trigger: "#amo-section",
+        start: "top 90%",
+        end: "top 10%",
+        scrub: 0.5,
+        pinnedContainer: "#works-section",
+        invalidateOnRefresh: true
+    }
+});
 
         // Transizione finale verso About
         const aboutTransition = gsap.timeline({
