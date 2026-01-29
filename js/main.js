@@ -501,10 +501,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Registrazione Plugin
     gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger, ScrollToPlugin);
     
-        ScrollTrigger.config({ 
-            autoRefreshEvents: "visibilitychange,DOMContentLoaded,load", // Limita i refresh automatici
-            ignoreMobileResize: true // Ignora i piccoli cambiamenti di altezza (barra indirizzi)
-        });
             // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
             const eyeTl = gsap.timeline({
                 repeat: -1,
