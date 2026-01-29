@@ -500,13 +500,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Registrazione Plugin
     gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger, ScrollToPlugin);
-
-        // --- AGGIUNGI QUESTA CONFIGURAZIONE QUI ---
-    ScrollTrigger.config({ 
-        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load", 
-        ignoreMobileResize: true 
-    });
-    // ------------------------------------------
+    
             // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
             const eyeTl = gsap.timeline({
                 repeat: -1,
@@ -550,10 +544,6 @@ document.addEventListener("DOMContentLoaded", () => {
             scrub: 1,
             invalidateOnRefresh: true, // Ricalcola i valori della timeline al refresh
             refreshPriority: 1, // Assicura che venga dopo le sezioni precedenti
-                // AGGIUNGI QUESTE TRE RIGHE:
-            anticipatePin: 1, 
-            fastScrollEnd: true,
-            pushFollowers: false,
             end: () => "+=" + (document.querySelector('.works-wrapper').scrollWidth - window.innerWidth),
                 markers:true,
         }
@@ -693,23 +683,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 0);
     
     // Refresh globale di sicurezza al resize della finestra
-    // VARIABILE PER TRACCIARE LA LARGHEZZA
-    let lastWidth = window.innerWidth;
-
     window.addEventListener("resize", () => {
-        const currentWidth = window.innerWidth;
-        
-        // Se la larghezza NON è cambiata, Chrome sta solo nascondendo/mostrando la barra.
-        // NON FARE NULLA.
-        if (currentWidth === lastWidth) return;
-        
-        // Se la larghezza è cambiata (es. rotazione telefono), allora aggiorna.
-        lastWidth = currentWidth;
-        
         ScrollTrigger.refresh();
-        if (ScrollTrigger.getById("WORKS")) {
-            ScrollTrigger.getById("WORKS").refresh();
-        }
+        ScrollTrigger.getById("WORKS").refresh();
     });
     
     // Refresh globale di sicurezza al termine del caricamento immagini
