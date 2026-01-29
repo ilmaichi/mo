@@ -501,17 +501,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Registrazione Plugin
     gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger, ScrollToPlugin);
     
-    // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
-    const eyeTl = gsap.timeline({
-        repeat: -1,
-        yoyo: true,
-        repeatDelay: 3
-    });
-    eyeTl.to("#main-morph-path", {
-        duration: 1.5,
-        morphSVG: "#path-mo-target",
-        ease: "expo.inOut"
-    });
+        ScrollTrigger.config({ 
+            autoRefreshEvents: "visibilitychange,DOMContentLoaded,load", // Limita i refresh automatici
+            ignoreMobileResize: true // Ignora i piccoli cambiamenti di altezza (barra indirizzi)
+        });
+            // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
+            const eyeTl = gsap.timeline({
+                repeat: -1,
+                yoyo: true,
+                repeatDelay: 3
+            });
+            eyeTl.to("#main-morph-path", {
+                duration: 1.5,
+                morphSVG: "#path-mo-target",
+                ease: "expo.inOut"
+            });
 
     // 3. Animazione Macchia Inchiostro (Hero) - Aggiunto ricalcolo
     gsap.to("#ink-path", {
