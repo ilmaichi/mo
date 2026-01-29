@@ -545,6 +545,7 @@ document.addEventListener("DOMContentLoaded", () => {
             invalidateOnRefresh: true, // Ricalcola i valori della timeline al refresh
             refreshPriority: 1, // Assicura che venga dopo le sezioni precedenti
             end: () => "+=" + (document.querySelector('.works-wrapper').scrollWidth - window.innerWidth),
+                markers:true,
         }
     });
 
