@@ -498,149 +498,197 @@
    
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. REGISTRAZIONE PLUGIN E CONFIGURAZIONE "ANTI-CASINO"
+    // 1. Registrazione Plugin
     gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger, ScrollToPlugin);
-
-    // FIX FONDAMENTALE: Impedisce a GSAP di resettare tutto quando compare/scompare la barra di Chrome
-    ScrollTrigger.config({ 
-        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load", 
-        ignoreMobileResize: true 
+    
+    // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
+    const eyeTl = gsap.timeline({
+        repeat: -1,
+        yoyo: true,
+        repeatDelay: 3
     });
-    ScrollTrigger.normalizeScroll({ allowNestedScroll: true }); 
-
-    // 2. ANIMAZIONE OCCHIO (Fuori da MatchMedia perché è globale e non usa ScrollTrigger)
-    const eyeTl = gsap.timeline({ repeat: -1, yoyo: true, repeatDelay: 3 });
     eyeTl.to("#main-morph-path", {
         duration: 1.5,
         morphSVG: "#path-mo-target",
         ease: "expo.inOut"
     });
 
-    // 3. TUTTA LA LOGICA SCROLLTRIGGER DENTRO MATCHMEDIA
-    const mm = gsap.matchMedia();
+    // 3. Animazione Macchia Inchiostro (Hero) - Aggiunto ricalcolo
+    gsap.to("#ink-path", {
+        scrollTrigger: {
+            trigger: ".hero-container",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.5,
+            invalidateOnRefresh: true // Importante per la fluidità post-resize
+        },
+        attr: { 
+            d: "M-20,0 L120,0 L120,105 C80,130 70,90 50,120 C30,140 15,90 -20,105 Z" 
+        },
+        ease: "none"
+    });
 
-    mm.add("(min-width: 0px)", () => {
-        
-        // --- HERO INK ---
-        gsap.to("#ink-path", {
-            scrollTrigger: {
-                trigger: ".hero-container",
-                start: "top top",
-                end: "bottom top",
-                scrub: 1.5,
-                invalidateOnRefresh: true
-            },
-            attr: { d: "M-20,0 L120,0 L120,105 C80,130 70,90 50,120 C30,140 15,90 -20,105 Z" },
+    // 4. Scroll Orizzontale (Works) + Parallasse Blob
+    const wrapper = document.querySelector('.works-wrapper');
+    const blobs = document.querySelectorAll('.blob-item');
+
+    if (!wrapper) return;
+
+    // Timeline dedicata allo scroll
+    let worksTl = gsap.timeline({
+        scrollTrigger: {
+            id: "WORKS", // Fondamentale per richiamarlo
+            trigger: "#works-section",
+            start: "top top",
+            pin: true,
+            scrub: 1,
+            invalidateOnRefresh: true, // Ricalcola i valori della timeline al refresh
+            refreshPriority: 1, // Assicura che venga dopo le sezioni precedenti
+            end: () => "+=" + (document.querySelector('.works-wrapper').scrollWidth - window.innerWidth),
+        }
+    });
+
+    // Animazione spostamento orizzontale
+    worksTl.to(wrapper, {
+        x: () => -(wrapper.scrollWidth - window.innerWidth),
+        ease: "none"
+    }, 0);
+
+    // Animazione parallasse blob
+    blobs.forEach((blob, i) => {
+        const speeds = [0.5, 0.75, 0.65, 0.9, 0.8];
+        worksTl.to(blob, {
+            x: () => -(wrapper.scrollWidth * 0.1 * speeds[i]), 
             ease: "none"
-        });
+        }, 0);
+    });
+    
+    //morphing photo about
+    const photoBlob = document.querySelector(".morph-path");
+    
+    if (!photoBlob) return;
 
-        // --- WORKS (PINNED SECTION) ---
-        const wrapper = document.querySelector('.works-wrapper');
-        const blobs = document.querySelectorAll('.blob-item');
-        if (!wrapper) return;
-
-        let worksTl = gsap.timeline({
-            scrollTrigger: {
-                id: "WORKS",
-                trigger: "#works-section",
-                start: "top top",
-                pin: true,
-                scrub: 1,
-                invalidateOnRefresh: true,
-                refreshPriority: 1,
-                end: () => "+=" + (wrapper.scrollWidth - window.innerWidth),
-            }
-        });
-
-        worksTl.to(wrapper, { x: () => -(wrapper.scrollWidth - window.innerWidth), ease: "none" }, 0);
-        blobs.forEach((blob, i) => {
-            const speeds = [0.5, 0.75, 0.65, 0.9, 0.8];
-            worksTl.to(blob, { x: () => -(wrapper.scrollWidth * 0.1 * speeds[i]), ease: "none" }, 0);
-        });
-
-        // --- SEZIONE AMO (CON PINNED CONTAINER) ---
-        // --- SEZIONE AMO (VERSIONE STABILE) ---
-const amoTarget = document.getElementById('amo-text');
-const spanCreati = amoTarget.querySelectorAll('.added-word');
-
-// 1. Animazione delle parole: NON usiamo pin:true qui
-gsap.to(spanCreati, {
-    opacity: 1,
-    duration: 1,
-    stagger: 1,
-    ease: "power1.out",
-    scrollTrigger: {
-        trigger: "#amo-section",
-        start: "top 80%", // Inizia quando la sezione è quasi entrata
-        end: "top 20%",   // Finisce prima che esca
-        scrub: 0.5,
-        // Usiamo pinnedContainer solo per ricalcolare il punto di inizio
-        pinnedContainer: "#works-section", 
-        invalidateOnRefresh: true
-    }
-});
-
-// 2. Sfondo e Ink Path (uniamo le animazioni per pulizia)
-gsap.to(["#amo-section", "#about-section"], {
-    backgroundColor: "#2d2926",
-    scrollTrigger: {
-        trigger: "#amo-section",
-        start: "top 90%",
-        end: "top 10%",
-        scrub: 0.5,
-        pinnedContainer: "#works-section",
-        invalidateOnRefresh: true
-    }
-});
-
-// 3. Colore Inchiostro
-gsap.to("#ink-path", {
-    fill: "#2d2926",
-    scrollTrigger: {
-        trigger: "#amo-section",
-        start: "top 90%",
-        end: "top 10%",
-        scrub: 0.5,
-        pinnedContainer: "#works-section",
-        invalidateOnRefresh: true
-    }
-});
-
-        // Transizione finale verso About
-        const aboutTransition = gsap.timeline({
-            scrollTrigger: {
-                trigger: "#amo-section",
-                start: "top 160",
-                end: "+=1000",
-                scrub: 0.5,
-                pinnedContainer: "#works-section", // <--- IL FIX
-                invalidateOnRefresh: true
-            }
-        });
-        
-        aboutTransition
-            .to("#ink-path", { fill: "#2d2926", ease: "none" }, 0)
-            .to("#about-section", { backgroundColor: "#2d2926", ease: "none" }, 0);
-
-        return () => { 
-            // Cleanup opzionale: GSAP MatchMedia lo fa quasi tutto da solo
-        };
+    // Timeline infinita slegata dallo ScrollTrigger
+    const photoTl = gsap.timeline({
+        repeat: -1,
+        defaults: { 
+            duration: 4, 
+            ease: "sine.inOut" 
+        }
     });
 
-    // 4. GESTIONE RESIZE "INTELLIGENTE"
-    let resizeTimeout;
-    let lastWidth = window.innerWidth;
+    photoTl
+        .to(photoBlob, {
+            morphSVG: "M 400 380 C 300 450 200 480 120 400 C 40 320 20 200 80 120 C 140 40 300 20 420 90 C 520 160 500 300 400 380 Z",
+            rotate: 10,
+            scale: 1
+        })
+        .to(photoBlob, {
+            morphSVG: "M480,250C460,350,350,450,250,460C150,470,40,380,20,250C0,120,120,30,250,20C380,10,500,120,480,250Z",
+            rotate: -8,
+            scale: 0.95
+        })
+        .to(photoBlob, {
+            morphSVG: "M440.5,320.5C407,388,318,431,235.5,423.5C153,416,77,358,54.5,282C32,206,63,112,133,67C203,22,312,26,380.5,77C449,128,474,253,440.5,320.5Z",
+            rotate: 0,
+            scale: 1
+        });
+    
+    //COMPARSA PAROLE AMO
+    const amoTarget = document.getElementById('amo-text');
+    const parole = [
+        " l'arrampicata, ", "il mare, ", "la terra, ", "costruire, ", 
+        "imparare, ", "appassionarmi, ", "Marta, ", "Gaia."
+    ];
 
+    if (!amoTarget) return;
+
+    const colorInizio = "#ffc857"; // Gold
+    const colorFine = "#f76c5e";   // Coral
+    const interpolatore = gsap.utils.interpolate(colorInizio, colorFine);
+
+    // 1. CREIAMO GLI SPAN UNA VOLTA SOLA
+    parole.forEach((testo, i) => {
+        const span = document.createElement('span');
+        span.textContent = testo;
+        span.classList.add('added-word');
+        span.style.color = interpolatore(i / (parole.length - 1));
+        span.style.opacity = 0; // Partono invisibili
+        amoTarget.appendChild(span);
+    });
+
+    const spanCreati = amoTarget.querySelectorAll('.added-word');
+
+    // 2. ANIMIAMOLI SINGOLARMENTE CON LO SCROLL
+    gsap.to(spanCreati, {
+        opacity: 1,
+        duration: 1,
+        stagger: 1, // Questo permette a GSAP di gestire la sequenza
+        ease: "power1.out",
+        scrollTrigger: {
+            trigger: "#amo-section",
+            start: "top 160",
+            end: "+=1000",
+            pin: true,
+            scrub: 0.5, // Scrub dolce per la fluidità
+        }
+    });
+    // 3. SFONDO
+    gsap.to("#amo-section", {
+        backgroundColor: "#2d2926",
+        ease: "none",
+        scrollTrigger: {
+            trigger: "#amo-section",
+            start: "top 160",
+            end: "+=1000",
+            scrub: 0.5,
+        }
+    });
+    
+    // 4. INKPATH CHE MI PORTO DIETRO DALL'Inizio
+    // 5. CAMBIO COLORE DINAMICO ALL'ENTRATA/USCITA DI WORKS
+    ScrollTrigger.create({
+        trigger: "#works-section", // O il selettore della tua sezione Works
+        start: "top top",        // Quando la testa di Works entra dal basso
+        onEnter: () => {
+            // Scendo: diventa dark-blue
+            gsap.to("#ink-path", { fill: "#004f5e", duration: 0.3 });
+        },
+        onLeaveBack: () => {
+            // Torno su: riprende il colore dark-text (o quello che avevi prima)
+            gsap.to("#ink-path", { fill: "#2d2926", duration: 0.3 });
+        }
+    });
+    
+    const aboutTransition = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#amo-section",
+            start: "top 160",
+            end: "+=1000",
+            scrub: 0.5,
+        }
+    });
+    
+    aboutTransition
+        .to("#ink-path", { 
+            fill: "#2d2926", 
+            immediateRender: false, 
+            ease: "none" 
+        }, 0) // lo 0 indica che iniziano insieme
+        .to("#about-section", { 
+            backgroundColor: "#2d2926", // O il colore che preferisci per il bg
+            immediateRender: false, 
+            ease: "none" 
+        }, 0);
+    
+    // Refresh globale di sicurezza al resize della finestra
     window.addEventListener("resize", () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            // Se la larghezza non è cambiata (è solo la barra indirizzi), non fare nulla
-            if (window.innerWidth === lastWidth) return;
-            lastWidth = window.innerWidth;
-            
-            ScrollTrigger.refresh();
-        }, 250);
+        ScrollTrigger.refresh();
+        ScrollTrigger.getById("WORKS").refresh();
     });
-
-    window.addEventListener('load', () => ScrollTrigger.refresh());
+    
+    // Refresh globale di sicurezza al termine del caricamento immagini
+    window.addEventListener('load', () => {
+        ScrollTrigger.refresh();
+    });
 });
