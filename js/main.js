@@ -500,20 +500,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Registrazione Plugin
     gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger, ScrollToPlugin);
-
-        // 1. Limitiamo gli eventi di refresh automatico
-ScrollTrigger.config({ 
-    autoRefreshEvents: "visibilitychange,DOMContentLoaded,load" 
-});
-
-// 2. Gestiamo manualmente il refresh solo quando serve davvero (cambio larghezza)
-let lastWidth = window.innerWidth;
-window.addEventListener("resize", () => {
-    if (window.innerWidth !== lastWidth) {
-        lastWidth = window.innerWidth;
-        ScrollTrigger.refresh(); 
-    }
-});
     
     // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
     const eyeTl = gsap.timeline({
