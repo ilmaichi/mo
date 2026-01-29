@@ -500,7 +500,14 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Registrazione Plugin
     gsap.registerPlugin(MorphSVGPlugin, ScrollTrigger, ScrollToPlugin);
-    
+
+        // FIX FONDAMENTALE: Impedisce a GSAP di resettare tutto quando compare/scompare la barra di Chrome
+    ScrollTrigger.config({ 
+        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load", 
+        ignoreMobileResize: true 
+    });
+    ScrollTrigger.normalizeScroll({ allowNestedScroll: true });
+        
             // 2. Animazione Occhio (Morphing Infinito) - Resta invariata
             const eyeTl = gsap.timeline({
                 repeat: -1,
@@ -512,7 +519,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 morphSVG: "#path-mo-target",
                 ease: "expo.inOut"
             });
-
+const mm = gsap.matchMedia();
+    mm.add("(min-width: 0px)", () => {
     // 3. Animazione Macchia Inchiostro (Hero) - Aggiunto ricalcolo
     gsap.to("#ink-path", {
         scrollTrigger: {
@@ -681,15 +689,22 @@ document.addEventListener("DOMContentLoaded", () => {
             immediateRender: false, 
             ease: "none" 
         }, 0);
+});
     
-    // Refresh globale di sicurezza al resize della finestra
+    // 4. GESTIONE RESIZE "INTELLIGENTE"
+    let resizeTimeout;
+    let lastWidth = window.innerWidth;
+
     window.addEventListener("resize", () => {
-        ScrollTrigger.refresh();
-        ScrollTrigger.getById("WORKS").refresh();
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            // Se la larghezza non è cambiata (è solo la barra indirizzi), non fare nulla
+            if (window.innerWidth === lastWidth) return;
+            lastWidth = window.innerWidth;
+            
+            ScrollTrigger.refresh();
+        }, 250);
     });
-    
-    // Refresh globale di sicurezza al termine del caricamento immagini
-    window.addEventListener('load', () => {
-        ScrollTrigger.refresh();
-    });
+
+    window.addEventListener('load', () => ScrollTrigger.refresh());
 });
