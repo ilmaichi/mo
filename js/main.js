@@ -16,25 +16,40 @@ const cursor = document.getElementById('custom-cursor'),
 const menuBtn = document.getElementById('nav-text-menu'),
     labelName = document.getElementById('label-name');
 
+// --- INPUT (Coordinate target) ---
 let mX = window.innerWidth / 2,
-    mY = window.innerHeight / 2,
-    cX = mX,
-    cY = mY;
-let tPX = mX,
-    tPY = mY,
-    cPX = mX,
-    cPY = mY;
+    mY = window.innerHeight / 2;
+let tPX = mX, tPY = mY; // Target per pupille
 
-let currentRotation = 0,
-    currentStretchX = 1,
-    currentStretchY = 1,
-    breathTime = 0;
-let isMenuOpen = false,
-    isSticky = false,
-    gyroActive = false;
-let zeroBeta = 0,
-    zeroGamma = 0;
-let idleTimer; // Gestirà l'intervallo del movimento automatico a mousefermo
+// --- STATO ATTUALE (Per calcoli di direzione/velocità) ---
+let cX = mX, cY = mY;
+let cPX = mX, cPY = mY; // Stato attuale pupille
+let breathTime = 0;
+
+// --- FLAG DI CONTROLLO ---
+let isMenuOpen = false, isSticky = false, gyroActive = false;
+let idleTimeout, idleInterval;
+
+// quickSetter è il metodo più veloce per aggiornare la posizione senza animazione
+const xSet = gsap.quickSetter(cursor, "x", "px");
+const ySet = gsap.quickSetter(cursor, "y", "px");
+
+// Qui usiamo quickTo con una duration minima (0.1) per le trasformazioni, 
+// così lo stretch e la rotazione sono fluidi ma non "indietro".
+const scaleXTo = gsap.quickTo(cursor, "scaleX", { duration: 0.3, ease: "power2.out" });
+const scaleYTo = gsap.quickTo(cursor, "scaleY", { duration: 0.3, ease: "power2.out" });
+
+// Creiamo il motore di rotazione senza una durata fissa, la cambieremo noi
+let rotationTo = gsap.quickTo(cursor, "rotation", { duration: 0.1, ease: "power2.out" });
+
+let smoothMX = window.innerWidth / 2;
+let smoothMY = window.innerHeight / 2;
+
+// Parametro di Attrito: 
+// 1.0 = istantaneo (nessun attrito)
+// 0.1 = molto viscoso (ritardo marcato)
+// 0.2 = bilanciato
+const friction = 0.4;
 
 // 1. NAVIGAZIONE
 nLog.addEventListener('click', () => {
@@ -45,9 +60,10 @@ nLog.addEventListener('click', () => {
 });
 
 // 2. LOGICA MOUSE & CURSORE
+let stickyScale = 1; // Variabile di supporto per l'ingrandimento
+
 document.addEventListener('mousemove', (e) => {
     if (gyroActive) return;
-    clearInterval(idleTimer);
 
     mX = e.clientX;
     mY = e.clientY;
@@ -59,19 +75,21 @@ document.addEventListener('mousemove', (e) => {
     const btnRect = menuBtn.getBoundingClientRect();
     const dist = Math.hypot(mX - (btnRect.left + btnRect.width / 2), mY - (btnRect.top + btnRect.height / 2));
 
+    // Soglia dello sticky
     if (dist < 60 && !document.body.classList.contains('use-standard-cursor')) {
         isSticky = true;
-        cursor.classList.add('expanding');
+        stickyScale = 2.5; // Qui decidi quanto si deve ingrandire (es. 2.5 volte)
         menuBtn.classList.add('sticky-active');
+        // Il target del cursore diventa il centro esatto del bottone
         mX = btnRect.left + btnRect.width / 2;
         mY = btnRect.top + btnRect.height / 2;
     } else {
         isSticky = false;
-        cursor.classList.remove('expanding');
+        stickyScale = 1; // Torna alla dimensione normale
         menuBtn.classList.remove('sticky-active');
     }
 
-    startIdleMovement();
+    resetIdleTimer();
 });
 
 function lerpAngle(s, e, a) {
@@ -125,7 +143,7 @@ function setupGyro() {
         document.getElementById('gyro-cta').classList.add('hidden');
     };
     window.addEventListener('deviceorientation', init);
-    startIdleMovement();
+    startIdleMovement(); // Avvia subito su mobile/gyro
 }
 
 function requestGyroPermission() {
@@ -136,65 +154,84 @@ function requestGyroPermission() {
 }
 
 // 4. LOOP DI UPDATE (Cursore & Occhi)
+/* Calcola la posizione della pupilla all'interno dell'occhio
+ * @param {Element} eye - L'elemento occhio (contenitore)
+ * @param {number} radius - Il raggio di movimento consentito
+ * @param {number} mouseX - Posizione X del mouse
+ * @param {number} mouseY - Posizione Y del mouse
+ */
+function solve(eye, radius, mouseX, mouseY) {
+    const rect = eye.getBoundingClientRect();
+    const eyeX = rect.left + rect.width / 2;
+    const eyeY = rect.top + rect.height / 2;
+    
+    const dx = mouseX - eyeX;
+    const dy = mouseY - eyeY;
+    const dist = Math.hypot(dx, dy);
+    
+    // Se il mouse è più lontano del raggio, limitiamo la pupilla al bordo
+    const angle = Math.atan2(dy, dx);
+    const limitedDist = Math.min(dist * 0.1, radius); // Lo 0.1 serve a rendere il movimento più sottile
+
+    return {
+        x: Math.cos(angle) * limitedDist,
+        y: Math.sin(angle) * limitedDist
+    };
+}
+
 function update() {
     if (isDesktop && !document.body.classList.contains('use-standard-cursor')) {
-        const dx = (window.realMX || mX) - cX,
-            dy = (window.realMY || mY) - cY;
-        cX += dx * (isSticky ? 0.3 : 0.15);
-        cY += dy * (isSticky ? 0.3 : 0.15);
+        
+        // --- STEP 1: APPLICHIAMO L'ATTRITO ALLE COORDINATE ---
+        // smoothMX si avvicina a window.realMX con un ritardo calcolato
+        const targetX = window.realMX || mX;
+        const targetY = window.realMY || mY;
+        
+        smoothMX += (targetX - smoothMX) * friction;
+        smoothMY += (targetY - smoothMY) * friction;
 
-        const speed = Math.hypot(dx, dy),
-            angle = Math.atan2(dy, dx) * (180 / Math.PI);
-        let tRot, tSX, tSY, lF = 0.1;
+        // --- STEP 2: IL CURSORE INSEGUE LE COORDINATE SMOOTH ---
+        const dx = smoothMX - cX;
+        const dy = smoothMY - cY;
+        const speed = Math.hypot(dx, dy);
 
-        if (speed < 1 || isSticky) {
+        // Manteniamo i tuoi Lerp per lo stato sticky/normal
+        cX += dx * (isSticky ? 0.3 : 0.2);
+        cY += dy * (isSticky ? 0.3 : 0.2);
+
+        xSet(cX);
+        ySet(cY);
+
+        // --- STEP 3: LOGICA STATI (Idle/Movement) ---
+        if (speed < 5 || isSticky) {
+            rotationTo.tween.duration(1.2); 
             breathTime += 0.05;
-            tSX = 1 + Math.sin(breathTime) * 0.1;
-            tSY = 1 + Math.cos(breathTime * 0.8) * 0.12;
-            tRot = isSticky ? 0 : Math.sin(breathTime * 0.5) * 5;
+            const baseScale = isSticky ? 1.0 : 0.33; 
+            
+            scaleXTo(baseScale + Math.sin(breathTime) * (isSticky ? 0.05 : 0.02));
+            scaleYTo(baseScale + Math.cos(breathTime * 0.8) * (isSticky ? 0.06 : 0.03));
+            rotationTo(isSticky ? 0 : Math.sin(breathTime * 0.5) * 5);
         } else {
-            const s = Math.min(speed / 400, 0.6);
-            tSX = 1 + s;
-            tSY = 1 - s;
-            tRot = angle;
-            lF = Math.min(speed / 50, 1);
+            rotationTo.tween.duration(0.05);
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            const stretch = Math.min(speed / 500, 0.6); 
+
+            scaleXTo(0.33 + stretch);         
+            scaleYTo(0.33 - (stretch * 0.2)); 
+            rotationTo(angle);            
+
+            if (speed > 20 && Math.random() > 0.8 && !isSticky) {
+                createDrop(cX, cY, angle);
+            }
         }
-
-        currentRotation = lerpAngle(currentRotation, tRot, lF);
-        currentStretchX += (tSX - currentStretchX) * 0.15;
-        currentStretchY += (tSY - currentStretchY) * 0.15;
-
-        cursor.style.transform = `translate(${cX}px, ${cY}px) translate(-50%, -50%) rotate(${currentRotation}deg) scale(${currentStretchX}, ${currentStretchY})`;
-        if (speed > 15 && Math.random() > 0.8 && !isSticky) createDrop(cX, cY, angle);
     }
 
-    cPX += (tPX - cPX) * 0.1;
-    cPY += (tPY - cPY) * 0.1;
+    // --- STEP 4: PUPILLE (Sincronizzate con l'attrito) ---
+    const posHP = solve(hp.eye, 50, smoothMX, smoothMY);
+    const posNP = solve(np.eye, 30, smoothMX, smoothMY);
 
-    if (!window.cNX) {
-        window.cNX = mX;
-        window.cNY = mY;
-    }
-    let targetNX = gyroActive ? mX : tPX;
-    let targetNY = gyroActive ? mY : tPY;
-
-    window.cNX += (targetNX - window.cNX) * 0.1;
-    window.cNY += (targetNY - window.cNY) * 0.1;
-
-    const solve = (eye, r, x, y) => {
-        const rect = eye.getBoundingClientRect();
-        const dx = x - (rect.left + rect.width / 2),
-            dy = y - (rect.top + rect.height / 2);
-        const a = Math.atan2(dy, dx),
-            d = Math.min(Math.hypot(dx, dy) / 400, 1);
-        return {
-            x: Math.cos(a) * r * d,
-            y: Math.sin(a) * r * d
-        };
-    };
-
-    hp.pup.style.transform = `translate(${solve(hp.eye, 50, cPX, cPY).x}px, ${solve(hp.eye, 50, cPX, cPY).y}px)`;
-    np.pup.style.transform = `translate(${solve(np.eye, 30, window.cNX, window.cNY).x}px, ${solve(np.eye, 30, window.cNX, window.cNY).y}px)`;
+    hp.pup.style.transform = `translate(${posHP.x}px, ${posHP.y}px)`;
+    np.pup.style.transform = `translate(${posNP.x}px, ${posNP.y}px)`;
 
     requestAnimationFrame(update);
 }
@@ -212,9 +249,19 @@ function triggerBlink() {
     setTimeout(triggerBlink, Math.random() * 4000 + 2500);
 }
 
+function resetIdleTimer() {
+    // Ferma il movimento casuale se era attivo
+    clearInterval(idleInterval);
+    // Resetta il timer che fa partire l'idle
+    clearTimeout(idleTimeout);
+    idleTimeout = setTimeout(startIdleMovement, 2000);
+}
+
 function startIdleMovement() {
-    clearInterval(idleTimer);
-    idleTimer = setInterval(() => {
+    // Assicuriamoci di non avere intervalli multipli
+    clearInterval(idleInterval);
+    
+    idleInterval = setInterval(() => {
         if (gyroActive) {
             mX = Math.random() * window.innerWidth;
             mY = Math.random() * window.innerHeight;
@@ -347,11 +394,18 @@ function filterSkills(category) {
         }
     }
 });
-       
+
+let isScrolling = false;
 window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (y > 100) {nLog.classList.add('slide-in'); labelName.classList.add('scrolled'); }
-    else {nLog.classList.remove('slide-in'); labelName.classList.remove('scrolled'); }
+    if (!isScrolling) {
+        window.requestAnimationFrame(() => {
+            const y = window.scrollY;
+            if (y > 100) {nLog.classList.add('slide-in'); labelName.classList.add('scrolled'); }
+            else {nLog.classList.remove('slide-in'); labelName.classList.remove('scrolled'); }
+            isScrolling = false;
+        });
+        isScrolling = true;
+    }
 });
 
 // CURSORE SPECIALE PER HOVER
@@ -360,14 +414,19 @@ window.addEventListener('scroll', () => {
             const email = "hello@test.it";
             const icon = document.querySelector('.copy-icon');
         
-            const textArea = document.createElement("textarea");
-            textArea.value = email;
-            document.body.appendChild(textArea);
-            textArea.select();
-        
-            try {
-                document.execCommand('copy');
-                
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(email).then(() => {
+                    // Attiva icona 'check', e TOOLTIP
+                    icon.innerText = 'check';
+                    icon.classList.add('copy-success');
+            
+                    // Reset dopo 1.5 secondi
+                    setTimeout(() => {
+                        icon.innerText = 'content_copy';
+                        icon.classList.remove('copy-success');
+                    }, 1500);
+                }).catch(err => console.error('Errore copia:', err));
+            } else {
                 // Attiva icona 'check', e TOOLTIP
                 icon.innerText = 'check';
                 icon.classList.add('copy-success');
@@ -377,12 +436,7 @@ window.addEventListener('scroll', () => {
                     icon.innerText = 'content_copy';
                     icon.classList.remove('copy-success');
                 }, 1500);
-                
-            } catch (err) {
-                console.error('Errore copia:', err);
             }
-        
-            document.body.removeChild(textArea);
         }
         
         ////////////////////////////////////////////////////
@@ -409,19 +463,6 @@ window.addEventListener('scroll', () => {
             // Rimuoviamo la classe quando usciamo
             document.querySelector('#custom-cursor').classList.remove('is-hovering');
         });
-
-        const eyeGroup = document.querySelector('.intero-occhio');
-        const cursorElement = document.getElementById('custom-cursor');
-
-        if (eyeGroup && cursorElement) {
-            eyeGroup.addEventListener('mouseenter', () => {
-                cursorElement.classList.add('is-hovering-eye');
-            });
-
-            eyeGroup.addEventListener('mouseleave', () => {
-                cursorElement.classList.remove('is-hovering-eye');
-            });
-        }
         //////////////////////////////////////////////////////////
 
         
@@ -630,6 +671,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }
   
+  // Utility Debounce per resize
+  function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+  }
   
   // Inizializza e gestisci resize
 
@@ -639,7 +688,14 @@ document.addEventListener('DOMContentLoaded', () => {
         initCreativeScroll();
         update();
         triggerBlink();
-        startIdleMovement();
+        resetIdleTimer(); // Inizia il countdown per l'idle
+
+        // Rimuovi CTA Gyro su Desktop o se non supportato
+        const gyroCta = document.getElementById('gyro-cta');
+        if (isDesktop || !window.DeviceOrientationEvent) {
+             if (gyroCta) gyroCta.remove();
+        }
+
         setInterval(() => {
         wIdx = (wIdx + 1) % words.length;
         decode(words[wIdx]);
@@ -651,9 +707,9 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener("load", setupAll);
 
   // Resize finestra
-  window.addEventListener("resize", () => {
+  window.addEventListener("resize", debounce(() => {
       ScrollTrigger.refresh();
-  });
+  }, 200));
 
 ////////chiusura domcontent loaded
 });
