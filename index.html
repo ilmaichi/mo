@@ -87,14 +87,14 @@
             <div class="phone-icon"></div><span>Tap & Tilt</span>
         </div>
     </section>
-    <div class="ink-transition-container">
+  <div class="ink-transition-container">
         <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path id="ink-path" d="M0,0 L100,0 L100,0 C75,0 75,0 50,0 C25,0 25,0 0,0 Z"></path>
+            <path id="ink-path" d="M0,0 L120,0 L120,0 C80,0 70,0 50,0 C30,0 15,0 -20,0 Z"></path>
         </svg>
     </div>
     <section id="beyond-section">
         <h1 class="headline" id="headline">
-            <span class="no-wrap">BEY&Ocirc;ND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
+            <span class="no-wrap">BEYoND</span><br> <span id="dynamic-word">ART <br>DIRECTION</span>
         </h1>
         <div class="beyond-description">
             Essere <span class="highlight-text">beyond</span> significa non limitarsi alla definizione di una singola disciplina. Sono un Art Director ibrido e fluido, con una visione trasversale e strutturata che unisce competenze creative, tecniche, organizzative e di relazione. Grazie a <span class="highlight-text">oltre 15 anni di esperienza in agenzie creative</span> ho imparato a governare la complessità di progetti integrati, dal brief all'execution, trasformando visioni ambiziose in realtà concrete e coerenti.
@@ -102,6 +102,7 @@
 
         <div class="skills-container">
             <div class="skills-filters" id="skills-filters">
+                <span class="filter-label">// Skills Filter:</span>
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="strategy">Vision & Strategy</button>
                 <button class="filter-btn" data-filter="creative">Execution & Production</button>
@@ -114,24 +115,31 @@
         </div>
     </section>
     <section id="works-section">
-        <div class="works-wrapper">
-            <a href="works" class="big-works-link">
-                <div class="works-ticker-container">
-                    <span class="text-inter">SCOPRI I MIEI LAVORI · SCOPRI I MIEI LAVORI · SCOPRI I MIEI LAVORI</span>
-                </div>
-                <div class="works-monumental-container">
-                    <span class="text-mofont">WoRKS WoRKS</span>
-                </div>
-            </a>
-            <div class="blob-gallery">
-                <div class="blob-item b1"></div>
-                <div class="blob-item b2"></div>
-                <div class="blob-item b3"></div>
-                <div class="blob-item b4"></div>
-                <div class="blob-item b5"></div>
+    <div class="works-wrapper">
+        
+        <a href="works" class="big-works-link">
+            <div class="works-ticker-container">
+                <span class="text-inter">
+                    SCOPRI I MIEI LAVORI · SCOPRI I MIEI LAVORI · SCOPRI I MIEI LAVORI
+                </span>
             </div>
+            
+            <div class="works-monumental-container">
+                <span class="text-mofont">WoRKS WoRKS</span>
+            </div>
+        </a>
+
+        <div class="blob-gallery">
+            <div class="blob-item b1"></div>
+            <div class="blob-item b2"></div>
+            <div class="blob-item b3"></div>
+            <div class="blob-item b4"></div>
+            <div class="blob-item b5"></div>
         </div>
-    </section>
+        
+    </div>
+</section>
+  <div id="about-amo-wrapper">
     <section id="about-section">
         <div class="about-container">
             <div class="about-content-left">
@@ -176,8 +184,12 @@
     <section id="amo-section">
         <div class="amo-container">
             <p id="amo-text">Amo </p>
+            <svg id="heart-svg" viewBox="0 0 1000 1000" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -45%); z-index: -1; width: 50%; opacity: 0.1; overflow: visible;">
+                <path id="heart-path" fill="none" stroke="#ffffff" stroke-width="10" d="M891.1,33.51C790.13-31.97,662.62,6.63,573.16,82.96c-19.67,15.16-41.68,31.6-64.33,37.51 c-52.58,13.41-91.39-27.48-140.28-48.69c-54.9-25.02-118.21-31.73-176.1-16.17C90.22,82.01,12.93,181.09,1.91,287.78 c-7.61,71.45,8.57,134.06,46.93,200.69c86.46,156.3,340.19,371.62,421.44,412.36c27.04,15.87,43.86,11.79,71.07-7.5 c127.92-93.06,402.36-343.77,444.54-508.7c32.6-124.04,10.98-280.3-94.23-350.76L891.1,33.51z" />
+            </svg>
         </div>
     </section>
+  </div>
     <section id="contact-section">
         <div class="contact-main">
             <p class="contact-intro">
@@ -186,7 +198,7 @@
             </p>
     
             <h2 class="collab-title">
-                <a href="mailto:michele.occhi@gmail.com" class="mail-link">scrivimi!</a>
+                <a href="mailto:michele.occhi@gmail.com" class="scrivimi-link">scrivimi!</a>
             </h2>
     
             <div class="email-block">
@@ -230,6 +242,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/MorphSVGPlugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollToPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/DrawSVGPlugin.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
