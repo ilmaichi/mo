@@ -14,8 +14,7 @@
             margin: 0; padding: 0; 
             background-color: var(--bg-color); 
             font-family: 'MoFont', sans-serif; 
-            overflow-x: hidden; 
-            scroll-behavior: smooth; 
+            overflow-x: hidden;
         }
 
         @font-face {
@@ -28,6 +27,12 @@
             font-display: swap;
           }
         
+
+        #test-spacer {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         /* --- CURSORE --- */
         #cursor-container { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -43,6 +48,12 @@
             position: absolute; width: 30px; fill: var(--accent-coral); pointer-events: none;
             will-change: transform; transition: width 0.3s ease, height 0.3s ease;
         }
+
+        /* La classe per la finezza estrema */
+        #custom-cursor.is-hovering-eye {
+            fill: var(--accent-gold) !important;
+            width: 45px; /* Magari lo ingrandiamo anche un po'? */
+        }
         
         #custom-cursor svg{
           overflow: visible !important;
@@ -53,6 +64,8 @@
             stroke-width: 50px; /* Valore alto perché il viewBox è 500 */
             stroke: var(--accent-coral);
             transform: scale(1.2);
+            -webkit-filter: drop-shadow( 0px 0px 30px var(--text-light));
+            filter: drop-shadow( 0px 0px 30px var(--text-light));
         }
         
         #custom-cursor.expanding { width: 75px; }
@@ -313,39 +326,52 @@
         .menu-link:hover { color: var(--accent-coral); cursor:pointer !important; }
         
         /* --- SECTIONS --- */
-        .hero-container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
-        #beyond-section { background-color: var(--dark-blue); color: var(--text-light); padding: 100px 40px; min-height: 120vh; position: relative; z-index: 5; }
-        .headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; text-transform: uppercase; font-weight: 900; transform: translateY(40px); transition: 0.9s ease-out; }
+        .hero-container {
+            height: 100vh;
+            position: relative;
+            z-index: 1; 
+        }
+       
         .ink-transition-container {
-            position: fixed;      /* Resta incollato allo schermo mentre scendi */
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100vh;        /* Altezza intero schermo */
-            pointer-events: none; /* Fondamentale: permette di cliccare ciò che sta sotto */
-            z-index: 5;           /* Deve stare SOPRA la hero ma SOTTO i testi della sezione beyond */
-            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2; /* Sopra la Hero */
+            pointer-events: none;
         }
         
         .ink-transition-container svg {
             width: 100%;
             height: 100%;
+            display: block;
         }
-        
+
         #ink-path {
-            fill: var(--dark-text); 
+            fill: var(--dark-text); /* Colore della sezione successiva (AMO) */
         }
-        
-        /* Assicurati che la sezione Beyond abbia un z-index superiore per stare sopra la macchia alla fine */
-        #beyond-section {
-            position: relative;
-            z-index: 10; 
-            background-color: transparent; /* Importante: così vediamo la macchia sotto */
-        }
-        .no-wrap { white-space: nowrap; display: inline-block; }
+
+ #beyond-section {
+    position: relative;
+    z-index: 5; /* Sopra tutto */
+    background-color: transparent; /* Importante: l'inchiostro si vede sotto */
+    padding: 100px 40px;
+}
+#beyond-section.is-active {
+    background-color: var(--dark-text); /* Colore solido finale */
+}
+/* Forziamo un colore di sfondo solido solo DOPO che la transizione è finita 
+   per ottimizzare le performance o gestire sezioni successive */
+.bg-solid {
+    background-color: var(--dark-text) !important;
+}
+.headline { font-size: clamp(35px, 8.2vw, 110px); line-height: 1.05; font-weight: 900; transform: translateY(40px); transition: 0.9s ease-out; }
+
+        .no-wrap { white-space: nowrap; display: inline-block; color: var(--text-light) }
         /* 1. Ingrandiamo leggermente Beyond per compensare il disegno del font */
         .headline .no-wrap {
-            font-size: 1.15em; /* Aumenta del 15% rispetto alla dimensione base */
+            font-size: 1.25em; /* Aumenta del 25% rispetto alla dimensione base */
             display: inline-block;
             vertical-align: middle;
         }
@@ -473,6 +499,20 @@
             margin-bottom: 50px; 
             border-bottom: 1px solid rgba(247,247,242,0.1);
             padding-bottom: 20px;
+            align-items: center;
+
+        }
+
+        .filter-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-right: 8px;
+            letter-spacing: 1px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
         }
         
         .filter-btn {
@@ -486,140 +526,113 @@
             text-transform: uppercase;
             cursor: pointer; 
             transition: all 0.3s ease;
+            cursor: pointer !important;
         }
         
         .filter-btn.active { 
             background: var(--accent-gold); 
             border-color: var(--accent-gold); 
-            color: var(--dark-blue); 
+            color: var(--dark-text); 
             font-weight: 700; 
         }
 
-        /* --- SECTION WORKS --- */
-        #works-section {
-            height: 100vh;
-            width: 100%;
-            overflow: hidden;
-            background-color: var(--text-light);
-            position: relative;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-        }
-        .works-wrapper {
-            display: flex;
-            position: relative;
-            height: 100vh;
-            width: max-content;
-            align-items: center; /* Questo centra il TESTO, ma non deve influenzare i blob */
-        }
-        
-        .big-works-link {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            white-space: nowrap;
-            text-decoration: none;
-            z-index: 10;
-            padding-left: 10vw;
-            color: var(--dark-text);
-        }
-        .big-works-link span {
-            position: relative;
-            display: inline-block;
-            z-index: 1;
-            /* Ripristiniamo il cursore normale come richiesto */
-            cursor: pointer !important;
-            pointer-events: auto;
-        }
-        
-        .big-works-link:hover .text-mofont {
-            text-decoration: underline; /* Rimuoviamo l'underline se era ereditato */
-        }
-      
-      /* Il colore lo cambiamo sempre sul path */
-      body:has(.big-works-link:hover) #custom-cursor svg path {
-          fill: var(--accent-gold);
-      }
-        
-        /* Regoliamo le altezze per l'incastro perfetto */
-        .text-inter {
+
+ /* --- SEZIONE WORKS: LAYOUT ORIGINALE + LOGICA NUOVA --- */
+#works-section {
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--text-light);
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.works-wrapper {
+    display: flex;
+    position: relative;
+    height: 100vh;
+    /* width: max-content; viene gestito dal contenuto del link */
+    align-items: center;
+    will-change: transform;
+}
+
+.big-works-link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    white-space: nowrap;
+    text-decoration: none;
+    z-index: 10; /* Sopra i blob */
+    color: var(--dark-text);
+    padding: 0 10vw; /* Margine di sicurezza iniziale e finale */
+}
+
+/* Testi */
+.text-inter {
             font-family: 'Inter', sans-serif;
             font-size: 10vh !important; /* Molto più piccolo, funge da ticker */
             font-weight: 900;
             line-height: 1;
             opacity: 1;
             text-decoration: underline;
-        }
-        
-        .text-mofont {
+}
+
+.text-mofont {
+
             font-family: 'Mofont', sans-serif;
-            font-size: 45vh !important; /* Monumentale */
+
+            font-size: 50vh !important; /* Monumentale */
+
             line-height: 1;
+
             display: block;
+
         }
-        
-        /* --- I BLOB --- */
-        .blob-gallery {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%; /* Si estende per tutto il wrapper */
-            height: 100vh;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        
-        .blob-item {
-            position: absolute;
-            width: 450px;  /* Dimensione standard per tutti */
-            height: 450px; /* Dimensione standard per tutti */
-            overflow: hidden;
-            will-change: transform;
-            transition: clip-path 0.4s ease;
-        }
-        
-        /* Distribuzione lungo lo scroll */
-        .b1 {
-            top: 5%; left: 10%; 
-            background-color: var(--accent-gold);
-            clip-path: url(#shape1);
-            -webkit-clip-path: url(#shape1);
-        }
-        
-        .b2 { 
-            top: 45%; left: 35%; 
-            background-color: var(--dark-blue);
-            clip-path: url(#shape2);
-            -webkit-clip-path: url(#shape2);
-        }
-        
-        .b3 { 
-            top: 8%; left: 51%; 
-            background-color: var(--accent-coral);
-            clip-path: url(#shape3);
-            -webkit-clip-path: url(#shape3);
-        }
-        
-        .b4 { 
-            top: 35%; left: 73%; 
-            background-color: var(--light-blue);
-            clip-path: url(#shape1);
-            transform: rotate(90deg); 
-        }
-        
-        .b5 { 
-            top: 0%; left: 90%; 
-            background-color: var(--violet);
-            clip-path: url(#shape2);
-            transform: rotate(-45deg);
-        }
-        
+
+.big-works-link:hover .text-inter,
+.big-works-link:hover .text-mofont {
+    text-decoration: underline;
+}
+
+/* --- GALLERY DEI BLOB (Il "Fondale") --- */
+.blob-gallery {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Importante: deve coprire l'intera larghezza del wrapper */
+    width: 100%; 
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.blob-item {
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    overflow: hidden;
+    will-change: transform;
+    transition: clip-path 0.4s ease;
+}
+
+/* Distribuzione spaziale (percentuali basate sulla larghezza totale) */
+.b1 { top: 5%; left: 5%; background-color: var(--accent-gold); clip-path: url(#shape1); -webkit-clip-path: url(#shape1); }
+.b2 { top: 45%; left: 25%; background-color: var(--dark-blue); clip-path: url(#shape2); -webkit-clip-path: url(#shape2); }
+.b3 { top: 8%; left: 45%; background-color: var(--accent-coral); clip-path: url(#shape3); -webkit-clip-path: url(#shape3); }
+.b4 { top: 35%; left: 70%; background-color: var(--light-blue); clip-path: url(#shape1); transform: rotate(90deg); }
+.b5 { top: 2%; left: 85%; background-color: var(--violet); clip-path: url(#shape2); transform: rotate(-45deg); }
+        /* --- WRAPPER ABOUT AMO --- */
+  #about-amo-wrapper{
+    background-color: var(--dark-blue);
+  }        
+
         /* --- SECTION ABOUT --- */
         #about-section {
-            background-color: var(--dark-blue);
+            background-color: transparent;
             color: var(--accent-coral);
             /* Usiamo lo stesso padding laterale della sezione superiore */
             padding: 100px 40px 0px 40px; 
@@ -627,7 +640,9 @@
             display: flex;
             align-items: center;
             position: relative;
-            z-index: 10;
+            z-index: 6;
+            min-height: 100vh;
+            width: 100%;
         }
         
         .about-container {
@@ -668,7 +683,7 @@
             width: 100%;
             height: 100vh;
             min-height: 100vh;
-            background-color: var(--dark-blue);
+            background-color: transparent;
             z-index: 10;
             display: flex;
             /* Cambiamo da center a flex-start */
@@ -676,6 +691,7 @@
             justify-content: left;
             /* Aggiungiamo un padding per posizionare il testo dove vogliamo che inizi */
             padding-left: 40px;
+            padding-top: 160px
         }
         
         .amo-container {
@@ -692,7 +708,7 @@
             line-height: 1.2;
             margin: 0;
             /* Manteniamo l'allineamento del testo a sinistra o centro come preferisci */
-            text-align: left; 
+            text-align: left;
         }
         
         /* Colore per le parole che si aggiungono */
@@ -727,7 +743,7 @@
             text-align: center;
             margin-inline: auto;
             color: var(--dark-text);
-            font-size: font-size: clamp(16px, 1.5vw, 20px);
+            font-size: clamp(16px, 1.5vw, 20px);
             line-height: 1.6;
             max-width: 600px;    /* Mantiene il testo compatto */
         }
@@ -743,16 +759,12 @@
             text-align: center;
         }
         
-        .mail-link {
+        .scrivimi-link {
             color: inherit;          /* Eredita il colore dal h2 */
             text-decoration: none;   /* Toglie la sottolineatura standard */
             transition: opacity 0.3s ease;
             display: inline-block;
             cursor: pointer !important;
-        }
-        
-        .mail-link:hover {
-            color: var(--accent-gold);
         }
         
         .email-block {
@@ -822,7 +834,7 @@
         }
         
         .email-link:hover {
-            opacity: 0.6;
+            text-decoration: underline;
         }
         
         /* Footer della sezione (Link in basso) */
@@ -859,7 +871,6 @@
             
             margin-left: 0.2em;
             position: relative;
-            cursor: pointer;
             
             /* Allineamento ottico sulla baseline */
             transform: translateY(0.15em); 
@@ -907,7 +918,7 @@
         }
         
         /* Intro */
-        .about-intro-text, {
+        .about-intro-text {
             font-size: 1.2rem;
             line-height: 1.6;
             margin-bottom: 0.5rem;
