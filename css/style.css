@@ -61,7 +61,6 @@
  #custom-cursor.is-hovering-eye {
      fill: var(--accent-gold) !important;
      width: 45px;
-    /* Magari lo ingrandiamo anche un po'? */
 }
  #custom-cursor svg{
      overflow: visible !important;
@@ -74,8 +73,6 @@
     /* Valore alto perché il viewBox è 500 */
      stroke: var(--accent-coral);
      transform: scale(1.2);
-     -webkit-filter: drop-shadow( 0px 0px 30px var(--text-light));
-     filter: drop-shadow( 0px 0px 30px var(--text-light));
 }
  #custom-cursor.expanding {
      width: 75px;
