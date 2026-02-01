@@ -30,6 +30,7 @@ let breathTime = 0;
 let isMenuOpen = false, isSticky = false, gyroActive = false;
 let idleTimeout, idleInterval;
 let zeroBeta = 0, zeroGamma = 0;
+let isGyroBound = false; // Flag per evitare doppi listener
 
 // quickSetter è il metodo più veloce per aggiornare la posizione senza animazione
 const xSet = gsap.quickSetter(cursor, "x", "px");
@@ -134,24 +135,83 @@ function handleOrientation(e) {
     tPY = window.innerHeight / 2 + ((e.beta - zeroBeta) * 15);
 }
 
+function updateGyroState(state) {
+    const cta = document.getElementById('gyro-cta');
+    if (!cta) return;
+    const span = cta.querySelector('span');
+    
+    if (state === 'active') {
+        if (span) span.innerText = "MUOVI PER INTERAGIRE";
+        setTimeout(() => {
+            cta.classList.add('hidden');
+        }, 3000);
+    } else if (state === 'ask') {
+        if (span) span.innerText = "ATTIVA INTERAZIONE";
+        cta.classList.remove('hidden');
+    }
+}
+
 function setupGyro() {
+    if (isGyroBound) return; // Evita esecuzioni multiple
+    isGyroBound = true;
+
     const init = (e) => {
         zeroBeta = e.beta;
         zeroGamma = e.gamma;
         gyroActive = true;
         window.removeEventListener('deviceorientation', init);
         window.addEventListener('deviceorientation', handleOrientation);
-        document.getElementById('gyro-cta').classList.add('hidden');
     };
     window.addEventListener('deviceorientation', init);
     startIdleMovement(); // Avvia subito su mobile/gyro
 }
 
 function requestGyroPermission() {
-    if (typeof DeviceOrientationEvent?.requestPermission === 'function') DeviceOrientationEvent.requestPermission().then(r => {
-        if (r === 'granted') setupGyro();
-    });
-    else setupGyro();
+    if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(r => {
+            if (r === 'granted') {
+                updateGyroState('active');
+                setupGyro();
+                document.removeEventListener('click', requestGyroPermission);
+            } else {
+                updateGyroState('ask');
+            }
+        }).catch(console.error);
+    } else {
+        updateGyroState('active');
+        setupGyro();
+    }
+}
+
+// Funzione per rilevare se il giroscopio è già attivo (Android o iOS già autorizzato)
+function initGyroAutoDetect() {
+    const cta = document.getElementById('gyro-cta');
+    
+    // 1. Desktop o non supportato: Rimuovi il bottone CTA
+    if (isDesktop || !window.DeviceOrientationEvent) {
+        if (cta) cta.remove();
+        return;
+    }
+
+    // 2. Android / Browser che non richiedono permesso esplicito: Avvia subito
+    if (typeof DeviceOrientationEvent.requestPermission !== 'function') {
+        updateGyroState('active');
+        setupGyro();
+    } else {
+        // 3. iOS 13+: Richiede permesso. Proviamo ad ascoltare se è già stato concesso in precedenza.
+        updateGyroState('ask');
+        document.addEventListener('click', requestGyroPermission);
+        
+        const testListener = (e) => {
+            if (e.alpha !== null || e.beta !== null || e.gamma !== null) {
+                updateGyroState('active');
+                setupGyro(); // Se riceviamo dati, avvia tutto (nasconde CTA)
+                window.removeEventListener('deviceorientation', testListener);
+                document.removeEventListener('click', requestGyroPermission);
+            }
+        };
+        window.addEventListener('deviceorientation', testListener);
+    }
 }
 
 // 4. LOOP DI UPDATE (Cursore & Occhi)
@@ -727,11 +787,8 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerBlink();
         resetIdleTimer(); // Inizia il countdown per l'idle
 
-        // Rimuovi CTA Gyro su Desktop o se non supportato
-        const gyroCta = document.getElementById('gyro-cta');
-        if (isDesktop || !window.DeviceOrientationEvent) {
-             if (gyroCta) gyroCta.remove();
-        }
+        // Avvia la logica di rilevamento automatico del giroscopio
+        initGyroAutoDetect();
 
         setInterval(() => {
         wIdx = (wIdx + 1) % words.length;
