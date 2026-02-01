@@ -216,7 +216,7 @@ function update() {
             const angle = Math.atan2(dy, dx) * (180 / Math.PI);
             const stretch = Math.min(speed / 500, 0.6); 
 
-            scaleXTo(0.33 + stretch);         
+            scaleXTo(0.33 + (stretch*0.3));         
             scaleYTo(0.33 - (stretch * 0.2)); 
             rotationTo(angle);            
 
@@ -411,7 +411,7 @@ window.addEventListener('scroll', () => {
 // CURSORE SPECIALE PER HOVER
 //COPIA LA MAIL NEI CONTATTI
         function copyEmail() {
-            const email = "hello@test.it";
+            const email = "michele.occhi@gmail.com";
             const icon = document.querySelector('.copy-icon');
         
             if (navigator.clipboard && window.isSecureContext) {
