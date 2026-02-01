@@ -74,6 +74,27 @@
      stroke: var(--accent-coral);
      transform: scale(1.2);
 }
+/* --- CURSORE EMAIL --- */
+#custom-cursor.is-email {
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+}
+#custom-cursor.is-email svg {
+    display: none; /* Nasconde l'occhio */
+}
+#custom-cursor.is-email::after {
+    content: 'mail';
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 40px; /* Dimensione icona */
+    line-height: 1;
+    color: var(--accent-coral);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
  #custom-cursor.expanding {
      width: 75px;
 }
@@ -690,7 +711,7 @@
     /* Sopra i blob */
      color: var(--dark-text);
      padding: 0 10vw;
-    /* Margine di sicurezza iniziale e finale */
+     cursor: pointer !important;
 }
 /* Testi */
  .text-inter {
@@ -1069,7 +1090,8 @@
 /* --- MOBILE GYRO CTA --- */
  #gyro-cta {
      position: absolute;
-     bottom: 120px;
+     bottom: auto;
+     top: 20%;
      left: 50%;
      transform: translateX(-50%);
      display: flex;
