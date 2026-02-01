@@ -29,6 +29,7 @@ let breathTime = 0;
 // --- FLAG DI CONTROLLO ---
 let isMenuOpen = false, isSticky = false, gyroActive = false;
 let idleTimeout, idleInterval;
+let zeroBeta = 0, zeroGamma = 0;
 
 // quickSetter è il metodo più veloce per aggiornare la posizione senza animazione
 const xSet = gsap.quickSetter(cursor, "x", "px");
@@ -180,16 +181,25 @@ function solve(eye, radius, mouseX, mouseY) {
 }
 
 function update() {
+    // --- STEP 1: CALCOLO TARGET E ATTRITO (Unificato Desktop/Mobile) ---
+    let targetX, targetY;
+
+    if (gyroActive) {
+        // Su mobile con gyro attivo, il target sono le coordinate calcolate dall'inclinazione
+        targetX = tPX;
+        targetY = tPY;
+    } else {
+        // Desktop o Mobile senza gyro (fallback su mX/mY che possono essere idle)
+        targetX = (window.realMX !== undefined) ? window.realMX : mX;
+        targetY = (window.realMY !== undefined) ? window.realMY : mY;
+    }
+
+    // Applichiamo l'attrito per rendere il movimento fluido (sia occhi che cursore)
+    smoothMX += (targetX - smoothMX) * friction;
+    smoothMY += (targetY - smoothMY) * friction;
+
     if (isDesktop && !document.body.classList.contains('use-standard-cursor')) {
         
-        // --- STEP 1: APPLICHIAMO L'ATTRITO ALLE COORDINATE ---
-        // smoothMX si avvicina a window.realMX con un ritardo calcolato
-        const targetX = window.realMX || mX;
-        const targetY = window.realMY || mY;
-        
-        smoothMX += (targetX - smoothMX) * friction;
-        smoothMY += (targetY - smoothMY) * friction;
-
         // --- STEP 2: IL CURSORE INSEGUE LE COORDINATE SMOOTH ---
         const dx = smoothMX - cX;
         const dy = smoothMY - cY;
@@ -203,7 +213,13 @@ function update() {
         ySet(cY);
 
         // --- STEP 3: LOGICA STATI (Idle/Movement) ---
-        if (speed < 5 || isSticky) {
+        if (cursor.classList.contains('is-email')) {
+            // Se è in modalità email, resetta trasformazioni per non deformare l'icona
+            scaleXTo(1);
+            scaleYTo(1);
+            rotationTo(0);
+        } 
+        else if (speed < 5 || isSticky) {
             rotationTo.tween.duration(1.2); 
             breathTime += 0.05;
             const baseScale = isSticky ? 1.0 : 0.33; 
@@ -395,6 +411,21 @@ function filterSkills(category) {
     }
 });
 
+// Chiude il menu al click sui link
+document.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault(); // Impedisce il salto immediato dell'ancora
+        const targetId = link.getAttribute('href');
+
+        // Chiama la funzione per chiudere il menu
+        toggleMenu();
+
+        // Scrolla dolcemente alla sezione usando GSAP
+        // Aggiunto un piccolo delay per dare modo all'animazione del menu di iniziare
+        gsap.to(window, { duration: 1.5, scrollTo: targetId, ease: "power2.inOut", delay: 0.2 });
+    });
+});
+
 let isScrolling = false;
 window.addEventListener('scroll', () => {
     if (!isScrolling) {
@@ -457,11 +488,17 @@ window.addEventListener('scroll', () => {
             if ((hasPointer || isLink) && !isMenuElement) {
                 document.querySelector('#custom-cursor').classList.add('is-hovering');
             }
+
+            // 4. Check specifico per la sezione contatti (email)
+            if (target.closest('.collab-title') || target.closest('.email-link')) {
+                document.querySelector('#custom-cursor').classList.add('is-email');
+            }
         });
         
         document.addEventListener('mouseout', (e) => {
             // Rimuoviamo la classe quando usciamo
             document.querySelector('#custom-cursor').classList.remove('is-hovering');
+            document.querySelector('#custom-cursor').classList.remove('is-email');
         });
         //////////////////////////////////////////////////////////
 
