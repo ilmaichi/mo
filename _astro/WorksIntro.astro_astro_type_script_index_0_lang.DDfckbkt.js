@@ -1,0 +1,1 @@
+import{d as o}from"./wordsdecoder.CIYHoein.js";import"./ink-flooding.LfyPw39u.js";import"./index.CB87Sc6I.js";import"./ScrambleTextPlugin.DkkuzaFX.js";import"./ScrollTrigger.Cv03IO65.js";import"./MorphSVGPlugin.qjPP4kxr.js";const e=["SELECTED","COOL","AWESOME","WOW!"];o(e,"#works-selected",{interval:3e3,speed:2});

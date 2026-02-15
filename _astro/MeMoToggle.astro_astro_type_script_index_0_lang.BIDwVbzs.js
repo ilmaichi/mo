@@ -1,0 +1,1 @@
+import{g as t}from"./index.CB87Sc6I.js";import{M as o}from"./MorphSVGPlugin.qjPP4kxr.js";t.registerPlugin(o);const e=document.getElementById("main-morph-path");e&&t.timeline({repeat:-1,yoyo:!0,repeatDelay:.5}).to(e,{duration:1.5,morphSVG:"#path-mo-target",ease:"expo.inOut"});
